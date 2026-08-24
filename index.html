@@ -247,7 +247,7 @@
   .srow.chooser{border-color:var(--mathe-line);}
   .srow-head{display:flex; align-items:baseline; justify-content:space-between; gap:12px;}
   .srow-head .nm{font-size:20px; font-weight:600;}
-  .opts{display:flex; gap:8px; margin-top:12px;}
+  .opts{display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:12px;}
   .opt{
     flex:1; display:flex; align-items:center; justify-content:center; gap:6px;
     border:1px solid var(--line-2); border-radius:4px; padding:10px 8px;
@@ -257,6 +257,7 @@
   .opt:hover{background:var(--surface-soft); color:var(--fg-1);}
   .opt:active{transform:scale(.94);}
   .opt.sel-right{background:var(--ok-soft); border-color:var(--ok); color:var(--ok);}
+  .opt.sel-halb{background:var(--warn-soft); border-color:var(--warn); color:var(--warn);}
   .opt.sel-wrong{background:var(--mathe-soft); border-color:var(--mathe); color:var(--mathe-ink);}
   .opt.sel-none{background:var(--surface-sunken); border-color:var(--line-3); color:var(--fg-2);}
   .delta{margin-top:12px; font-size:16px; color:var(--fg-3); font-variant-numeric:tabular-nums;}
@@ -365,8 +366,8 @@
         <li>Die Gruppen wählen reihum ein Feld, also eine Kategorie und einen Punktwert.</li>
         <li><b>Alle</b> Gruppen rechnen die Aufgabe, nicht nur die wählende.</li>
         <li>Der Timer zählt hoch, während die Lehrkraft parallel mitrechnet. Ein Klick auf „Fertig“ friert die Zeit ein und lässt sie von dort auf 0 zurücklaufen. Die Gruppen haben damit insgesamt die doppelte Zeit.</li>
-        <li>Danach wird für jede Gruppe richtig, falsch oder keine Abgabe angeklickt.</li>
-        <li><b>Punkte:</b> die wählende Gruppe bekommt bei richtiger Lösung den doppelten Wert, jede andere Gruppe den einfachen. Eine falsche Lösung kostet immer 200 Punkte, keine Abgabe ändert nichts. Der Punktestand fällt nicht unter 0.</li>
+        <li>Danach wird für jede Gruppe richtig, halb richtig, falsch oder keine Abgabe angeklickt.</li>
+        <li><b>Punkte:</b> die wählende Gruppe bekommt bei richtiger Lösung den doppelten Wert, jede andere Gruppe den einfachen. Eine halb richtige Lösung zählt jeweils die Hälfte davon. Eine falsche Lösung kostet immer 200 Punkte, keine Abgabe ändert nichts. Der Punktestand fällt nicht unter 0.</li>
       </ol>
       <p class="note">25 Aufgaben pro Katalog. Zu jeder Aufgabe gibt es eine Musterlösung zum Vorlesen sowie Angaben zu Anforderungsbereich, Operator und Kompetenzen. Alles läuft lokal im Browser, es wird nichts hochgeladen.</p>
     </div>
@@ -413,7 +414,7 @@
     </div>
     <div class="board" id="board"></div>
     <p class="note" style="margin-top:24px">
-      Wählende Gruppe doppelte Punkte, alle anderen einfache Punkte, falsche Lösung immer −200, keine Abgabe keine Änderung. Der Punktestand fällt nicht unter 0. Eine Karte wird erst grau, wenn die Wertung übernommen wurde.
+      Wählende Gruppe doppelte Punkte, alle anderen einfache Punkte, halb richtig jeweils die Hälfte davon, falsche Lösung immer −200, keine Abgabe keine Änderung. Der Punktestand fällt nicht unter 0. Eine Karte wird erst grau, wenn die Wertung übernommen wurde.
     </p>
   </section>
 
@@ -516,6 +517,7 @@ var ICONS = {
   check:'<path d="m4 12 5 5L20 6"/>',
   cross:'<path d="M6 6l12 12M18 6 6 18"/>',
   minus:'<path d="M5 12h14"/>',
+  halb:'<circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 1 0 18Z" fill="currentColor" stroke="none"/>',
   plus:'<path d="M12 5v14M5 12h14"/>',
   left:'<path d="m15 5-7 7 7 7"/>',
   right:'<path d="m9 5 7 7-7 7"/>'
@@ -4351,6 +4353,7 @@ function deltaFor(gi){
   var q = cats()[state.current.ci].questions[state.current.qi];
   var sel = state.selections[gi];
   if(sel === "right") return (gi === state.turn) ? 2*q.points : q.points;
+  if(sel === "halb")  return (gi === state.turn) ? q.points : Math.round(q.points/2);
   if(sel === "wrong") return -WRONG_PENALTY;
   return 0;
 }
@@ -4367,6 +4370,7 @@ function renderScoring(){
         (isChooser ? '<span class="turn-tag">hat gewählt, doppelt</span>' : '') + '</div>' +
       '<div class="opts">' +
         '<button class="opt" data-gi="'+gi+'" data-val="right">'+ic("check",18)+'richtig</button>' +
+        '<button class="opt" data-gi="'+gi+'" data-val="halb">'+ic("halb",18)+'halb richtig</button>' +
         '<button class="opt" data-gi="'+gi+'" data-val="wrong">'+ic("cross",18)+'falsch</button>' +
         '<button class="opt" data-gi="'+gi+'" data-val="none">'+ic("minus",18)+'keine Abgabe</button>' +
       '</div>' +
