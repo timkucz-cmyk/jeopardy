@@ -8,3 +8,9 @@ desktop.ini
 
 # macOS, falls die Dateien mal auf einem Mac landen
 .DS_Store
+
+# Persoenliche Claude-Code-Einstellungen dieses Rechners.
+# Enthaelt den Stop-Hook, der nach einer Sitzung automatisch pusht, samt
+# absolutem Pfad. Gehoert nicht ins oeffentliche Repo: wer die Sammlung
+# klont, soll nicht ungefragt in dieses Repository pushen.
+.claude/settings.local.json
