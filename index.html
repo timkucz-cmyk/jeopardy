@@ -518,6 +518,70 @@
   }
   ol.ablauf{margin:12px 0 0; padding-left:24px; color:var(--fg-2); font-size:17px; line-height:1.7;}
   ol.ablauf b{color:var(--fg-1);}
+
+  /* ---------- Fehlerjagd: Loesungsweg ---------- */
+  .fjagd{display:grid; grid-template-columns:minmax(0,1fr) 330px; gap:24px; align-items:start;}
+  @media (max-width:1100px){ .fjagd{grid-template-columns:minmax(0,1fr);} }
+  .floesung{
+    border:1px solid var(--line-1); border-radius:6px; background:var(--surface-page);
+    padding:32px; box-shadow:var(--shadow-1);
+  }
+  .fstart{
+    font-size:clamp(24px, 2.6vw, 36px); font-weight:600; color:var(--fg-1); line-height:1.35;
+    margin-top:14px; padding-bottom:20px; border-bottom:1px solid var(--line-1);
+  }
+  ol.fzeilen{list-style:none; margin:10px 0 0; padding:0; counter-reset:fz;}
+  ol.fzeilen li{
+    counter-increment:fz; display:grid; grid-template-columns:44px minmax(0,1fr) auto;
+    gap:18px; align-items:baseline; padding:10px 14px; border-radius:4px;
+    transition:background 220ms var(--ease), color 220ms var(--ease);
+  }
+  ol.fzeilen li::before{
+    content:counter(fz); font-family:var(--mono); font-size:21px; font-weight:700;
+    color:var(--fg-4); text-align:right;
+  }
+  /* Die Terme kommen aus den Daten schon in M(), die Zeile selbst bleibt
+     deshalb serifenlos. So lesen sich auch Zeilen mit Worten richtig. */
+  .fz-term{font-size:clamp(25px, 3vw, 40px); font-weight:700; color:var(--fg-1); line-height:1.25;}
+  .fz-op{font-size:20px; color:var(--fg-4); white-space:nowrap;}
+  /* Aufgeloest: die falsche Zeile tritt hervor, alles darunter ist nur noch
+     sauber mitgeschleppt und wird deshalb zurueckgenommen. */
+  ol.fzeilen li.falsch{background:var(--mathe-soft); box-shadow:inset 3px 0 0 var(--mathe);}
+  ol.fzeilen li.falsch::before{color:var(--mathe);}
+  ol.fzeilen li.falsch .fz-term{color:var(--mathe-ink);}
+  ol.fzeilen li.folge .fz-term, ol.fzeilen li.folge::before, ol.fzeilen li.folge .fz-op{color:var(--fg-5);}
+
+  .fkorrektur{
+    margin-top:24px; border-left:2px solid var(--ok); background:var(--ok-soft);
+    border-radius:0 4px 4px 0; padding:18px 22px;
+  }
+  .fk-art{font-size:19px; font-weight:600; color:var(--fg-1);}
+  .fk-zeile{font-size:clamp(22px, 2.3vw, 30px); font-weight:700; color:var(--ok); margin-top:10px;}
+  .fk-wort{font-size:17px; color:var(--fg-2); line-height:1.5; margin-top:10px;}
+
+  /* ---------- Fehlerjagd: Wertung ---------- */
+  .fgruppe{
+    display:grid; grid-template-columns:minmax(0,1fr) auto; gap:8px 12px;
+    align-items:center; padding:12px 10px; border-top:1px solid var(--line-1);
+    border-radius:4px;
+  }
+  .fgruppe:first-child{border-top:0;}
+  .fgruppe.fuehrt{background:var(--ok-soft);}
+  .fg-name{font-size:17px; font-weight:600; color:var(--fg-1);}
+  .fg-punkte{font-family:var(--mono); font-size:25px; font-weight:700; color:var(--mathe); text-align:right;}
+  .fgruppe.fuehrt .fg-punkte{color:var(--ok);}
+  .fg-knoepfe{grid-column:1 / span 2; display:flex; gap:8px;}
+  .fg-knopf{
+    flex:1 1 0; border:1px solid var(--line-2); border-radius:4px; padding:7px 10px;
+    font-size:15px; font-weight:600; color:var(--fg-3); background:var(--surface-page);
+    transition:background 160ms var(--ease), border-color 160ms var(--ease), color 160ms var(--ease);
+  }
+  .fg-knopf:hover:not(:disabled){background:var(--surface-soft); color:var(--fg-1);}
+  .fg-knopf.an{background:var(--ok-soft); border-color:var(--ok); color:var(--ok);}
+  .fg-knopf:disabled{color:var(--fg-5); border-color:var(--line-1); cursor:not-allowed;}
+  /* Aufloesung am Rundenende: die Aufgabenstellung klein ueber der
+     korrigierten Zeile, damit beide in dieselbe Gitterzelle passen. */
+  .auf-frage{display:block; font-size:.62em; font-weight:600; color:var(--fg-3); margin-bottom:4px;}
 </style>
 </head>
 <body>
@@ -869,6 +933,164 @@
       <div class="row" style="margin-top:24px">
         <button class="btn btn-primary" id="bNeueRundeBtn"></button>
         <button class="btn btn-quiet" id="bEndeBackBtn"></button>
+      </div>
+    </div>
+
+  </section>
+
+
+  <!-- ============ FEHLERJAGD: VORBEREITUNG ============ -->
+  <section id="fehlerSetup" style="display:none">
+
+    <div class="row zurueckzeile">
+      <button class="btn btn-quiet" id="fZurueckBtn"></button>
+    </div>
+
+    <div class="card" id="fResumeCard" style="display:none">
+      <span class="label">Fehlerjagd</span>
+      <h2 style="margin-top:8px">Angefangene Runde</h2>
+      <div class="bhinweis">
+        <p class="sub" id="fResumeInfo" style="margin:0"></p>
+        <div class="row" style="margin-top:14px">
+          <button class="btn btn-primary" id="fResumeBtn">Runde fortsetzen</button>
+          <button class="btn btn-quiet" id="fVerwerfenBtn">Verwerfen</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <span class="label">Schritt 1</span>
+      <h2 style="margin-top:8px">Klasse und Aufgabensatz wählen</h2>
+      <p class="sub">Zuerst die Klassenstufe, danach steht nur noch drin, was zu dieser Stufe passt.</p>
+      <div class="katalogwahl" style="margin-top:16px">
+        <label class="feld"><span class="label">Klassenstufe</span>
+          <select id="fStufeSel"></select></label>
+        <label class="feld"><span class="label">Aufgabensatz</span>
+          <select id="fSatzSel"></select></label>
+      </div>
+      <p class="note" id="fSatzInfo"></p>
+    </div>
+
+    <div class="card">
+      <span class="label">Schritt 2</span>
+      <h2 style="margin-top:8px">Runde einstellen</h2>
+      <div class="katalogwahl" style="margin-top:16px">
+        <label class="feld"><span class="label">Zeit je Aufgabe</span>
+          <select id="fZeit">
+            <option value="60">1 Minute</option>
+            <option value="90">1:30 Minuten</option>
+            <option value="120" selected>2 Minuten</option>
+            <option value="180">3 Minuten</option>
+          </select></label>
+        <label class="feld"><span class="label">Gruppen</span>
+          <select id="fGruppen">
+            <option value="2">2 Gruppen</option>
+            <option value="3">3 Gruppen</option>
+            <option value="4" selected>4 Gruppen</option>
+            <option value="5">5 Gruppen</option>
+            <option value="6">6 Gruppen</option>
+            <option value="8">8 Gruppen</option>
+          </select></label>
+        <label class="feld"><span class="label">Aufgaben in der Runde</span>
+          <select id="fAnzahl">
+            <option value="4">4 Aufgaben</option>
+            <option value="6" selected>6 Aufgaben</option>
+            <option value="8">8 Aufgaben</option>
+            <option value="0">alle des Satzes</option>
+          </select></label>
+      </div>
+      <p class="note" id="fSchaetzung"></p>
+
+      <hr class="sep">
+      <span class="label">So läuft die Runde</span>
+      <ol class="ablauf">
+        <li><b>Lesen.</b> Auf der Leinwand steht ein vollständiger Lösungsweg mit nummerierten Zeilen. <b>Genau eine Zeile ist falsch</b>, alles darunter ist aus dieser Zeile sauber weitergerechnet.</li>
+        <li><b>Suchen.</b> Der Timer läuft, jede Gruppe notiert die Zeilennummer <b>und</b> in einem Satz, was dort schiefgelaufen ist. Gesucht ist die erste Zeile, in der falsch gerechnet wird.</li>
+        <li><b>Auflösen.</b> Erst danach werden die falsche Zeile, die Fehlerart und die richtige Fassung eingeblendet. Vorher bleiben die Punkteknöpfe gesperrt.</li>
+        <li><b>Punkte.</b> Ein Punkt für die richtige Zeile, ein zweiter für die Begründung. Ohne den zweiten Punkt wäre Raten zu billig.</li>
+      </ol>
+      <p class="note">Nicht das falsche Endergebnis zählt, sondern der Schritt, an dem die Rechnung gekippt ist. Genau das ist der Unterschied zwischen Rechnen und Prüfen.</p>
+
+      <hr class="sep">
+      <button class="btn btn-primary" id="fStartBtn"></button>
+    </div>
+
+  </section>
+
+  <!-- ============ FEHLERJAGD ============ -->
+  <section id="fehlerGame" style="display:none">
+
+    <div class="turnbar">
+      <div class="who">
+        <span class="label" id="fPhaseLabel">Wo steckt der Fehler?</span>
+        <span id="fPhaseInfo">–</span>
+      </div>
+      <div class="row">
+        <span class="sub num" id="fFortschritt"></span>
+        <button class="btn btn-quiet" id="fResetBtn"></button>
+        <button class="btn btn-quiet" id="fBackBtn"></button>
+      </div>
+    </div>
+
+    <!-- Phase 1 und 2: suchen, dann auflösen -->
+    <div id="fSpielPhase" class="fjagd">
+      <div>
+        <div class="floesung">
+          <span class="label" id="fAuftrag"></span>
+          <div class="fstart" id="fStart"></div>
+          <ol class="fzeilen" id="fZeilen"></ol>
+          <div class="fkorrektur" id="fKorrektur" style="display:none">
+            <div class="fk-art" id="fkArt"></div>
+            <div class="fk-zeile" id="fkZeile"></div>
+            <div class="fk-wort" id="fkWort"></div>
+          </div>
+        </div>
+
+        <div class="timerbox" id="fTimerBox">
+          <div class="timer" id="fTimerDisplay">0:00</div>
+          <div class="timer-label" id="fTimerLabel"></div>
+          <div class="row">
+            <button class="btn btn-quiet" id="fTimerPlusBtn"></button>
+            <button class="btn btn-icon btn-quiet" id="fTimerResetBtn" title="Timer neu starten"></button>
+          </div>
+        </div>
+
+        <div class="row" style="margin-top:24px">
+          <button class="btn btn-primary" id="fAufloesenBtn"></button>
+          <button class="btn" id="fNaechsteBtn"></button>
+          <button class="btn btn-quiet" id="fBeendenBtn"></button>
+        </div>
+      </div>
+
+      <div>
+        <div class="bpanel">
+          <span class="label">Punkte</span>
+          <p class="note" id="fWertungNote" style="margin-top:6px"></p>
+          <div id="fGruppenListe" style="margin-top:10px"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Phase 3: Auswertung -->
+    <div id="fEndePhase" style="display:none">
+
+      <div class="card">
+        <span class="label">Ergebnis</span>
+        <h2 style="margin-top:8px">Punktestand</h2>
+        <div id="fEndeListe" style="margin-top:12px"></div>
+        <div class="sieger" id="fSiegerText"></div>
+      </div>
+
+      <div class="card">
+        <span class="label">Auflösung</span>
+        <h2 style="margin-top:8px">Alle Fehler der Runde</h2>
+        <p class="sub">Zum Nachlesen: falsche Zeile, richtige Fassung und die Begründung dazu.</p>
+        <ol class="aufloesung" id="fAufloesung"></ol>
+      </div>
+
+      <div class="row" style="margin-top:24px">
+        <button class="btn btn-primary" id="fNeueRundeBtn"></button>
+        <button class="btn btn-quiet" id="fEndeBackBtn"></button>
       </div>
     </div>
 
@@ -6916,6 +7138,741 @@ el("bCheckClose").addEventListener("click", function(){
   el("bCheckOverlay").classList.remove("open");
 });
 
+/* =======================================================================
+   FEHLERJAGD
+   Am Beamer steht ein vollstaendiger Loesungsweg mit nummerierten Zeilen,
+   in dem genau eine Zeile falsch ist. Die Gruppen notieren die Nummer und
+   dazu in einem Satz, was dort schiefgelaufen ist. Aufgeloest wird erst
+   danach, sonst liest man die Antwort nur ab.
+
+   Gesucht ist die *erste* Zeile, in der falsch gerechnet wird. Alles
+   darunter ist aus dieser Zeile sauber weitergerechnet und damit nicht
+   noch einmal falsch, sondern nur mitgeschleppt. Das ist der Kern der
+   Uebung: nicht das falsche Endergebnis zaehlt, sondern der Schritt, an
+   dem die Rechnung gekippt ist.
+
+   Punkte gibt es zweimal, einen fuer die Zeile und einen fuer die
+   Begruendung. Ohne den zweiten waere Raten zu billig, denn ein
+   Loesungsweg hat nur eine Handvoll Zeilen.
+
+   Aufbau eines Satzes
+     stufe     Klassenstufe als String, wie beim Bingo.
+     titel     steht im zweiten Dropdown.
+     unter     Kurzbeschreibung unter der Auswahl.
+     aufgaben  Liste von Loesungswegen:
+       auftrag  Arbeitsauftrag, erscheint als Label ueber dem Weg
+       start    Aufgabenstellung oder Sachtext, ohne Zeilennummer.
+                Leer lassen, wenn die erste nummerierte Zeile schon die
+                gegebene Gleichung ist.
+       zeilen   die Schritte. Entweder ein String oder {t:Zeile,
+                op:Umformung am rechten Rand}.
+       fehler   Nummer der falschen Zeile, 1-basiert.
+       art      kurze Benennung der Fehlerart.
+       richtig  wie die Zeile richtig heissen muesste.
+       s        Erlaeuterung, moeglichst mit Probe oder Gegenrechnung.
+
+   Formeln kommen wie ueberall sonst ueber M() aus den Daten selbst, die
+   Zeile bleibt deshalb serifenlos und vertraegt auch ganze Saetze.
+   ======================================================================= */
+
+var F8_TERME = {
+  stufe:"8",
+  titel:"Terme und binomische Formeln",
+  unter:"Klasse 8, ausmultiplizieren, ausklammern, binomische Formeln",
+  aufgaben:[
+    {
+      auftrag:"Vereinfache den Term.",
+      start:M("3(2x − 5) − 4(x − 2)"),
+      zeilen:[M("= 6x − 15 − 4x − 8"), M("= 2x − 23")],
+      fehler:1,
+      art:"Vorzeichenfehler beim Ausmultiplizieren",
+      richtig:M("= 6x − 15 − 4x + 8"),
+      s:M("−4 · (−2) = +8")+". Das Minus vor der Klammer dreht das Vorzeichen jedes Summanden um, auch das der "+M("−2")+". Richtig ist "+M("2x − 7")+"."
+    },
+    {
+      auftrag:"Vereinfache den Term.",
+      start:M("(x + 5)² + 3x"),
+      zeilen:[M("= x² + 25 + 3x"), M("= x² + 3x + 25")],
+      fehler:1,
+      art:"Binomische Formel unvollständig, das mittlere Glied fehlt",
+      richtig:M("= x² + 10x + 25 + 3x"),
+      s:M("(x + 5)²")+" heißt "+M("(x + 5)(x + 5)")+". Beim Ausmultiplizieren entstehen zusätzlich "+M("5x")+" und noch einmal "+M("5x")+", zusammen "+M("10x")+". Richtig ist "+M("x² + 13x + 25")+"."
+    },
+    {
+      auftrag:"Vereinfache den Term.",
+      start:M("(2a − 3)²"),
+      zeilen:[M("= (2a)² − 2 · 2a · 3 + 3²"), M("= 2a² − 12a + 9")],
+      fehler:2,
+      art:"Beim Quadrieren nur die Variable erwischt, den Faktor nicht",
+      richtig:M("= 4a² − 12a + 9"),
+      s:M("(2a)²")+" bedeutet "+M("2a · 2a = 4a²")+". Beim Quadrieren eines Produkts wird jeder Faktor quadriert, nicht nur der Buchstabe."
+    },
+    {
+      auftrag:"Klammere so weit wie möglich aus.",
+      start:M("12a² − 18a"),
+      zeilen:[M("= 6a(2a − 18)")],
+      fehler:1,
+      art:"Der zweite Summand wurde nicht durch 6a geteilt",
+      richtig:M("= 6a(2a − 3)"),
+      s:"Die Probe durch Ausmultiplizieren entscheidet: "+M("6a(2a − 3) = 12a² − 18a")+" stimmt, "+M("6a(2a − 18) = 12a² − 108a")+" nicht."
+    },
+    {
+      auftrag:"Vereinfache den Term.",
+      start:M("(4x + 3) − (2x − 7)"),
+      zeilen:[M("= 4x + 3 − 2x − 7"), M("= 2x − 4")],
+      fehler:1,
+      art:"Das Minus vor der Klammer wirkt nur auf den ersten Summanden",
+      richtig:M("= 4x + 3 − 2x + 7"),
+      s:"Das Minus dreht jedes Vorzeichen in der Klammer um, aus "+M("− 7")+" wird also "+M("+ 7")+". Richtig ist "+M("2x + 10")+"."
+    },
+    {
+      auftrag:"Vereinfache den Term.",
+      start:M("3x · 4x + 2x"),
+      zeilen:[M("= 12x + 2x"), M("= 14x")],
+      fehler:1,
+      art:"Beim Multiplizieren die Potenz vergessen",
+      richtig:M("= 12x² + 2x"),
+      s:M("3x · 4x = 12 · x · x = 12x²")+". Damit sind die beiden Glieder nicht mehr gleichartig und lassen sich gar nicht zusammenfassen."
+    },
+    {
+      auftrag:"Vereinfache den Term.",
+      start:M("(x + 6)(x − 6)"),
+      zeilen:[M("= x² − 6x + 6x + 36"), M("= x² + 36")],
+      fehler:1,
+      art:"Vorzeichen beim letzten Produkt falsch",
+      richtig:M("= x² − 6x + 6x − 36"),
+      s:"Das letzte Produkt ist "+M("(+6) · (−6) = −36")+". Die dritte binomische Formel liefert direkt "+M("x² − 36")+"."
+    },
+    {
+      auftrag:"Vereinfache den Term.",
+      start:M("(x − 4)² − x²"),
+      zeilen:[M("= x² − 8x − 16 − x²"), M("= −8x − 16")],
+      fehler:1,
+      art:"Das letzte Glied der binomischen Formel ist positiv",
+      richtig:M("= x² − 8x + 16 − x²"),
+      s:M("(−4)² = (−4) · (−4) = +16")+", denn minus mal minus ergibt plus. Richtig ist "+M("−8x + 16")+"."
+    },
+    {
+      auftrag:"Berechne den Wert des Terms für "+M("x = −2")+".",
+      start:M("T(x) = 3x² − 5x"),
+      zeilen:[M("= 3 · (−2)² − 5 · (−2)"), M("= 3 · (−4) + 10"), M("= −12 + 10 = −2")],
+      fehler:2,
+      art:"Das Quadrat einer negativen Zahl als negativ gerechnet",
+      richtig:M("= 3 · 4 + 10"),
+      s:M("(−2)² = (−2) · (−2) = +4")+". Nur bei "+M("−2²")+" ohne Klammer bliebe das Minus stehen. Richtig ist "+M("T(−2) = 22")+"."
+    },
+    {
+      auftrag:"Vereinfache den Term.",
+      start:M("2a(3a − b) − ab"),
+      zeilen:[M("= 6a² − 2ab − ab"), M("= 6a² − ab")],
+      fehler:2,
+      art:"Beim Zusammenfassen falsch subtrahiert",
+      richtig:M("= 6a² − 3ab"),
+      s:M("−2ab")+" und "+M("−ab")+" sind gleichartig und ergeben zusammen "+M("−3ab")+". Ein allein stehendes "+M("ab")+" hat den Faktor 1, nicht 0."
+    }
+  ]
+};
+
+var F8_GLEICHUNGEN = {
+  stufe:"8",
+  titel:"Gleichungen und Äquivalenzumformungen",
+  unter:"Klasse 8, Gleichungen lösen, Formeln umstellen, einfache Ungleichungen",
+  aufgaben:[
+    {
+      auftrag:"Löse die Gleichung.",
+      start:"",
+      zeilen:[
+        {t:M("3x + 6 = 18"), op:M("| : 3")},
+        {t:M("x + 6 = 6"),   op:M("| − 6")},
+        M("x = 0")
+      ],
+      fehler:2,
+      art:"Beim Teilen durch 3 nur ein Glied geteilt",
+      richtig:M("x + 2 = 6"),
+      s:"Geteilt wird die ganze Seite, also auch die 6: "+M("6 : 3 = 2")+". Damit folgt "+M("x = 4")+". Bequemer wäre erst "+M("− 6")+" und dann "+M(": 3")+"."
+    },
+    {
+      auftrag:"Löse die Gleichung.",
+      start:"",
+      zeilen:[
+        {t:M("5 − 2x = 11"), op:M("| − 5")},
+        {t:M("−2x = 6"),     op:M("| : (−2)")},
+        M("x = 3")
+      ],
+      fehler:3,
+      art:"Beim Teilen durch eine negative Zahl das Vorzeichen vergessen",
+      richtig:M("x = −3"),
+      s:M("6 : (−2) = −3")+". Die Probe bestätigt es: "+M("5 − 2 · (−3) = 5 + 6 = 11")+"."
+    },
+    {
+      auftrag:"Löse die Gleichung.",
+      start:"",
+      zeilen:[
+        {t:M("4(x − 3) = 2x + 6"), op:"| ausmultiplizieren"},
+        {t:M("4x − 3 = 2x + 6"),   op:M("| − 2x")},
+        {t:M("2x − 3 = 6"),        op:M("| + 3")},
+        {t:M("2x = 9"),            op:M("| : 2")},
+        M("x = 4,5")
+      ],
+      fehler:2,
+      art:"Beim Ausmultiplizieren nur den ersten Summanden mit 4 multipliziert",
+      richtig:M("4x − 12 = 2x + 6"),
+      s:M("4 · (x − 3) = 4x − 12")+". Der Faktor vor der Klammer gilt für beide Summanden. Richtig ist "+M("x = 9")+"."
+    },
+    {
+      auftrag:"Löse die Gleichung.",
+      start:"",
+      zeilen:[
+        {t:M("2x + 9 = 5x − 6"), op:M("| − 2x")},
+        {t:M("9 = 3x − 6"),      op:M("| + 6")},
+        {t:M("3 = 3x"),          op:M("| : 3")},
+        M("x = 1")
+      ],
+      fehler:3,
+      art:"Statt der angeschriebenen Addition wurde subtrahiert",
+      richtig:M("15 = 3x"),
+      s:"Am Rand steht "+M("+ 6")+", gerechnet wurde aber "+M("9 − 6")+". Richtig ist "+M("9 + 6 = 15")+" und damit "+M("x = 5")+"."
+    },
+    {
+      auftrag:"Löse die Gleichung.",
+      start:"",
+      zeilen:[
+        {t:f(M("x"), "4")+M(" + 3 = 7"), op:M("| · 4")},
+        {t:M("x + 3 = 28"),              op:M("| − 3")},
+        M("x = 25")
+      ],
+      fehler:2,
+      art:"Beim Multiplizieren mit 4 ein Glied ausgelassen",
+      richtig:M("x + 12 = 28"),
+      s:"Mal 4 gilt für jedes Glied der Gleichung, also auch für die 3: "+M("3 · 4 = 12")+". Richtig ist "+M("x = 16")+"."
+    },
+    {
+      auftrag:"Löse die Ungleichung.",
+      start:"",
+      zeilen:[
+        {t:M("−2x + 1 < 9"), op:M("| − 1")},
+        {t:M("−2x < 8"),     op:M("| : (−2)")},
+        M("x < −4")
+      ],
+      fehler:3,
+      art:"Bei Division durch eine negative Zahl das Zeichen nicht umgedreht",
+      richtig:M("x > −4"),
+      s:"Mal oder geteilt durch eine negative Zahl dreht das Ungleichheitszeichen um. Probe mit "+M("x = 0")+": "+M("−2 · 0 + 1 = 1 < 9")+" ist wahr, und "+M("0 > −4")+" stimmt ebenfalls."
+    },
+    {
+      auftrag:"Stelle die Formel nach "+M("a")+" um.",
+      start:M("U = 2(a + b)")+" — Umfang eines Rechtecks",
+      zeilen:[
+        {t:M("U = 2a + 2b"), op:M("| − 2b")},
+        {t:M("U − 2b = 2a"), op:M("| : 2")},
+        M("a = U − b")
+      ],
+      fehler:3,
+      art:"Nur ein Teil der linken Seite durch 2 geteilt",
+      richtig:M("a = U : 2 − b"),
+      s:"Geteilt wird die ganze Seite: "+M("(U − 2b) : 2 = U : 2 − b")+". Probe mit "+M("U = 20")+" und "+M("b = 4")+": dann ist "+M("a = 6")+", und tatsächlich gilt "+M("2 · (6 + 4) = 20")+"."
+    },
+    {
+      auftrag:"Stelle eine Gleichung auf und löse sie.",
+      start:"Marie ist dreimal so alt wie ihr Bruder, zusammen sind sie 32 Jahre alt. Für das Alter des Bruders steht "+M("x")+".",
+      zeilen:[
+        {t:M("x + 3 = 32"), op:M("| − 3")},
+        M("x = 29")
+      ],
+      fehler:1,
+      art:"„Dreimal so alt“ als „plus 3“ übersetzt",
+      richtig:M("x + 3x = 32"),
+      s:"Dreimal so alt heißt "+M("3 · x")+", nicht "+M("x + 3")+". Aus "+M("4x = 32")+" folgt "+M("x = 8")+": Der Bruder ist 8, Marie 24, zusammen 32."
+    },
+    {
+      auftrag:"Löse die Gleichung.",
+      start:"",
+      zeilen:[
+        {t:M("3(2x − 1) − 2(x + 4) = 9"), op:"| ausmultiplizieren"},
+        {t:M("6x − 3 − 2x + 8 = 9"),      op:"| zusammenfassen"},
+        {t:M("4x + 5 = 9"),               op:M("| − 5")},
+        {t:M("4x = 4"),                   op:M("| : 4")},
+        M("x = 1")
+      ],
+      fehler:2,
+      art:"Beim Ausmultiplizieren der zweiten Klammer das Vorzeichen falsch",
+      richtig:M("6x − 3 − 2x − 8 = 9"),
+      s:M("−2 · (+4) = −8")+". Richtig geht es weiter mit "+M("4x − 11 = 9")+", also "+M("x = 5")+"."
+    },
+    {
+      auftrag:"Löse die Gleichung.",
+      start:"",
+      zeilen:[
+        {t:M("2(x + 3) = 2x + 6"), op:"| ausmultiplizieren"},
+        {t:M("2x + 6 = 2x + 6"),   op:M("| − 2x")},
+        M("6 = 6"),
+        M("x = 6")
+      ],
+      fehler:4,
+      art:"Eine wahre Aussage ohne "+M("x")+" als Lösung gedeutet",
+      richtig:"Diese Zeile darf es nicht geben — die Gleichung ist für jede Zahl wahr.",
+      s:"Nach "+M("− 2x")+" steht "+M("6 = 6")+" da, eine wahre Aussage ganz ohne "+M("x")+". Dann erfüllt jede Zahl die Gleichung, die Lösungsmenge ist "+M("L")+" = ℚ. Die 6 ist kein "+M("x")+"-Wert, sondern nur der Rest der Rechnung."
+    }
+  ]
+};
+
+var F_SAETZE = [F8_TERME, F8_GLEICHUNGEN];
+
+
+/* -----------------------------------------------------------------------
+   FEHLERJAGD: Zustand
+   ----------------------------------------------------------------------- */
+
+var F_KEY = "fehlerjagd_v1";
+
+var fstate = {
+  satz:0,
+  phase:"aufgabe",   /* "aufgabe" = suchen, "loesung" = aufgeloest, "ende" */
+  reihenfolge:[],    /* Indizes in fsatz().aufgaben, in Spielreihenfolge */
+  pos:0,
+  punkte:[],         /* Gesamtstand je Gruppe */
+  wertung:[],        /* Stand der laufenden Aufgabe: {zeile, grund} */
+  gruppen:4,
+  anzahl:6,
+  sekunden:120
+};
+
+function fsatz(){ return F_SAETZE[fstate.satz]; }
+function faufgabe(){ return fsatz().aufgaben[fstate.reihenfolge[fstate.pos]]; }
+
+/* Zeilen ohne Umformung am Rand duerfen als blosser String dastehen. */
+function fzeile(z){ return (typeof z === "string") ? {t:z, op:""} : z; }
+
+/* Fisher-Yates. Die Reihenfolge wird einmal beim Rundenstart gezogen und
+   mitgespeichert, damit eine fortgesetzte Runde dieselben Aufgaben in
+   derselben Folge zeigt. */
+function fMischen(n){
+  var idx = [], i, j, h;
+  for(i = 0; i < n; i++) idx.push(i);
+  for(i = idx.length - 1; i > 0; i--){
+    j = Math.floor(Math.random() * (i + 1));
+    h = idx[i]; idx[i] = idx[j]; idx[j] = h;
+  }
+  return idx;
+}
+
+
+/* -----------------------------------------------------------------------
+   FEHLERJAGD: Anzeige
+   ----------------------------------------------------------------------- */
+
+function fRender(){
+  var a = faufgabe(), auf = (fstate.phase === "loesung");
+
+  el("fAuftrag").innerHTML = a.auftrag;
+  el("fStart").innerHTML = a.start || "";
+  el("fStart").style.display = a.start ? "block" : "none";
+
+  var ol = el("fZeilen");
+  ol.innerHTML = "";
+  a.zeilen.forEach(function(z, i){
+    var d = fzeile(z), li = document.createElement("li"), nr = i + 1;
+    /* Vor dem Aufloesen sehen alle Zeilen gleich aus, sonst waere die
+       gesuchte Zeile schon an der Farbe abzulesen. */
+    if(auf && nr === a.fehler)    li.className = "falsch";
+    else if(auf && nr > a.fehler) li.className = "folge";
+    li.innerHTML = '<span class="fz-term">' + d.t + '</span>' +
+                   '<span class="fz-op">' + (d.op || "") + '</span>';
+    ol.appendChild(li);
+  });
+
+  el("fKorrektur").style.display = auf ? "block" : "none";
+  if(auf){
+    el("fkArt").innerHTML   = "Zeile " + a.fehler + ": " + a.art;
+    el("fkZeile").innerHTML = a.richtig;
+    el("fkWort").innerHTML  = a.s;
+  }
+
+  var letzte = (fstate.pos === fstate.reihenfolge.length - 1);
+  el("fAufloesenBtn").disabled = auf;
+  el("fNaechsteBtn").disabled  = !auf;
+  el("fNaechsteBtn").innerHTML = letzte
+    ? ic("trophy") + "Runde auswerten"
+    : ic("right") + "Nächste Aufgabe";
+  /* Die Hauptaktion wandert mit: erst aufloesen, danach weiter. Ein
+     gesperrter btn-primary bliebe sonst rot, weil .btn-primary im
+     Stylesheet nach .btn:disabled steht. */
+  el("fAufloesenBtn").className = auf ? "btn" : "btn btn-primary";
+  el("fNaechsteBtn").className  = auf ? "btn btn-primary" : "btn";
+
+  el("fPhaseLabel").textContent = auf ? "Aufgelöst" : "Wo steckt der Fehler?";
+  el("fPhaseInfo").textContent  = auf
+    ? "Punkte vergeben, dann weiter."
+    : "Zeilennummer und Begründung notieren.";
+  el("fFortschritt").textContent =
+    "Aufgabe " + (fstate.pos + 1) + " von " + fstate.reihenfolge.length;
+
+  fRenderWertung();
+}
+
+/* Zwei Punkte je Aufgabe, einer fuer die Zeile und einer fuer die
+   Begruendung. Die Knoepfe schalten direkt auf den Gesamtstand durch,
+   damit ein Fehlklick sofort zuruecknehmbar ist. */
+function fRenderWertung(){
+  var box = el("fGruppenListe"), offen = (fstate.phase === "loesung"), i, w, d;
+  box.innerHTML = "";
+  for(i = 0; i < fstate.gruppen; i++){
+    w = fstate.wertung[i] || {zeile:false, grund:false};
+    d = document.createElement("div");
+    d.className = "fgruppe";
+    d.innerHTML =
+      '<span class="fg-name">Gruppe ' + (i + 1) + '</span>' +
+      '<span class="fg-punkte num">' + fstate.punkte[i] + '</span>' +
+      '<span class="fg-knoepfe">' +
+        '<button class="fg-knopf' + (w.zeile ? " an" : "") + '" data-g="' + i +
+          '" data-art="zeile"' + (offen ? "" : " disabled") + '>Zeile</button>' +
+        '<button class="fg-knopf' + (w.grund ? " an" : "") + '" data-g="' + i +
+          '" data-art="grund"' + (offen ? "" : " disabled") + '>Begründung</button>' +
+      '</span>';
+    box.appendChild(d);
+  }
+  el("fWertungNote").textContent = offen
+    ? "Ein Punkt für die richtige Zeile, ein Punkt für die Begründung."
+    : "Die Knöpfe öffnen sich, sobald aufgelöst ist.";
+}
+
+function zeigeFPhase(){
+  var ende = (fstate.phase === "ende");
+  el("fSpielPhase").style.display = ende ? "none" : "grid";
+  el("fEndePhase").style.display  = ende ? "block" : "none";
+  if(ende){
+    el("fPhaseLabel").textContent  = "Auswertung";
+    el("fPhaseInfo").textContent   = "Punktestand und alle Fehler im Überblick.";
+    el("fFortschritt").textContent = fstate.reihenfolge.length + " Aufgaben gespielt";
+  }
+}
+
+
+/* -----------------------------------------------------------------------
+   FEHLERJAGD: Spielablauf
+   ----------------------------------------------------------------------- */
+
+function fNeueRunde(){
+  var alle = fsatz().aufgaben.length;
+  var n = fstate.anzahl ? Math.min(fstate.anzahl, alle) : alle;
+  var i;
+  fstate.reihenfolge = fMischen(alle).slice(0, n);
+  fstate.pos = 0;
+  fstate.punkte = [];
+  fstate.wertung = [];
+  for(i = 0; i < fstate.gruppen; i++){
+    fstate.punkte.push(0);
+    fstate.wertung.push({zeile:false, grund:false});
+  }
+  zeigeFPhase();
+  fAufgabeZeigen();
+}
+
+function fAufgabeZeigen(){
+  var i;
+  for(i = 0; i < fstate.gruppen; i++) fstate.wertung[i] = {zeile:false, grund:false};
+  fstate.phase = "aufgabe";
+  zeigeFPhase();
+  fRender();
+  bTimerStart(fstate.sekunden, "Zeit zum Suchen.", "fTimer");
+  fSave();
+}
+
+function fAufloesen(){
+  fstate.phase = "loesung";
+  bTimerHalt();
+  fRender();
+  fSave();
+}
+
+function fWeiter(){
+  if(fstate.pos >= fstate.reihenfolge.length - 1){ fEnde(); return; }
+  fstate.pos++;
+  fAufgabeZeigen();
+}
+
+function fEnde(){
+  bTimerHalt();
+  fstate.phase = "ende";
+  zeigeFPhase();
+  fEndeRender();
+  fSave();
+}
+
+function fEndeRender(){
+  var i, best = 0, sieger = [], box, d;
+  for(i = 0; i < fstate.gruppen; i++) if(fstate.punkte[i] > best) best = fstate.punkte[i];
+
+  box = el("fEndeListe");
+  box.innerHTML = "";
+  for(i = 0; i < fstate.gruppen; i++){
+    d = document.createElement("div");
+    d.className = "fgruppe" + ((best > 0 && fstate.punkte[i] === best) ? " fuehrt" : "");
+    d.innerHTML = '<span class="fg-name">Gruppe ' + (i + 1) + '</span>' +
+                  '<span class="fg-punkte num">' + fstate.punkte[i] + '</span>';
+    box.appendChild(d);
+    if(fstate.punkte[i] === best) sieger.push("Gruppe " + (i + 1));
+  }
+
+  el("fSiegerText").innerHTML = (best === 0)
+    ? "Diesmal gab es keine Punkte. Die Auflösung unten lohnt sich trotzdem."
+    : (sieger.length === 1 ? "<b>" + sieger[0] + "</b> gewinnt mit "
+                           : "<b>" + sieger.join(", ") + "</b> teilen sich den Sieg mit ") +
+      best + " von " + (fstate.reihenfolge.length * 2) + " möglichen Punkten.";
+
+  var ol = el("fAufloesung");
+  ol.innerHTML = "";
+  fstate.reihenfolge.forEach(function(k){
+    var a = fsatz().aufgaben[k], li = document.createElement("li");
+    /* Ohne die Aufgabenstellung darueber liesse sich die korrigierte
+       Zeile im Nachhinein nicht mehr zuordnen. Saetze ohne start-Feld
+       beginnen mit der gegebenen Gleichung, die tut es genauso. */
+    var kopf = a.start || fzeile(a.zeilen[0]).t;
+    li.innerHTML =
+      '<div class="auf-rechnung"><span class="auf-frage">' + kopf + '</span>' +
+        'Zeile ' + a.fehler + ': <span class="erg">' + a.richtig + '</span></div>' +
+      '<div class="auf-wort"><b>' + a.art + '.</b> ' + a.s + '</div>';
+    ol.appendChild(li);
+  });
+}
+
+
+/* -----------------------------------------------------------------------
+   FEHLERJAGD: Speichern
+   ----------------------------------------------------------------------- */
+
+function fSave(){
+  try{
+    localStorage.setItem(F_KEY, JSON.stringify({
+      satz:fstate.satz, phase:fstate.phase, reihenfolge:fstate.reihenfolge,
+      pos:fstate.pos, punkte:fstate.punkte, wertung:fstate.wertung,
+      gruppen:fstate.gruppen, anzahl:fstate.anzahl, sekunden:fstate.sekunden,
+      ts:Date.now()
+    }));
+  }catch(err){}
+}
+
+function fLoad(){
+  try{
+    var raw = localStorage.getItem(F_KEY);
+    if(!raw) return null;
+    var s = JSON.parse(raw);
+    return (s && s.reihenfolge && s.reihenfolge.length) ? s : null;
+  }catch(err){ return null; }
+}
+
+function fResumeAnzeigen(){
+  var s = fLoad();
+  if(!s || !F_SAETZE[s.satz]){ el("fResumeCard").style.display = "none"; return; }
+  el("fResumeInfo").textContent =
+    "Angefangene Runde: " + fTitelLang(F_SAETZE[s.satz]) + ", Aufgabe " +
+    (s.pos + 1) + " von " + s.reihenfolge.length + ", gespeichert am " +
+    new Date(s.ts).toLocaleString("de-DE") + ".";
+  el("fResumeCard").style.display = "block";
+}
+
+
+/* -----------------------------------------------------------------------
+   FEHLERJAGD: Vorbereitung
+   Auswahl wie beim Bingo: erst die Klassenstufe, dann der Satz.
+   Gespeichert wird nur der Index in F_SAETZE.
+   ----------------------------------------------------------------------- */
+
+function fTitelLang(s){ return "Klasse " + s.stufe + " · " + s.titel; }
+
+function fKopf(){
+  el("kopfUnter").textContent = fTitelLang(fsatz());
+  document.title = "Fehlerjagd – " + fTitelLang(fsatz());
+}
+
+function fStufen(){
+  var w = [];
+  F_SAETZE.forEach(function(s){ if(w.indexOf(s.stufe) < 0) w.push(s.stufe); });
+  w.sort(function(a, b){ return parseInt(a, 10) - parseInt(b, 10); });
+  return w;
+}
+
+function fSaetzeDerStufe(stufe){
+  var idx = [];
+  F_SAETZE.forEach(function(s, i){ if(s.stufe === stufe) idx.push(i); });
+  return idx;
+}
+
+/* Selbstkontrolle wie beim Bingo: zeigt die Fehlerzeile ins Leere oder
+   fehlt eine Begruendung, faellt das hier auf und nicht erst vor der
+   Klasse. */
+function fSatzInfoText(){
+  var s = fsatz();
+  var ohneZeile = s.aufgaben.filter(function(a){
+    return !a.fehler || a.fehler < 1 || a.fehler > a.zeilen.length;
+  }).length;
+  var ohneText = s.aufgaben.filter(function(a){
+    return !a.art || !a.richtig || !a.s;
+  }).length;
+  var txt = s.unter + " · " + s.aufgaben.length + " Lösungswege";
+  if(ohneZeile) txt += " · Achtung: " + ohneZeile + " Aufgabe(n) mit einer Fehlerzeile außerhalb des Lösungswegs";
+  if(ohneText)  txt += " · Achtung: " + ohneText + " Aufgabe(n) ohne Fehlerart, Korrektur oder Erläuterung";
+  el("fSatzInfo").textContent = txt;
+}
+
+function fSchaetzungText(){
+  var alle = fsatz().aufgaben.length;
+  var n = +el("fAnzahl").value;
+  n = n ? Math.min(n, alle) : alle;
+  var sek = +el("fZeit").value;
+  /* Neben der Suchzeit gehen erfahrungsgemaess noch einmal gut eine
+     Minute fuer Aufloesung, Nachfragen und Punktevergabe drauf. */
+  var min = Math.round(n * (sek + 75) / 60);
+  el("fSchaetzung").textContent =
+    "Schätzung: " + n + " Aufgaben zu je " + Math.round(sek / 15) * 15 + " Sekunden Suchzeit, dazu " +
+    "Auflösung und Punkte, macht rund " + min + " Minuten. Für einen Stundeneinstieg reichen vier Aufgaben.";
+}
+
+function fSetupFuellen(){
+  var aktiv = fsatz();
+
+  var stufeSel = el("fStufeSel");
+  stufeSel.innerHTML = "";
+  fStufen().forEach(function(st){
+    var o = document.createElement("option");
+    o.value = st; o.textContent = "Klasse " + st;
+    if(st === aktiv.stufe) o.selected = true;
+    stufeSel.appendChild(o);
+  });
+
+  var satzSel = el("fSatzSel");
+  satzSel.innerHTML = "";
+  fSaetzeDerStufe(aktiv.stufe).forEach(function(i){
+    var o = document.createElement("option");
+    o.value = i; o.textContent = F_SAETZE[i].titel;
+    satzSel.appendChild(o);
+  });
+  satzSel.value = fstate.satz;
+
+  fSatzInfoText();
+  fSchaetzungText();
+  fResumeAnzeigen();
+}
+
+function fStart(){
+  fstate.satz     = +el("fSatzSel").value;
+  fstate.sekunden = +el("fZeit").value;
+  fstate.gruppen  = +el("fGruppen").value;
+  fstate.anzahl   = +el("fAnzahl").value;
+  fKopf();
+  zeigeSeite("fehlerGame");
+  fNeueRunde();
+}
+
+
+/* -----------------------------------------------------------------------
+   FEHLERJAGD: Bedienung
+   ----------------------------------------------------------------------- */
+
+el("fStartBtn").innerHTML     = ic("play") + "Runde starten";
+el("fAufloesenBtn").innerHTML = ic("search") + "Auflösen";
+el("fNaechsteBtn").innerHTML  = ic("right") + "Nächste Aufgabe";
+el("fBeendenBtn").innerHTML   = ic("trophy") + "Runde beenden und auswerten";
+el("fResetBtn").innerHTML     = ic("rotate") + "Neue Runde";
+el("fBackBtn").innerHTML      = ic("left") + "Einstellungen";
+el("fZurueckBtn").innerHTML   = ic("left") + "Spielauswahl";
+el("fNeueRundeBtn").innerHTML = ic("rotate") + "Noch eine Runde";
+el("fEndeBackBtn").innerHTML  = ic("left") + "Einstellungen";
+el("fTimerPlusBtn").innerHTML  = ic("plus") + "30 s";
+el("fTimerResetBtn").innerHTML = ic("rotate");
+
+el("fStufeSel").addEventListener("change", function(){
+  var idx = fSaetzeDerStufe(el("fStufeSel").value);
+  if(!idx.length) return;
+  fstate.satz = idx[0];
+  fSetupFuellen();
+  fKopf();
+});
+el("fSatzSel").addEventListener("change", function(){
+  fstate.satz = +el("fSatzSel").value;
+  fSatzInfoText();
+  fSchaetzungText();
+  fKopf();
+});
+["fZeit", "fAnzahl"].forEach(function(id){
+  el(id).addEventListener("change", fSchaetzungText);
+});
+
+el("fStartBtn").addEventListener("click", fStart);
+el("fZurueckBtn").addEventListener("click", function(){ zeigeSeite("startseite"); });
+
+el("fResumeBtn").addEventListener("click", function(){
+  var s = fLoad();
+  if(!s) return;
+  fstate.satz        = s.satz;
+  fstate.reihenfolge = s.reihenfolge;
+  fstate.pos         = s.pos || 0;
+  fstate.punkte      = s.punkte || [];
+  fstate.wertung     = s.wertung || [];
+  fstate.gruppen     = s.gruppen || 4;
+  fstate.anzahl      = s.anzahl || 6;
+  fstate.sekunden    = s.sekunden || 120;
+  el("fZeit").value    = fstate.sekunden;
+  el("fGruppen").value = fstate.gruppen;
+  el("fAnzahl").value  = fstate.anzahl;
+  fSetupFuellen();   /* die fortgesetzte Runde kann aus einer anderen Stufe stammen */
+  fKopf();
+  zeigeSeite("fehlerGame");
+  if(s.phase === "ende"){
+    fstate.phase = "ende";
+    zeigeFPhase();
+    fEndeRender();
+  } else {
+    /* Eine unterbrochene Aufgabe beginnt wieder als Suchauftrag, sonst
+       stuende die Loesung beim Wiedereinstieg sofort an der Wand. */
+    fAufgabeZeigen();
+  }
+});
+el("fVerwerfenBtn").addEventListener("click", function(){
+  try{ localStorage.removeItem(F_KEY); }catch(err){}
+  el("fResumeCard").style.display = "none";
+});
+
+el("fAufloesenBtn").addEventListener("click", fAufloesen);
+el("fNaechsteBtn").addEventListener("click", fWeiter);
+el("fBeendenBtn").addEventListener("click", fEnde);
+el("fNeueRundeBtn").addEventListener("click", fNeueRunde);
+
+el("fGruppenListe").addEventListener("click", function(e){
+  var b = e.target.closest(".fg-knopf");
+  if(!b || b.disabled) return;
+  var g = +b.getAttribute("data-g"), art = b.getAttribute("data-art");
+  var w = fstate.wertung[g];
+  w[art] = !w[art];
+  fstate.punkte[g] += w[art] ? 1 : -1;
+  fRenderWertung();
+  fSave();
+});
+
+el("fResetBtn").addEventListener("click", function(){
+  askConfirm("Neue Runde",
+    "Der Punktestand und die bisher gezeigten Aufgaben werden verworfen, die Reihenfolge wird neu gemischt.",
+    fNeueRunde);
+});
+el("fBackBtn").addEventListener("click", function(){
+  bTimerHalt();
+  fSetupFuellen();
+  zeigeSeite("fehlerSetup");
+});
+el("fEndeBackBtn").addEventListener("click", function(){
+  fSetupFuellen();
+  zeigeSeite("fehlerSetup");
+});
+
+/* Die Uhr aus dem Bingo laeuft ueber das Praefix der Timerbox und ist
+   damit ohnehin allgemein. Die Fehlerjagd haengt sich als dritte Box
+   mit dem Praefix "fTimer" daran. */
+el("fTimerPlusBtn").addEventListener("click", bTimerPlus);
+el("fTimerResetBtn").addEventListener("click", function(){
+  bTimerStart(fstate.sekunden, "Neue Zeit für denselben Lösungsweg.", "fTimer");
+});
+
+
 /* -----------------------------------------------------------------------
    STARTSEITE
    Die Spiele stehen in SPIELE. Ein weiteres Spiel braucht dort einen
@@ -6924,6 +7881,7 @@ el("bCheckClose").addEventListener("click", function(){
 
 ICONS.grid   = '<rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18M15 3v18M3 9h18M3 15h18"/>';
 ICONS.layers = '<path d="M12 3 3 8l9 5 9-5z"/><path d="m3 14 9 5 9-5"/>';
+ICONS.search = '<circle cx="11" cy="11" r="7"/><path d="m20 20-3.6-3.6"/>';
 
 function thumbJeopardy(){
   var hue = [351, 334, 288, 236, 206];
@@ -6966,6 +7924,25 @@ function thumbBingo(){
     kaestchen + texte + '</svg>';
 }
 
+function thumbFehler(){
+  /* Drei Zeilen eines Loesungswegs. Die mittlere ist die falsche und
+     traegt als einzige Farbe, so wie im Spiel nach dem Aufloesen. */
+  var y = [24, 50, 76], breite = [104, 118, 76], s = "", i;
+  for(i = 0; i < 3; i++){
+    var falsch = (i === 1);
+    s += '<rect x="12" y="' + (y[i] - 13) + '" width="136" height="26" rx="3" ' +
+      'fill="' + (falsch ? "var(--mathe-soft)" : "var(--surface-soft)") + '" ' +
+      'stroke="' + (falsch ? "var(--mathe)" : "var(--line-1)") + '" stroke-width="1.5"/>';
+    s += '<text x="24" y="' + (y[i] + 4) + '" text-anchor="middle" ' +
+      'font-family="JetBrains Mono, monospace" font-size="11" font-weight="700" ' +
+      'fill="' + (falsch ? "var(--mathe)" : "var(--fg-5)") + '">' + (i + 1) + '</text>';
+    s += '<rect x="34" y="' + (y[i] - 4) + '" width="' + breite[i] + '" height="8" rx="2" ' +
+      'fill="' + (falsch ? "var(--mathe-line)" : "var(--line-1)") + '"/>';
+  }
+  return '<svg viewBox="0 0 160 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">' +
+    s + '</svg>';
+}
+
 var SPIELE = [
   {
     id:"jeopardy", name:"Jeopardy", icon:"layers", bild:thumbJeopardy,
@@ -6978,6 +7955,12 @@ var SPIELE = [
     text:"Jede Person füllt ein Feld mit drei mal drei Kästchen und rechnet jede Aufgabe mit. Volle Reihen zählen, die Lösungen kommen erst am Ende.",
     badge:function(){ return bLoad() ? "Angefangene Runde" : ""; },
     start:function(){ bSetupFuellen(); bKopf(); zeigeSeite("bingoSetup"); }
+  },
+  {
+    id:"fehlerjagd", name:"Fehlerjagd", icon:"search", bild:thumbFehler,
+    text:"Ein Lösungsweg mit genau einem Fehler. Die Gruppen suchen die Zeile und sagen, was dort schiefgelaufen ist. Punkte für die Zeile und für die Begründung.",
+    badge:function(){ return fLoad() ? "Angefangene Runde" : ""; },
+    start:function(){ fSetupFuellen(); fKopf(); zeigeSeite("fehlerSetup"); }
   }
 ];
 
@@ -7004,7 +7987,8 @@ function renderKacheln(){
    SEITENWECHSEL
    ----------------------------------------------------------------------- */
 
-var SEITEN = ["startseite", "setup", "bingoSetup", "game", "bingoGame"];
+var SEITEN = ["startseite", "setup", "bingoSetup", "game", "bingoGame",
+              "fehlerSetup", "fehlerGame"];
 
 function zeigeSeite(name){
   SEITEN.forEach(function(id){
@@ -7023,6 +8007,8 @@ function zeigeSeite(name){
     applyKatalog();
   } else if(name === "bingoSetup" || name === "bingoGame"){
     el("kopfTitel").textContent = "Bingo";
+  } else if(name === "fehlerSetup" || name === "fehlerGame"){
+    el("kopfTitel").textContent = "Fehlerjagd";
   }
   window.scrollTo(0, 0);
 }

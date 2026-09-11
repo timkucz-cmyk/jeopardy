@@ -49,13 +49,15 @@ RESET UND SPEICHERN      save(), loadSaved(), askConfirm()
 BINGO                    Kopfkommentar mit Satz-Aufbau, dann die Aufgabensaetze
 BINGO: Laengenschaetzung B_PK, Binomialverteilung
 BINGO: Zustand …         bstate, Timer, Anzeige, Ablauf, Auswertung, Vorbereitung
+FEHLERJAGD               Kopfkommentar mit Satz-Aufbau, dann die Aufgabensaetze
+FEHLERJAGD: Zustand …    fstate, Anzeige, Ablauf, Speichern, Vorbereitung
 STARTSEITE               Registry SPIELE, Kacheln, Thumbnails
 SEITENWECHSEL            SEITEN, zeigeSeite()
 ```
 
-Im `<body>` gibt es fünf `<section>`: `startseite`, `setup`, `bingoSetup`,
-`game`, `bingoGame`. Dazu Overlays (`qOverlay`, `podestOverlay`, `bCheckOverlay`,
-`confirmOverlay`) außerhalb von `.app`.
+Im `<body>` gibt es sieben `<section>`: `startseite`, `setup`, `bingoSetup`,
+`game`, `bingoGame`, `fehlerSetup`, `fehlerGame`. Dazu Overlays (`qOverlay`,
+`podestOverlay`, `bCheckOverlay`, `confirmOverlay`) außerhalb von `.app`.
 
 ## Geteilte Infrastruktur
 
@@ -80,6 +82,11 @@ Jedes Spiel hat seinen **eigenen** Zustand und localStorage-Key:
 |---|---|---|
 | Jeopardy | `state` | `jeopardy_q1_wdh_e_v1` |
 | Bingo | `bstate` | `bingo_klasse7_v2` |
+| Fehlerjagd | `fstate` | `fehlerjagd_v1` |
+
+Die Uhr ist die Ausnahme: `bTimerStart(sek, label, prefix)` steuert seine
+Timerbox über das ID-Präfix und ist damit ohnehin allgemein. Die Fehlerjagd
+hängt sich als dritte Box mit `"fTimer"` daran, statt eine eigene Uhr zu bauen.
 
 ## Rezept: neues Spiel ergänzen
 
@@ -108,16 +115,25 @@ und **hinten** an `B_SAETZE` anhängen. `pool` braucht **genau 16** Ergebnisse,
 Brüche im Pool als `{k:Schlüssel, h:HTML}` über die Helfer `f(z,n)` und `nf(z,n)`.
 Die Einstellungsseite baut die Stufen-Dropdowns automatisch aus dem Feld `stufe`.
 
+**Fehlerjagd-Aufgabensatz.** Objekt mit `stufe`, `titel`, `unter`, `aufgaben`
+und an `F_SAETZE` anhängen. Jede Aufgabe braucht `auftrag`, `zeilen`, `fehler`
+(Zeilennummer, 1-basiert), `art`, `richtig` und `s`; `start` ist optional und
+bleibt leer, wenn schon die erste nummerierte Zeile die gegebene Gleichung ist.
+Zeilen sind Strings oder `{t:Zeile, op:Umformung am Rand}`. **Alles unterhalb
+der Fehlerzeile muss aus der falschen Zeile sauber weitergerechnet sein**, sonst
+ist „die erste falsche Zeile“ nicht mehr eindeutig — das ist die eigentliche
+Sorgfaltsstelle beim Schreiben neuer Sätze.
+
 **Jeopardy-Katalog.** Kategorien-Array anlegen, dann Eintrag in `KATALOGE` mit
 `id`, `titel`, `fach`, `stufe`, `inhalt`, `unter`, `hinweis`, `bezug`,
 optional `farben`. Die Kaskade Fach → Stufe → Inhalt entsteht daraus von selbst.
 
 ## Fallen
 
-- **Gespeicherte Indizes.** `state.katalog` und `bstate.satz` landen als *Zahl*
-  im localStorage. Neue Einträge deshalb immer **ans Ende** von `KATALOGE` bzw.
-  `B_SAETZE`, sonst zeigt eine unterbrochene Runde nach dem Update auf den
-  falschen Satz. Die Anzeigereihenfolge entsteht ohnehin erst beim Aufbau der
+- **Gespeicherte Indizes.** `state.katalog`, `bstate.satz` und `fstate.satz`
+  landen als *Zahl* im localStorage. Neue Einträge deshalb immer **ans Ende**
+  von `KATALOGE`, `B_SAETZE` bzw. `F_SAETZE`, sonst zeigt eine unterbrochene
+  Runde nach dem Update auf den falschen Satz. Die Anzeigereihenfolge entsteht ohnehin erst beim Aufbau der
   Dropdowns.
 - **`B_PK` gilt nur für 16er-Pools.** Die Tabelle zur Längenschätzung ist für
   Pool 16 und 3×3-Karte exakt vorberechnet. Ein Satz mit anderer Poolgröße
@@ -139,7 +155,9 @@ Fehler prüfen.
 Die Bingo-Einstellungsseite hat eine **eingebaute Selbstkontrolle**: `bSatzInfo`
 meldet „16 Ergebnisse, 32 Aufgaben" und warnt bei Aufgaben ohne Poolzahl oder
 Poolzahlen ohne Aufgabe. Nach jedem neuen Satz einmal alle Stufen durchschalten
-und diese Zeile lesen.
+und diese Zeile lesen. Die Fehlerjagd hat dieselbe Zeile als `fSatzInfo`; sie
+warnt, wenn eine Fehlerzeile außerhalb des Lösungswegs zeigt oder Fehlerart,
+Korrektur oder Erläuterung fehlen.
 
 Bei neuen Rechenaufgaben zusätzlich die Terme maschinell nachrechnen, statt sie
 nur zu überfliegen — die Terme sind gültiges JS, wenn man `·`→`*`, `:`→`/`
