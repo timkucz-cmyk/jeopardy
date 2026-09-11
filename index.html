@@ -648,21 +648,35 @@
       <button class="btn btn-quiet" id="bZurueckBtn"></button>
     </div>
 
-    <div class="card">
+    <div class="card" id="bResumeCard" style="display:none">
       <span class="label">Bingo</span>
-      <h2 style="margin-top:8px">Runde vorbereiten</h2>
-
-      <div class="bhinweis" id="bResumeBox" style="display:none">
+      <h2 style="margin-top:8px">Angefangene Runde</h2>
+      <div class="bhinweis" id="bResumeBox">
         <p class="sub" id="bResumeInfo" style="margin:0"></p>
         <div class="row" style="margin-top:14px">
           <button class="btn btn-primary" id="bResumeBtn">Runde fortsetzen</button>
           <button class="btn btn-quiet" id="bVerwerfenBtn">Verwerfen</button>
         </div>
       </div>
+    </div>
 
+    <div class="card">
+      <span class="label">Schritt 1</span>
+      <h2 style="margin-top:8px">Klasse und Aufgabensatz wählen</h2>
+      <p class="sub">Zuerst die Klassenstufe, danach steht nur noch drin, was zu dieser Stufe passt.</p>
       <div class="katalogwahl" style="margin-top:16px">
+        <label class="feld"><span class="label">Klassenstufe</span>
+          <select id="bStufeSel"></select></label>
         <label class="feld"><span class="label">Aufgabensatz</span>
           <select id="bSatzSel"></select></label>
+      </div>
+      <p class="note" id="bSatzInfo"></p>
+    </div>
+
+    <div class="card">
+      <span class="label">Schritt 2</span>
+      <h2 style="margin-top:8px">Runde einstellen</h2>
+      <div class="katalogwahl" style="margin-top:16px">
         <label class="feld"><span class="label">Zeit je Aufgabe</span>
           <select id="bZeit">
             <option value="45">45 Sekunden</option>
@@ -683,7 +697,6 @@
         <label class="feld"><span class="label">Personen in der Klasse</span>
           <input type="number" id="bKlasse" min="5" max="40" value="28"></label>
       </div>
-      <p class="note" id="bSatzInfo"></p>
       <p class="note" id="bSchaetzung"></p>
 
       <hr class="sep">
@@ -5698,6 +5711,9 @@ if(saved){
    weiter, die gerufenen Bingos sind nur die Stoppuhr fuer die Runde.
 
    Aufbau eines Satzes
+     stufe     Klassenstufe als String. Die Einstellungsseite baut daraus
+               das erste Dropdown; das zweite zeigt nur die Saetze dieser
+               Stufe.
      pool      sechzehn Ergebnisse. Entweder ein String, der zugleich
                Schluessel und Anzeige ist, oder {k:Schluessel, h:HTML}
                fuer Brueche.
@@ -5718,6 +5734,7 @@ function f(z, n){
 function nf(z, n){ return "−" + f(z, n); }
 
 var B_GANZE = {
+  stufe:"7",
   titel:"Ganze Zahlen, alle vier Grundrechenarten",
   unter:"Klasse 7, Vorzeichenregeln sicher anwenden",
   pool:["−20","−15","−12","−9","−8","−6","−4","−2","−1","0","3","5","7","10","14","24"],
@@ -5758,6 +5775,7 @@ var B_GANZE = {
 };
 
 var B_DEZIMAL = {
+  stufe:"7",
   titel:"Dezimalzahlen, alle vier Grundrechenarten",
   unter:"Klasse 7, Komma sicher setzen, mit und ohne Vorzeichen",
   pool:["−12","−7,5","−4,8","−3,6","−2,5","−1,8","−1,2","−0,6","−0,25","0","0,4","0,9","1,5","2,4","3,2","6"],
@@ -5798,6 +5816,7 @@ var B_DEZIMAL = {
 };
 
 var B_BRUECHE = {
+  stufe:"7",
   titel:"Brüche, alle vier Grundrechenarten",
   unter:"Klasse 7, Vorzeichen und Bruchrechnung zusammen",
   pool:[
@@ -5855,6 +5874,7 @@ var B_BRUECHE = {
 };
 
 var B_GEMISCHT = {
+  stufe:"7",
   titel:"Gemischt, Klammern, Potenzen, Dezimalzahlen",
   unter:"Klasse 7, Punkt vor Strich und Vorzeichen bei Potenzen",
   pool:["−25","−16","−10","−7","−5","−2,5","−1","−0,5","0","0,5","1,5","2","4","6","9","16"],
@@ -5894,7 +5914,144 @@ var B_GEMISCHT = {
   ]
 };
 
-var B_SAETZE = [B_GANZE, B_DEZIMAL, B_BRUECHE, B_GEMISCHT];
+/* -----------------------------------------------------------------------
+   Klasse 5, Grundrechenarten in drei Stufen
+   Ausschliesslich natuerliche Zahlen, kein Vorzeichen, kein Komma. Die
+   drei Saetze unterscheiden sich nicht im Thema, sondern im Zahlenraum
+   und in der Zahl der Rechenschritte:
+     leicht  einschrittig, kleines Einmaleins, Zahlenraum bis 100
+     mittel  Zahlenraum bis 1000, halbschriftlich, erste Punkt-vor-Strich
+     schwer  mehrschrittig mit Klammern, schriftliche Verfahren
+   ----------------------------------------------------------------------- */
+
+var B5_LEICHT = {
+  stufe:"5",
+  titel:"Grundrechenarten, leicht",
+  unter:"Klasse 5, kleines Einmaleins im Zahlenraum bis 100",
+  pool:["4","6","7","9","12","15","18","21","24","28","30","35","40","45","54","63"],
+  aufgaben:[
+    {e:"4",  q:"12 : 3",   s:"Wie oft passt die 3 in die 12? Viermal."},
+    {e:"4",  q:"9 − 5",    s:"Von 9 aus fünf Schritte zurück."},
+    {e:"6",  q:"2 · 3",    s:"Zweimal die 3 sind 6."},
+    {e:"6",  q:"14 − 8",   s:"Erst 14 − 4 = 10, dann noch 4 weiter zurück."},
+    {e:"7",  q:"56 : 8",   s:"Achterreihe: 8 · 7 = 56."},
+    {e:"7",  q:"3 + 4",    s:"Drei und vier ergeben zusammen sieben."},
+    {e:"9",  q:"45 : 5",   s:"Fünferreihe: 5 · 9 = 45."},
+    {e:"9",  q:"17 − 8",   s:"Erst bis zur 10 zurück, also 17 − 7 = 10, dann noch einer."},
+    {e:"12", q:"3 · 4",    s:"Dreimal die 4 sind 12."},
+    {e:"12", q:"5 + 7",    s:"Erst auf 10 auffüllen: 5 + 5 = 10, dann noch 2."},
+    {e:"15", q:"60 : 4",   s:"60 in vier gleiche Teile: jeder Teil ist 15."},
+    {e:"15", q:"8 + 7",    s:"8 + 2 = 10, dann noch 5 dazu."},
+    {e:"18", q:"6 · 3",    s:"Dreimal die 6 sind 18."},
+    {e:"18", q:"25 − 7",   s:"25 − 5 = 20, dann noch 2 zurück."},
+    {e:"21", q:"7 · 3",    s:"Siebenerreihe: 7, 14, 21."},
+    {e:"21", q:"13 + 8",   s:"13 + 7 = 20, dann noch einer."},
+    {e:"24", q:"4 · 6",    s:"Viermal die 6 sind 24."},
+    {e:"24", q:"72 : 3",   s:"72 in drei Teile: jeder Teil ist 24, denn 3 · 24 = 72."},
+    {e:"28", q:"7 · 4",    s:"Viermal die 7 sind 28."},
+    {e:"28", q:"36 − 8",   s:"36 − 6 = 30, dann noch 2 zurück."},
+    {e:"30", q:"5 · 6",    s:"Fünfmal die 6 sind 30."},
+    {e:"30", q:"90 : 3",   s:"9 : 3 = 3, also 90 : 3 = 30."},
+    {e:"35", q:"5 · 7",    s:"Fünferreihe: 5 · 7 = 35."},
+    {e:"35", q:"19 + 16",  s:"19 + 1 = 20, dann noch 15 dazu."},
+    {e:"40", q:"8 · 5",    s:"Achtmal die 5 sind 40."},
+    {e:"40", q:"64 − 24",  s:"Erst die Zehner: 60 − 20 = 40, die Einer heben sich auf."},
+    {e:"45", q:"9 · 5",    s:"Neunmal die 5 sind 45."},
+    {e:"45", q:"27 + 18",  s:"27 + 3 = 30, dann noch 15 dazu."},
+    {e:"54", q:"6 · 9",    s:"Neunerreihe: 6 · 9 = 54, also 60 − 6."},
+    {e:"54", q:"60 − 6",   s:"Sechs Schritte unter die 60."},
+    {e:"63", q:"7 · 9",    s:"Neunerreihe: 7 · 9 = 63, also 70 − 7."},
+    {e:"63", q:"70 − 7",   s:"Sieben Schritte unter die 70."}
+  ]
+};
+
+var B5_MITTEL = {
+  stufe:"5",
+  titel:"Grundrechenarten, mittel",
+  unter:"Klasse 5, Zahlenraum bis 1000, halbschriftlich rechnen",
+  pool:["12","18","25","36","48","56","75","84","96","120","144","150","180","225","250","320"],
+  aufgaben:[
+    {e:"12",  q:"144 : 12",     s:"12 · 12 = 144, also passt die 12 genau zwölfmal hinein."},
+    {e:"12",  q:"3 · 8 − 12",   s:"Punkt vor Strich: 3 · 8 = 24, dann 24 − 12."},
+    {e:"18",  q:"6 · 12 : 4",   s:"Von links nach rechts: 6 · 12 = 72, dann 72 : 4."},
+    {e:"18",  q:"5 · 4 − 2",    s:"Punkt vor Strich: 5 · 4 = 20, dann 20 − 2."},
+    {e:"25",  q:"5 · 5",        s:"Fünfmal die 5 sind 25."},
+    {e:"25",  q:"100 : 4",      s:"Ein Viertel von 100."},
+    {e:"36",  q:"4 · 9",        s:"Viermal die 9 sind 36."},
+    {e:"36",  q:"60 − 24",      s:"60 − 20 = 40, dann noch 4 zurück."},
+    {e:"48",  q:"6 · 8",        s:"Sechsmal die 8 sind 48."},
+    {e:"48",  q:"240 : 5",      s:"240 : 10 = 24, und durch 5 ist doppelt so viel: 48."},
+    {e:"56",  q:"7 · 8",        s:"Siebenmal die 8 sind 56."},
+    {e:"56",  q:"128 − 72",     s:"128 − 70 = 58, dann noch 2 zurück."},
+    {e:"75",  q:"3 · 25",       s:"Drei Viertel von 100."},
+    {e:"75",  q:"300 : 4",      s:"300 in vier Teile: 4 · 75 = 300."},
+    {e:"84",  q:"12 · 7",       s:"Zerlegen: 10 · 7 = 70 und 2 · 7 = 14, zusammen 84."},
+    {e:"84",  q:"100 − 16",     s:"100 − 20 = 80, dann 4 wieder dazu."},
+    {e:"96",  q:"8 · 12",       s:"Zerlegen: 8 · 10 = 80 und 8 · 2 = 16, zusammen 96."},
+    {e:"96",  q:"480 : 5",      s:"480 : 10 = 48, durch 5 ist doppelt so viel: 96."},
+    {e:"120", q:"15 · 8",       s:"Zerlegen: 10 · 8 = 80 und 5 · 8 = 40, zusammen 120."},
+    {e:"120", q:"360 : 3",      s:"36 : 3 = 12, also 360 : 3 = 120."},
+    {e:"144", q:"12 · 12",      s:"Zerlegen: 12 · 10 = 120 und 12 · 2 = 24, zusammen 144."},
+    {e:"144", q:"200 − 56",     s:"200 − 60 = 140, dann 4 wieder dazu."},
+    {e:"150", q:"6 · 25",       s:"Vier Vierteln sind 100, zwei weitere Viertel sind 50."},
+    {e:"150", q:"450 : 3",      s:"45 : 3 = 15, also 450 : 3 = 150."},
+    {e:"180", q:"15 · 12",      s:"Zerlegen: 15 · 10 = 150 und 15 · 2 = 30, zusammen 180."},
+    {e:"180", q:"900 : 5",      s:"900 : 10 = 90, durch 5 ist doppelt so viel: 180."},
+    {e:"225", q:"15 · 15",      s:"Zerlegen: 15 · 10 = 150 und 15 · 5 = 75, zusammen 225."},
+    {e:"225", q:"9 · 25",       s:"Acht Viertel sind 200, ein weiteres Viertel ist 25."},
+    {e:"250", q:"1000 : 4",     s:"Ein Viertel von 1000."},
+    {e:"250", q:"125 · 2",      s:"Verdoppeln von 125."},
+    {e:"320", q:"8 · 40",       s:"8 · 4 = 32, also 8 · 40 = 320."},
+    {e:"320", q:"960 : 3",      s:"96 : 3 = 32, also 960 : 3 = 320."}
+  ]
+};
+
+var B5_SCHWER = {
+  stufe:"5",
+  titel:"Grundrechenarten, schwer",
+  unter:"Klasse 5, mehrere Schritte, Klammern und schriftliche Verfahren",
+  pool:["7","14","23","36","45","60","84","108","125","156","200","288","375","420","512","1000"],
+  aufgaben:[
+    {e:"7",    q:"3 · 9 − 4 · 5",    s:"Punkt vor Strich, beide Produkte zuerst: 27 − 20."},
+    {e:"7",    q:"(120 − 78) : 6",   s:"Klammer zuerst: 120 − 78 = 42, dann 42 : 6."},
+    {e:"14",   q:"2 · (25 − 18)",    s:"Klammer zuerst: 25 − 18 = 7, dann verdoppeln."},
+    {e:"14",   q:"126 : 9",          s:"Neunerreihe: 9 · 14 = 126."},
+    {e:"23",   q:"100 − 7 · 11",     s:"Punkt vor Strich: 7 · 11 = 77, dann 100 − 77."},
+    {e:"23",   q:"184 : 8",          s:"Schriftlich: 16 : 8 = 2, Rest 24, und 24 : 8 = 3."},
+    {e:"36",   q:"4 · (15 − 6)",     s:"Klammer zuerst: 15 − 6 = 9, dann 4 · 9."},
+    {e:"36",   q:"6 · 12 − 6 · 6",   s:"Beide Produkte zuerst: 72 − 36. Oder 6 · (12 − 6)."},
+    {e:"45",   q:"225 : 5",          s:"Schriftlich: 22 : 5 = 4, Rest 25, und 25 : 5 = 5."},
+    {e:"45",   q:"3 · 20 − 15",      s:"Punkt vor Strich: 3 · 20 = 60, dann 60 − 15."},
+    {e:"60",   q:"5 · 24 : 2",       s:"Von links nach rechts: 5 · 24 = 120, dann halbieren."},
+    {e:"60",   q:"780 : 13",         s:"13 · 6 = 78, also 13 · 60 = 780."},
+    {e:"84",   q:"7 · (20 − 8)",     s:"Klammer zuerst: 20 − 8 = 12, dann 7 · 12."},
+    {e:"84",   q:"1000 − 916",       s:"916 + 84 = 1000, ergänzen statt abziehen."},
+    {e:"108",  q:"3 · (50 − 14)",    s:"Klammer zuerst: 50 − 14 = 36, dann 3 · 36."},
+    {e:"108",  q:"864 : 8",          s:"Schriftlich: 8 : 8 = 1, 6 : 8 = 0 Rest 6, 64 : 8 = 8."},
+    {e:"125",  q:"1000 : 8",         s:"Ein Achtel von 1000. Gegenprobe: 8 · 125 = 1000."},
+    {e:"125",  q:"500 : 4",          s:"Erst halbieren: 250, dann noch einmal halbieren."},
+    {e:"156",  q:"12 · 13",          s:"Zerlegen: 12 · 10 = 120 und 12 · 3 = 36, zusammen 156."},
+    {e:"156",  q:"1092 : 7",         s:"Schriftlich: 10 : 7 = 1 Rest 3, 39 : 7 = 5 Rest 4, 42 : 7 = 6."},
+    {e:"200",  q:"1600 : 8",         s:"16 : 8 = 2, also 1600 : 8 = 200."},
+    {e:"200",  q:"17 · 12 − 4",      s:"Punkt vor Strich: 17 · 12 = 204, dann 204 − 4."},
+    {e:"288",  q:"24 · 12",          s:"Zerlegen: 24 · 10 = 240 und 24 · 2 = 48, zusammen 288."},
+    {e:"288",  q:"2304 : 8",         s:"Schriftlich: 23 : 8 = 2 Rest 7, 70 : 8 = 8 Rest 6, 64 : 8 = 8."},
+    {e:"375",  q:"15 · 25",          s:"Zerlegen: 15 · 20 = 300 und 15 · 5 = 75, zusammen 375."},
+    {e:"375",  q:"3000 : 8",         s:"Erst dritteln geht nicht, aber halbieren: 1500, 750, 375."},
+    {e:"420",  q:"35 · 12",          s:"Zerlegen: 35 · 10 = 350 und 35 · 2 = 70, zusammen 420."},
+    {e:"420",  q:"2520 : 6",         s:"Schriftlich: 25 : 6 = 4 Rest 1, 12 : 6 = 2, 0 : 6 = 0."},
+    {e:"512",  q:"32 · 16",          s:"Zerlegen: 32 · 10 = 320 und 32 · 6 = 192, zusammen 512."},
+    {e:"512",  q:"4096 : 8",         s:"Schriftlich: 40 : 8 = 5, 9 : 8 = 1 Rest 1, 16 : 8 = 2."},
+    {e:"1000", q:"8 · 125",          s:"Acht Achtel von 1000."},
+    {e:"1000", q:"40 · 25",          s:"4 · 25 = 100, also 40 · 25 = 1000."}
+  ]
+};
+
+/* Neue Saetze kommen ans Ende, damit gespeicherte Runden ihren Index
+   behalten. Die Reihenfolge der Dropdowns entsteht ohnehin erst in
+   bSetupFuellen aus dem Feld stufe. */
+var B_SAETZE = [B_GANZE, B_DEZIMAL, B_BRUECHE, B_GEMISCHT,
+                B5_LEICHT, B5_MITTEL, B5_SCHWER];
 
 
 /* -----------------------------------------------------------------------
@@ -6321,22 +6478,45 @@ function bLoad(){
 
 function bResumeAnzeigen(){
   var s = bLoad();
-  if(!s || !B_SAETZE[s.satz]){ el("bResumeBox").style.display = "none"; return; }
+  if(!s || !B_SAETZE[s.satz]){ el("bResumeCard").style.display = "none"; return; }
   el("bResumeInfo").textContent =
-    "Angefangene Runde: " + B_SAETZE[s.satz].titel + ", " + s.gezogen.length +
+    "Angefangene Runde: " + bTitelLang(B_SAETZE[s.satz]) + ", " + s.gezogen.length +
     " von " + B_SAETZE[s.satz].pool.length + " Aufgaben gezeigt, " +
     (s.bingos || []).length + " Bingos, gespeichert am " +
     new Date(s.ts).toLocaleString("de-DE") + ".";
-  el("bResumeBox").style.display = "block";
+  el("bResumeCard").style.display = "block";
 }
 
 /* -----------------------------------------------------------------------
    BINGO: Vorbereitung
+   Die Auswahl laeuft ueber zwei Dropdowns: erst die Klassenstufe, dann
+   der Aufgabensatz. Gespeichert wird weiterhin nur der Index in
+   B_SAETZE, die Stufe ergibt sich daraus.
    ----------------------------------------------------------------------- */
 
+/* Im Kopf und im Fenstertitel steht die Stufe mit dabei, weil die Titel
+   der Saetze innerhalb einer Stufe eindeutig sind, ueber Stufen hinweg
+   aber nicht. */
+function bTitelLang(s){ return "Klasse " + s.stufe + " · " + s.titel; }
+
 function bKopf(){
-  el("kopfUnter").textContent = bsatz().titel;
-  document.title = "Bingo – " + bsatz().titel;
+  el("kopfUnter").textContent = bTitelLang(bsatz());
+  document.title = "Bingo – " + bTitelLang(bsatz());
+}
+
+/* Alle vorkommenden Stufen, aufsteigend. */
+function bStufen(){
+  var w = [];
+  B_SAETZE.forEach(function(s){ if(w.indexOf(s.stufe) < 0) w.push(s.stufe); });
+  w.sort(function(a, b){ return parseInt(a, 10) - parseInt(b, 10); });
+  return w;
+}
+
+/* Indizes der Saetze einer Stufe, in der Reihenfolge von B_SAETZE. */
+function bSaetzeDerStufe(stufe){
+  var idx = [];
+  B_SAETZE.forEach(function(s, i){ if(s.stufe === stufe) idx.push(i); });
+  return idx;
 }
 
 function bSatzInfoText(){
@@ -6371,15 +6551,28 @@ function bSchaetzungText(){
     "lieber zwei kürzere Runden mit verschiedenen Aufgabensätzen spielen als auf sehr viele Bingos zu warten.";
 }
 
+/* Beide Dropdowns aus bstate.satz heraus neu aufbauen. */
 function bSetupFuellen(){
-  var sel = el("bSatzSel");
-  sel.innerHTML = "";
-  B_SAETZE.forEach(function(s, i){
+  var aktiv = bsatz();
+
+  var stufeSel = el("bStufeSel");
+  stufeSel.innerHTML = "";
+  bStufen().forEach(function(st){
     var o = document.createElement("option");
-    o.value = i; o.textContent = s.titel;
-    sel.appendChild(o);
+    o.value = st; o.textContent = "Klasse " + st;
+    if(st === aktiv.stufe) o.selected = true;
+    stufeSel.appendChild(o);
   });
-  sel.value = bstate.satz;
+
+  var satzSel = el("bSatzSel");
+  satzSel.innerHTML = "";
+  bSaetzeDerStufe(aktiv.stufe).forEach(function(i){
+    var o = document.createElement("option");
+    o.value = i; o.textContent = B_SAETZE[i].titel;
+    satzSel.appendChild(o);
+  });
+  satzSel.value = bstate.satz;
+
   bSatzInfoText();
   bSchaetzungText();
   bResumeAnzeigen();
@@ -6418,6 +6611,15 @@ el("bPoolTimerPlusBtn").innerHTML  = ic("plus") + "30 s";
 el("bTimerResetBtn").innerHTML     = ic("rotate");
 el("bPoolTimerResetBtn").innerHTML = ic("rotate");
 
+/* Stufe wechseln heisst: den ersten Satz dieser Stufe nehmen und das
+   zweite Dropdown neu fuellen. */
+el("bStufeSel").addEventListener("change", function(){
+  var idx = bSaetzeDerStufe(el("bStufeSel").value);
+  if(!idx.length) return;
+  bstate.satz = idx[0];
+  bSetupFuellen();
+  bKopf();
+});
 el("bSatzSel").addEventListener("change", function(){
   bstate.satz = +el("bSatzSel").value;
   bSatzInfoText();
@@ -6445,6 +6647,7 @@ el("bResumeBtn").addEventListener("click", function(){
   el("bZeit").value = bstate.sekunden;
   el("bZiel").value = bstate.ziel;
   el("bKlasse").value = bstate.klasse;
+  bSetupFuellen();   /* die fortgesetzte Runde kann aus einer anderen Stufe stammen */
   bKopf();
   zeigeSeite("bingoGame");
   bstate.phase = (s.phase === "ende") ? "ende" : "spiel";
@@ -6454,7 +6657,7 @@ el("bResumeBtn").addEventListener("click", function(){
 });
 el("bVerwerfenBtn").addEventListener("click", function(){
   try{ localStorage.removeItem(B_KEY); }catch(err){}
-  el("bResumeBox").style.display = "none";
+  el("bResumeCard").style.display = "none";
 });
 
 el("bLosBtn").addEventListener("click", function(){
@@ -6480,9 +6683,13 @@ el("bResetBtn").addEventListener("click", function(){
 });
 el("bBackBtn").addEventListener("click", function(){
   bTimerHalt();
+  bSetupFuellen();
   zeigeSeite("bingoSetup");
 });
-el("bEndeBackBtn").addEventListener("click", function(){ zeigeSeite("bingoSetup"); });
+el("bEndeBackBtn").addEventListener("click", function(){
+  bSetupFuellen();
+  zeigeSeite("bingoSetup");
+});
 
 el("bTimerPlusBtn").addEventListener("click", bTimerPlus);
 el("bPoolTimerPlusBtn").addEventListener("click", bTimerPlus);

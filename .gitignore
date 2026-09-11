@@ -1,0 +1,10 @@
+# Windows- und OneDrive-Spuren
+Thumbs.db
+desktop.ini
+*.tmp
+
+# Office-Sperrdateien, falls hier doch mal eine Vorlage liegt
+~$*
+
+# macOS, falls die Dateien mal auf einem Mac landen
+.DS_Store
