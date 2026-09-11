@@ -1,11 +1,14 @@
-# Spielesammlung — Jeopardy_main.html
+# Spielesammlung — index.html
 
 Eine einzelne, eigenständige HTML-Datei mit mehreren Lernspielen für Mathematik
 und Physik am Beamer (Gymnasium Schleswig-Holstein). Läuft ohne Build, ohne
 Server, ohne Internet — direkt per Doppelklick, auch vom USB-Stick.
 
-Der Dateiname ist historisch: angefangen hat es als Jeopardy, inzwischen ist es
-eine Sammlung. Beim Erweitern also nicht von „Jeopardy" im Namen irreleiten lassen.
+Die ganze Sammlung steckt in `index.html`. Der Name kommt daher, dass GitHub
+Pages genau diese Datei aus dem Repo-Root ausliefert (siehe *Veröffentlichung*),
+und er ist zugleich der Grund, warum es nur eine einzige Quelle gibt. Historisch
+hieß sie `Jeopardy_main.html` und enthielt nur das Jeopardy — beim Erweitern
+also nicht vom Namen „Jeopardy" im Repo oder in alten Links irreleiten lassen.
 
 ## Grundregeln
 
@@ -127,7 +130,7 @@ optional `farben`. Die Kaskade Fach → Stufe → Inhalt entsteht daraus von sel
 ## Testen
 
 Kein Testframework. Stattdessen die Datei im Browser-Pane öffnen
-(`file:///C:/Users/timku/OneDrive/Schule/Vorlagen/Spielesammlung/Jeopardy_main.html`)
+(`file:///C:/Users/timku/OneDrive/Schule/Vorlagen/Spielesammlung/index.html`)
 und per `javascript_tool` durchklicken: Spielkachel, Einstellungen, Runde starten,
 durchspielen bis zur Auflösung. Danach `read_console_messages` auf Fehler prüfen.
 
