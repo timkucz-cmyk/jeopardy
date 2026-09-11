@@ -129,10 +129,12 @@ optional `farben`. Die Kaskade Fach → Stufe → Inhalt entsteht daraus von sel
 
 ## Testen
 
-Kein Testframework. Stattdessen die Datei im Browser-Pane öffnen
-(`file:///C:/Users/timku/OneDrive/Schule/Vorlagen/Spielesammlung/index.html`)
-und per `javascript_tool` durchklicken: Spielkachel, Einstellungen, Runde starten,
-durchspielen bis zur Auflösung. Danach `read_console_messages` auf Fehler prüfen.
+Kein Testframework. Stattdessen `index.html` aus diesem Repo-Ordner im
+Browser-Pane öffnen — als `file:///`-URL mit dem Pfad des jeweiligen Rechners,
+der Ordner liegt auf Arbeits- und Heimrechner unter verschiedenen Benutzernamen.
+Dann per `javascript_tool` durchklicken: Spielkachel, Einstellungen, Runde
+starten, durchspielen bis zur Auflösung. Danach `read_console_messages` auf
+Fehler prüfen.
 
 Die Bingo-Einstellungsseite hat eine **eingebaute Selbstkontrolle**: `bSatzInfo`
 meldet „16 Ergebnisse, 32 Aufgaben" und warnt bei Aufgaben ohne Poolzahl oder
