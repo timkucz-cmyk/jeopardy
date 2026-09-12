@@ -960,9 +960,11 @@
 
     <div class="card">
       <span class="label">Schritt 1</span>
-      <h2 style="margin-top:8px">Klasse und Aufgabensatz wählen</h2>
-      <p class="sub">Zuerst die Klassenstufe, danach steht nur noch drin, was zu dieser Stufe passt.</p>
+      <h2 style="margin-top:8px">Fach, Klasse und Aufgabensatz wählen</h2>
+      <p class="sub">Zuerst Fach und Klassenstufe, danach steht nur noch drin, was dazu passt.</p>
       <div class="katalogwahl" style="margin-top:16px">
+        <label class="feld"><span class="label">Fach</span>
+          <select id="fFachSel"></select></label>
         <label class="feld"><span class="label">Klassenstufe</span>
           <select id="fStufeSel"></select></label>
         <label class="feld"><span class="label">Aufgabensatz</span>
@@ -7156,7 +7158,8 @@ el("bCheckClose").addEventListener("click", function(){
    Loesungsweg hat nur eine Handvoll Zeilen.
 
    Aufbau eines Satzes
-     stufe     Klassenstufe als String, wie beim Bingo.
+     fach      "Mathematik" oder "Physik". Fehlt das Feld, gilt Mathematik.
+     stufe     Klassenstufe als String: "5" bis "10", "E", "Q1", "Q2".
      titel     steht im zweiten Dropdown.
      unter     Kurzbeschreibung unter der Auswahl.
      aufgaben  Liste von Loesungswegen:
@@ -7176,6 +7179,7 @@ el("bCheckClose").addEventListener("click", function(){
    ======================================================================= */
 
 var F8_TERME = {
+  fach:"Mathematik",
   stufe:"8",
   titel:"Terme und binomische Formeln",
   unter:"Klasse 8, ausmultiplizieren, ausklammern, binomische Formeln",
@@ -7274,6 +7278,7 @@ var F8_TERME = {
 };
 
 var F8_GLEICHUNGEN = {
+  fach:"Mathematik",
   stufe:"8",
   titel:"Gleichungen und Äquivalenzumformungen",
   unter:"Klasse 8, Gleichungen lösen, Formeln umstellen, einfache Ungleichungen",
@@ -7674,27 +7679,52 @@ function fResumeAnzeigen(){
 
 /* -----------------------------------------------------------------------
    FEHLERJAGD: Vorbereitung
-   Auswahl wie beim Bingo: erst die Klassenstufe, dann der Satz.
-   Gespeichert wird nur der Index in F_SAETZE.
+   Auswahl wie beim Jeopardy als Kaskade: Fach, dann Stufe, dann Satz.
+   Gespeichert wird nur der Index in F_SAETZE, Fach und Stufe ergeben
+   sich daraus.
    ----------------------------------------------------------------------- */
 
-function fTitelLang(s){ return "Klasse " + s.stufe + " · " + s.titel; }
+function fFach(s){ return s.fach || "Mathematik"; }
+
+/* Oberstufenkuerzel lassen sich nicht als Zahl sortieren. Sek I zuerst
+   nach Zahl, danach E, Q1, Q2. */
+function fStufeRang(st){
+  var n = parseInt(st, 10);
+  if(!isNaN(n)) return n;
+  return {"E":11, "Q1":12, "Q2":13}[st] || 99;
+}
+function fStufeName(st){
+  return isNaN(parseInt(st, 10)) ? (st === "E" ? "E-Phase" : st) : "Klasse " + st;
+}
+
+function fTitelLang(s){ return fFach(s) + " · " + fStufeName(s.stufe) + " · " + s.titel; }
 
 function fKopf(){
   el("kopfUnter").textContent = fTitelLang(fsatz());
   document.title = "Fehlerjagd – " + fTitelLang(fsatz());
 }
 
-function fStufen(){
+function fFaecher(){
   var w = [];
-  F_SAETZE.forEach(function(s){ if(w.indexOf(s.stufe) < 0) w.push(s.stufe); });
-  w.sort(function(a, b){ return parseInt(a, 10) - parseInt(b, 10); });
+  F_SAETZE.forEach(function(s){ if(w.indexOf(fFach(s)) < 0) w.push(fFach(s)); });
+  w.sort();
   return w;
 }
 
-function fSaetzeDerStufe(stufe){
+function fStufen(fach){
+  var w = [];
+  F_SAETZE.forEach(function(s){
+    if(fFach(s) === fach && w.indexOf(s.stufe) < 0) w.push(s.stufe);
+  });
+  w.sort(function(a, b){ return fStufeRang(a) - fStufeRang(b); });
+  return w;
+}
+
+function fSaetzeDerStufe(fach, stufe){
   var idx = [];
-  F_SAETZE.forEach(function(s, i){ if(s.stufe === stufe) idx.push(i); });
+  F_SAETZE.forEach(function(s, i){
+    if(fFach(s) === fach && s.stufe === stufe) idx.push(i);
+  });
   return idx;
 }
 
@@ -7731,18 +7761,27 @@ function fSchaetzungText(){
 function fSetupFuellen(){
   var aktiv = fsatz();
 
+  var fachSel = el("fFachSel");
+  fachSel.innerHTML = "";
+  fFaecher().forEach(function(fa){
+    var o = document.createElement("option");
+    o.value = fa; o.textContent = fa;
+    if(fa === fFach(aktiv)) o.selected = true;
+    fachSel.appendChild(o);
+  });
+
   var stufeSel = el("fStufeSel");
   stufeSel.innerHTML = "";
-  fStufen().forEach(function(st){
+  fStufen(fFach(aktiv)).forEach(function(st){
     var o = document.createElement("option");
-    o.value = st; o.textContent = "Klasse " + st;
+    o.value = st; o.textContent = fStufeName(st);
     if(st === aktiv.stufe) o.selected = true;
     stufeSel.appendChild(o);
   });
 
   var satzSel = el("fSatzSel");
   satzSel.innerHTML = "";
-  fSaetzeDerStufe(aktiv.stufe).forEach(function(i){
+  fSaetzeDerStufe(fFach(aktiv), aktiv.stufe).forEach(function(i){
     var o = document.createElement("option");
     o.value = i; o.textContent = F_SAETZE[i].titel;
     satzSel.appendChild(o);
@@ -7781,8 +7820,18 @@ el("fEndeBackBtn").innerHTML  = ic("left") + "Einstellungen";
 el("fTimerPlusBtn").innerHTML  = ic("plus") + "30 s";
 el("fTimerResetBtn").innerHTML = ic("rotate");
 
+/* Fach oder Stufe wechseln heisst: den ersten passenden Satz nehmen und
+   die nachgeordneten Dropdowns neu fuellen. */
+el("fFachSel").addEventListener("change", function(){
+  var fach = el("fFachSel").value;
+  var idx = fSaetzeDerStufe(fach, fStufen(fach)[0]);
+  if(!idx.length) return;
+  fstate.satz = idx[0];
+  fSetupFuellen();
+  fKopf();
+});
 el("fStufeSel").addEventListener("change", function(){
-  var idx = fSaetzeDerStufe(el("fStufeSel").value);
+  var idx = fSaetzeDerStufe(el("fFachSel").value, el("fStufeSel").value);
   if(!idx.length) return;
   fstate.satz = idx[0];
   fSetupFuellen();

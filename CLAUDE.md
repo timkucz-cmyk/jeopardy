@@ -115,8 +115,11 @@ und **hinten** an `B_SAETZE` anhängen. `pool` braucht **genau 16** Ergebnisse,
 Brüche im Pool als `{k:Schlüssel, h:HTML}` über die Helfer `f(z,n)` und `nf(z,n)`.
 Die Einstellungsseite baut die Stufen-Dropdowns automatisch aus dem Feld `stufe`.
 
-**Fehlerjagd-Aufgabensatz.** Objekt mit `stufe`, `titel`, `unter`, `aufgaben`
-und an `F_SAETZE` anhängen. Jede Aufgabe braucht `auftrag`, `zeilen`, `fehler`
+**Fehlerjagd-Aufgabensatz.** Objekt mit `fach`, `stufe`, `titel`, `unter`,
+`aufgaben` und an `F_SAETZE` anhängen. `fach` ist „Mathematik" oder „Physik"
+(fehlt es, gilt Mathematik), `stufe` ist `"5"` bis `"10"`, `"E"`, `"Q1"` oder
+`"Q2"`; die Einstellungsseite baut daraus die Kaskade Fach → Stufe → Satz und
+sortiert die Oberstufe hinter Klasse 10. Jede Aufgabe braucht `auftrag`, `zeilen`, `fehler`
 (Zeilennummer, 1-basiert), `art`, `richtig` und `s`; `start` ist optional und
 bleibt leer, wenn schon die erste nummerierte Zeile die gegebene Gleichung ist.
 Zeilen sind Strings oder `{t:Zeile, op:Umformung am Rand}`. **Alles unterhalb
