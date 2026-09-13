@@ -7433,7 +7433,88 @@ var F8_GLEICHUNGEN = {
   ]
 };
 
-var F_SAETZE = [F8_TERME, F8_GLEICHUNGEN];
+var FM7_RATIONAL = {
+  fach:"Mathematik",
+  stufe:"7",
+  titel:"Rationale Zahlen",
+  unter:"Klasse 7, rationale Zahlen deuten, addieren, subtrahieren, multiplizieren, dividieren und verbinden",
+  aufgaben:[
+    {
+      auftrag:"Berechne die Summe.",
+      start:M("(−8) + (−5)"),
+      zeilen:[M("= −(8 − 5)"), M("= −3")],
+      fehler:1,
+      art:"Additionsregel für unterschiedliche Vorzeichen auf zwei gleiche Vorzeichen angewendet",
+      richtig:M("= −(8 + 5)"),
+      s:"Haben beide Zahlen dasselbe Vorzeichen, addierst du die Beträge und behältst das Vorzeichen: "+M("−8 + (−5) = −(8 + 5)")+". Richtig ist "+M("−13")+"."
+    },
+    {
+      auftrag:"Berechne.",
+      start:M("6 − (−9) − 4"),
+      zeilen:[M("= 6 + 9 − 4"), M("= 15 + 4"), M("= 19")],
+      fehler:2,
+      art:"Die Vorzeichenregel für Minus vor einer negativen Zahl auch auf die letzte, gewöhnliche Subtraktion angewendet",
+      richtig:M("= 15 − 4"),
+      s:"Nur das Minus vor der Klammer "+M("(−9)")+" wird zu Plus, weil dort zwei Minuszeichen aufeinandertreffen. Die "+M("4")+" am Ende wird ganz normal subtrahiert: "+M("15 − 4")+". Richtig ist "+M("11")+"."
+    },
+    {
+      auftrag:"Berechne das Produkt.",
+      start:M("(−2) · (−3) · (−4)"),
+      zeilen:[M("= 6 · (−4)"), M("= 24")],
+      fehler:2,
+      art:"Vorzeichen beim letzten Faktor nicht berücksichtigt (Plus mal Minus als Plus gerechnet)",
+      richtig:M("= −24"),
+      s:"Plus mal Minus ergibt Minus: "+M("6 · (−4) = −24")+". Ein Produkt aus einer ungeraden Anzahl negativer Faktoren ist immer negativ."
+    },
+    {
+      auftrag:"Berechne.",
+      start:M("((−45) : 6 + 2 · 3) · (−2)"),
+      zeilen:[M("= (−7,5 + 6) · (−2)"), M("= −13,5 · (−2)"), M("= 27")],
+      fehler:2,
+      art:"Unterschiedliche Vorzeichen wie gleiche behandelt (Beträge addiert statt subtrahiert)",
+      richtig:M("= (−1,5) · (−2)"),
+      s:"Bei unterschiedlichem Vorzeichen ziehst du die Beträge voneinander ab und behältst das Vorzeichen der betragsmäßig größeren Zahl: "+M("−7,5 + 6 = −1,5")+". Richtig ist "+M("(−1,5) · (−2) = 3")+"."
+    },
+    {
+      auftrag:"Berechne.",
+      start:M("5 − 3 · (−4)"),
+      zeilen:[M("= 2 · (−4)"), M("= −8")],
+      fehler:1,
+      art:"Punktrechnung nicht vor Strichrechnung ausgeführt (von links nach rechts gerechnet statt zuerst den Malpunkt)",
+      richtig:M("= 5 − (−12)"),
+      s:"Punkt vor Strich: zuerst "+M("3 · (−4) = −12")+" rechnen. Richtig ist "+M("5 − (−12) = 5 + 12 = 17")+"."
+    },
+    {
+      auftrag:"Berechne.",
+      start:M("(−18) : (3 + (−6)) + 5 · (−2)"),
+      zeilen:[M("= (−18) : (−3) + 5 · (−2)"), M("= 6 + 5 · (−2)"), M("= 6 + 10"), M("= 16")],
+      fehler:3,
+      art:"Vorzeichen beim Malpunkt vor der letzten Zahl weggelassen (Plus mal Minus als Plus gerechnet)",
+      richtig:M("= 6 + (−10)"),
+      s:"Plus mal Minus ergibt Minus: "+M("5 · (−2) = −10")+". Richtig ist "+M("6 + (−10) = −4")+"."
+    },
+    {
+      auftrag:"Bestimme den Abstand der Punkte "+M("P(−6)")+" und "+M("Q(2)")+" auf der Zahlengeraden.",
+      start:M("(−6) − 2"),
+      zeilen:[M("= −8"), "Der Abstand beträgt "+M("−8")+"."],
+      fehler:2,
+      art:"Abstand als Differenz stehen gelassen, ohne den Betrag zu nehmen",
+      richtig:"Der Abstand beträgt "+M("8")+".",
+      s:"Ein Abstand ist nie negativ: du nimmst den Betrag der Differenz, "+M("|−8| = 8")+". Das gilt unabhängig davon, in welcher Reihenfolge du die Punkte subtrahierst."
+    },
+    {
+      auftrag:"Berechne den neuen Kontostand.",
+      start:"Ein Konto hat einen Kontostand von "+M("−120")+"&nbsp;€. Es kommen weitere "+M("45")+"&nbsp;€ Schulden hinzu. Für den neuen Kontostand steht "+M("K")+".",
+      zeilen:[M("K = −120 + 45"), M("K = −75")],
+      fehler:1,
+      art:"Zunahme der Schulden als positive Änderung des Kontostands gedeutet",
+      richtig:M("K = −120 + (−45)"),
+      s:"Mehr Schulden bedeuten einen kleineren, also negativeren Kontostand: die Änderung ist "+M("−45")+", nicht "+M("+45")+". Richtig ist "+M("K = −120 + (−45) = −165")+"."
+    }
+  ]
+};
+
+var F_SAETZE = [F8_TERME, F8_GLEICHUNGEN, FM7_RATIONAL];
 
 
 /* -----------------------------------------------------------------------
