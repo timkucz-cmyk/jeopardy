@@ -47,6 +47,8 @@
   code{font-family:var(--mono); font-size:.92em; background:var(--surface-soft); padding:1px 5px; border-radius:2px;}
 
   .m{font-family:var(--math); font-style:normal;}
+  /* Formeln in Grossbuchstaben-Labels nicht mitverwandeln: aus x wuerde X, aus beta ein Beta */
+  .label .m{text-transform:none; letter-spacing:0;}
   .m i{font-style:italic;}
   .num{font-variant-numeric:tabular-nums;}
 
@@ -530,6 +532,12 @@
     font-size:clamp(24px, 2.6vw, 36px); font-weight:600; color:var(--fg-1); line-height:1.35;
     margin-top:14px; padding-bottom:20px; border-bottom:1px solid var(--line-1);
   }
+  /* Abbildung zum Loesungsweg: Inline-SVG aus dem Bildskript der Routine,
+     Farben kommen dort schon als CSS-Variablen an. */
+  .fbildbox{margin:18px 0 6px; text-align:center;}
+  .fbildbox .fbild{display:inline-block; width:100%; max-width:560px; height:auto;}
+  .auf-bild{display:block; margin:6px 0 8px;}
+  .auf-bild .fbild{width:100%; max-width:260px; height:auto;}
   ol.fzeilen{list-style:none; margin:10px 0 0; padding:0; counter-reset:fz;}
   ol.fzeilen li{
     counter-increment:fz; display:grid; grid-template-columns:44px minmax(0,1fr) auto;
@@ -1040,6 +1048,7 @@
         <div class="floesung">
           <span class="label" id="fAuftrag"></span>
           <div class="fstart" id="fStart"></div>
+          <div class="fbildbox" id="fBild"></div>
           <ol class="fzeilen" id="fZeilen"></ol>
           <div class="fkorrektur" id="fKorrektur" style="display:none">
             <div class="fk-art" id="fkArt"></div>
@@ -7173,6 +7182,9 @@ el("bCheckClose").addEventListener("click", function(){
        art      kurze Benennung der Fehlerart.
        richtig  wie die Zeile richtig heissen muesste.
        s        Erlaeuterung, moeglichst mit Probe oder Gegenrechnung.
+       bild     optional: Inline-SVG mit class="fbild", steht zwischen
+                Aufgabenstellung und Zeilen. Farben nur als CSS-Variablen,
+                keine IDs, auf die von aussen verwiesen wird.
 
    Formeln kommen wie ueberall sonst ueber M() aus den Daten selbst, die
    Zeile bleibt deshalb serifenlos und vertraegt auch ganze Saetze.
@@ -7472,6 +7484,8 @@ function fRender(){
   el("fAuftrag").innerHTML = a.auftrag;
   el("fStart").innerHTML = a.start || "";
   el("fStart").style.display = a.start ? "block" : "none";
+  el("fBild").innerHTML = a.bild || "";
+  el("fBild").style.display = a.bild ? "block" : "none";
 
   var ol = el("fZeilen");
   ol.innerHTML = "";
@@ -7546,6 +7560,10 @@ function zeigeFPhase(){
   el("fSpielPhase").style.display = ende ? "none" : "grid";
   el("fEndePhase").style.display  = ende ? "block" : "none";
   if(ende){
+    /* Das letzte Bild steht sonst doppelt im Dokument, versteckt hier und
+       sichtbar in der Aufloesung. SVG-Verweise per id (Knotenpunkte im
+       Schaltplan) koennten dann ins versteckte Exemplar zeigen. */
+    el("fBild").innerHTML = "";
     el("fPhaseLabel").textContent  = "Auswertung";
     el("fPhaseInfo").textContent   = "Punktestand und alle Fehler im Überblick.";
     el("fFortschritt").textContent = fstate.reihenfolge.length + " Aufgaben gespielt";
@@ -7634,7 +7652,8 @@ function fEndeRender(){
        beginnen mit der gegebenen Gleichung, die tut es genauso. */
     var kopf = a.start || fzeile(a.zeilen[0]).t;
     li.innerHTML =
-      '<div class="auf-rechnung"><span class="auf-frage">' + kopf + '</span>' +
+      '<div class="auf-rechnung">' + (a.bild ? '<span class="auf-bild">' + a.bild + '</span>' : '') +
+        '<span class="auf-frage">' + kopf + '</span>' +
         'Zeile ' + a.fehler + ': <span class="erg">' + a.richtig + '</span></div>' +
       '<div class="auf-wort"><b>' + a.art + '.</b> ' + a.s + '</div>';
     ol.appendChild(li);
@@ -7739,7 +7758,9 @@ function fSatzInfoText(){
   var ohneText = s.aufgaben.filter(function(a){
     return !a.art || !a.richtig || !a.s;
   }).length;
-  var txt = s.unter + " · " + s.aufgaben.length + " Lösungswege";
+  var mitBild = s.aufgaben.filter(function(a){ return !!a.bild; }).length;
+  var txt = s.unter + " · " + s.aufgaben.length + " Lösungswege" +
+            (mitBild ? ", " + mitBild + " mit Abbildung" : "");
   if(ohneZeile) txt += " · Achtung: " + ohneZeile + " Aufgabe(n) mit einer Fehlerzeile außerhalb des Lösungswegs";
   if(ohneText)  txt += " · Achtung: " + ohneText + " Aufgabe(n) ohne Fehlerart, Korrektur oder Erläuterung";
   el("fSatzInfo").textContent = txt;

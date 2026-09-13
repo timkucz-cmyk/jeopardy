@@ -122,7 +122,12 @@ Die Einstellungsseite baut die Stufen-Dropdowns automatisch aus dem Feld `stufe`
 sortiert die Oberstufe hinter Klasse 10. Jede Aufgabe braucht `auftrag`, `zeilen`, `fehler`
 (Zeilennummer, 1-basiert), `art`, `richtig` und `s`; `start` ist optional und
 bleibt leer, wenn schon die erste nummerierte Zeile die gegebene Gleichung ist.
-Zeilen sind Strings oder `{t:Zeile, op:Umformung am Rand}`. **Alles unterhalb
+Zeilen sind Strings oder `{t:Zeile, op:Umformung am Rand}`. Optional trägt eine
+Aufgabe `bild`: ein Inline-SVG mit `class="fbild"`, das zwischen Aufgabenstellung
+und Zeilen steht und in der Auflösung verkleinert wiederkehrt. Solche SVGs
+entstehen außerhalb des Repos mit dem Bildskript der Fehlerjagd-Routine
+(matplotlib → SVG, Farben als CSS-Variablen, kein Zeilenumbruch in der
+Zeichenkette) — nicht von Hand schreiben. **Alles unterhalb
 der Fehlerzeile muss aus der falschen Zeile sauber weitergerechnet sein**, sonst
 ist „die erste falsche Zeile“ nicht mehr eindeutig — das ist die eigentliche
 Sorgfaltsstelle beim Schreiben neuer Sätze.
