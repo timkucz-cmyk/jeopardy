@@ -434,7 +434,10 @@
     color:var(--fg-1); box-shadow:var(--shadow-1);
     transition:background 220ms var(--ease), color 220ms var(--ease), border-color 220ms var(--ease);
   }
+  /* Terme wie "(2x − 1)(y − 3)" passen in voller Groesse nicht ins Kaestchen. */
+  .pool.lang .pz{font-size:clamp(22px, 2.5vw, 34px);}
   .pool.klein .pz{min-height:54px; font-size:23px; border-radius:4px; box-shadow:none;}
+  .pool.klein.lang .pz{font-size:17px; padding:10px 4px;}
   .pool.klein{gap:7px;}
   /* Waehrend der Aufgaben liegt der Pool nur als Gedaechtnisstuetze daneben.
      Nichts wird markiert, sonst koennte man die Ergebnisse daran ablesen. */
@@ -5960,6 +5963,8 @@ if(saved){
                zuerst eine noch offene Zahl, dann eine ihrer Aufgaben.
                So kommt jede Zahl genau einmal dran, die Aufgabe dazu
                ist aber jedes Mal eine andere.
+               Optional auftrag, z. B. "klammere aus": ersetzt das Wort
+               "berechne" in der Zeile ueber dem Term.
 
    Alle Saetze haben sechzehn Ergebnisse. Davon haengt B_PK ab, die
    Tabelle fuer die Laengenschaetzung weiter unten.
@@ -6472,12 +6477,205 @@ var B8_SCHWER = {
     {e:"−4a + 9",  q:M("5 − (4a − 4)"),               s:"Das Minus dreht beide Vorzeichen um: " + M("−4a") + " und " + M("+4") + ", dann 5 + 4."}
   ]
 };
+
+/* -----------------------------------------------------------------------
+   Klasse 8, Distributivgesetz in drei Stufen
+   Beide Richtungen in einem Pool: acht Ergebnisse sind ausmultiplizierte
+   Summen, acht sind ausgeklammerte Produkte. Zu einer Summe gehoeren zwei
+   verschiedene Produkte, zu einem Produkt zwei verschiedene Summen, meist
+   einmal direkt und einmal erst nach dem Zusammenfassen. Das Feld auftrag
+   sagt am Beamer, in welche Richtung gerechnet wird.
+   Ausgeklammert wird immer der groesste gemeinsame Faktor, die Klammer
+   behaelt die Reihenfolge der Summe. Keine zwei Poolterme sind gleichwertig,
+   sonst passte eine Aufgabe auf zwei Kaestchen.
+     leicht  Zahlfaktoren, eine Variable, eine Klammer
+     mittel  negative Faktoren, Variablen als Faktor, zwei Variablen
+     schwer  Summe mal Summe, mehrere Klammern, Potenzen, Klammer als Faktor
+   ----------------------------------------------------------------------- */
+
+var AUSMUL = "multipliziere aus", AUSKL = "klammere aus";
+
+var B8_DIST_LEICHT = {
+  stufe:"8",
+  titel:"Distributivgesetz, leicht",
+  unter:"Klasse 8, ausmultiplizieren und ausklammern mit Zahlfaktoren",
+  pool:[
+    {k:"6x + 12",  h:M("6x + 12")},
+    {k:"4x + 20",  h:M("4x + 20")},
+    {k:"5x − 10",  h:M("5x − 10")},
+    {k:"8a + 4",   h:M("8a + 4")},
+    {k:"3a − 21",  h:M("3a − 21")},
+    {k:"10x + 15", h:M("10x + 15")},
+    {k:"6y − 9",   h:M("6y − 9")},
+    {k:"7x + 7",   h:M("7x + 7")},
+    {k:"2(x + 4)", h:M("2(x + 4)")},
+    {k:"3(x + 5)", h:M("3(x + 5)")},
+    {k:"4(a − 3)", h:M("4(a − 3)")},
+    {k:"5(y + 2)", h:M("5(y + 2)")},
+    {k:"6(x − 1)", h:M("6(x − 1)")},
+    {k:"7(a + 2)", h:M("7(a + 2)")},
+    {k:"2(3x + 5)", h:M("2(3x + 5)")},
+    {k:"9(x − 2)", h:M("9(x − 2)")}
+  ],
+  aufgaben:[
+    {e:"6x + 12",  auftrag:AUSMUL, q:M("6(x + 2)"),     s:"Die 6 trifft beide Summanden: " + M("6 · x") + " und " + M("6 · 2") + "."},
+    {e:"6x + 12",  auftrag:AUSMUL, q:M("2(3x + 6)"),    s:M("2 · 3x = 6x") + " und " + M("2 · 6 = 12") + "."},
+    {e:"4x + 20",  auftrag:AUSMUL, q:M("4(x + 5)"),     s:"Die 4 trifft beide Summanden: " + M("4 · x") + " und " + M("4 · 5") + "."},
+    {e:"4x + 20",  auftrag:AUSMUL, q:M("2(2x + 10)"),   s:M("2 · 2x = 4x") + " und " + M("2 · 10 = 20") + "."},
+    {e:"5x − 10",  auftrag:AUSMUL, q:M("5(x − 2)"),     s:"Auch der abgezogene Teil wird mit 5 multipliziert: " + M("5 · 2 = 10") + "."},
+    {e:"5x − 10",  auftrag:AUSMUL, q:M("(x − 2) · 5"),  s:"Der Faktor darf auch hinter der Klammer stehen, er trifft trotzdem beide Glieder."},
+    {e:"8a + 4",   auftrag:AUSMUL, q:M("4(2a + 1)"),    s:M("4 · 2a = 8a") + ", und aus der 1 wird " + M("4 · 1 = 4") + "."},
+    {e:"8a + 4",   auftrag:AUSMUL, q:M("2(4a + 2)"),    s:M("2 · 4a = 8a") + " und " + M("2 · 2 = 4") + "."},
+    {e:"3a − 21",  auftrag:AUSMUL, q:M("3(a − 7)"),     s:"Die 3 trifft beide Glieder: " + M("3 · a") + " und " + M("3 · 7 = 21") + "."},
+    {e:"3a − 21",  auftrag:AUSMUL, q:M("(a − 7) · 3"),  s:"Faktor hinter der Klammer, die Rechnung bleibt dieselbe."},
+    {e:"10x + 15", auftrag:AUSMUL, q:M("5(2x + 3)"),    s:M("5 · 2x = 10x") + " und " + M("5 · 3 = 15") + "."},
+    {e:"10x + 15", auftrag:AUSMUL, q:M("(2x + 3) · 5"), s:"Faktor hinter der Klammer: " + M("2x · 5 = 10x") + " und " + M("3 · 5 = 15") + "."},
+    {e:"6y − 9",   auftrag:AUSMUL, q:M("3(2y − 3)"),    s:M("3 · 2y = 6y") + " und " + M("3 · 3 = 9") + "."},
+    {e:"6y − 9",   auftrag:AUSMUL, q:M("(2y − 3) · 3"), s:"Faktor hinter der Klammer, er trifft beide Glieder."},
+    {e:"7x + 7",   auftrag:AUSMUL, q:M("7(x + 1)"),     s:"Die 1 nicht vergessen: " + M("7 · 1 = 7") + "."},
+    {e:"7x + 7",   auftrag:AUSMUL, q:M("(x + 1) · 7"),  s:M("x · 7") + " schreibt man als " + M("7x") + ", dazu " + M("1 · 7 = 7") + "."},
+    {e:"2(x + 4)", auftrag:AUSKL,  q:M("2x + 8"),       s:"Beide Glieder sind durch 2 teilbar: " + M("2x : 2 = x") + " und " + M("8 : 2 = 4") + "."},
+    {e:"2(x + 4)", auftrag:AUSKL,  q:M("x + 8 + x"),    s:"Erst zusammenfassen zu " + M("2x + 8") + ", dann die 2 ausklammern."},
+    {e:"3(x + 5)", auftrag:AUSKL,  q:M("3x + 15"),      s:"Der gemeinsame Faktor ist 3: " + M("3x : 3 = x") + " und " + M("15 : 3 = 5") + "."},
+    {e:"3(x + 5)", auftrag:AUSKL,  q:M("x + 15 + 2x"),  s:"Zusammenfassen ergibt " + M("3x + 15") + ", dann die 3 ausklammern."},
+    {e:"4(a − 3)", auftrag:AUSKL,  q:M("4a − 12"),      s:"Größter gemeinsamer Faktor ist 4, nicht nur 2: " + M("12 : 4 = 3") + "."},
+    {e:"4(a − 3)", auftrag:AUSKL,  q:M("6a − 12 − 2a"), s:M("6a − 2a = 4a") + ", dann die 4 ausklammern."},
+    {e:"5(y + 2)", auftrag:AUSKL,  q:M("5y + 10"),      s:M("5y : 5 = y") + " und " + M("10 : 5 = 2") + "."},
+    {e:"5(y + 2)", auftrag:AUSKL,  q:M("10 + 5y"),      s:"Die Reihenfolge der Summanden ist egal, der Term ist derselbe wie " + M("5y + 10") + "."},
+    {e:"6(x − 1)", auftrag:AUSKL,  q:M("6x − 6"),       s:M("6 : 6 = 1") + ". Die 1 bleibt in der Klammer stehen, sonst fehlt beim Ausmultiplizieren ein Glied."},
+    {e:"6(x − 1)", auftrag:AUSKL,  q:M("4x − 6 + 2x"),  s:"Zusammenfassen ergibt " + M("6x − 6") + ", die 1 bleibt in der Klammer."},
+    {e:"7(a + 2)", auftrag:AUSKL,  q:M("7a + 14"),      s:M("7a : 7 = a") + " und " + M("14 : 7 = 2") + "."},
+    {e:"7(a + 2)", auftrag:AUSKL,  q:M("14 + 7a"),      s:"Umsortiert ist das " + M("7a + 14") + ", daraus die 7 ausklammern."},
+    {e:"2(3x + 5)", auftrag:AUSKL, q:M("6x + 10"),      s:"6 und 10 haben nur den gemeinsamen Faktor 2: " + M("6x : 2 = 3x") + " und " + M("10 : 2 = 5") + "."},
+    {e:"2(3x + 5)", auftrag:AUSKL, q:M("10 + 6x"),      s:"Umsortiert ist das " + M("6x + 10") + ", gemeinsamer Faktor ist 2."},
+    {e:"9(x − 2)", auftrag:AUSKL,  q:M("9x − 18"),      s:"Nicht bei 3 aufhören: 9 teilt beide Zahlen, " + M("18 : 9 = 2") + "."},
+    {e:"9(x − 2)", auftrag:AUSKL,  q:M("10x − 18 − x"), s:M("10x − x = 9x") + ", dann die 9 ausklammern."}
+  ]
+};
+
+var B8_DIST_MITTEL = {
+  stufe:"8",
+  titel:"Distributivgesetz, mittel",
+  unter:"Klasse 8, negative Faktoren, Variablen als Faktor, zwei Variablen",
+  pool:[
+    {k:"−3x + 6",      h:M("−3x + 6")},
+    {k:"−8a − 12",     h:M("−8a − 12")},
+    {k:"x² + 5x",      h:M("x² + 5x")},
+    {k:"2a² − 6a",     h:M("2a² − 6a")},
+    {k:"6xy + 3x",     h:M("6xy + 3x")},
+    {k:"ab − 4a",      h:M("ab − 4a")},
+    {k:"−10x + 15y",   h:M("−10x + 15y")},
+    {k:"12a + 8b − 4", h:M("12a + 8b − 4")},
+    {k:"3x(x + 2)",    h:M("3x(x + 2)")},
+    {k:"a(a − 7)",     h:M("a(a − 7)")},
+    {k:"4(2x − 3y)",   h:M("4(2x − 3y)")},
+    {k:"5b(a + 2)",    h:M("5b(a + 2)")},
+    {k:"6(x + y)",     h:M("6(x + y)")},
+    {k:"x(y + 1)",     h:M("x(y + 1)")},
+    {k:"2a(3 − b)",    h:M("2a(3 − b)")},
+    {k:"7(x − 2y + 1)", h:M("7(x − 2y + 1)")}
+  ],
+  aufgaben:[
+    {e:"−3x + 6",      auftrag:AUSMUL, q:M("−3(x − 2)"),         s:"Minus mal minus ergibt plus: " + M("−3 · (−2) = +6") + "."},
+    {e:"−3x + 6",      auftrag:AUSMUL, q:M("3(2 − x)"),          s:M("3 · 2 = 6") + " und " + M("3 · (−x) = −3x") + ", nur in anderer Reihenfolge."},
+    {e:"−8a − 12",     auftrag:AUSMUL, q:M("−4(2a + 3)"),        s:"Der negative Faktor macht beide Glieder negativ: " + M("−4 · 2a") + " und " + M("−4 · 3") + "."},
+    {e:"−8a − 12",     auftrag:AUSMUL, q:M("−2(4a + 6)"),        s:M("−2 · 4a = −8a") + " und " + M("−2 · 6 = −12") + "."},
+    {e:"x² + 5x",      auftrag:AUSMUL, q:M("x(x + 5)"),          s:M("x · x = x²") + " und " + M("x · 5 = 5x") + "."},
+    {e:"x² + 5x",      auftrag:AUSMUL, q:M("(x + 5) · x"),       s:"Der Faktor hinter der Klammer trifft ebenfalls beide Summanden."},
+    {e:"2a² − 6a",     auftrag:AUSMUL, q:M("2a(a − 3)"),         s:M("2a · a = 2a²") + " und " + M("2a · 3 = 6a") + "."},
+    {e:"2a² − 6a",     auftrag:AUSMUL, q:M("a(2a − 6)"),         s:M("a · 2a = 2a²") + " und " + M("a · 6 = 6a") + "."},
+    {e:"6xy + 3x",     auftrag:AUSMUL, q:M("3x(2y + 1)"),        s:M("3x · 2y = 6xy") + ", und die 1 liefert " + M("3x") + "."},
+    {e:"6xy + 3x",     auftrag:AUSMUL, q:M("x(6y + 3)"),         s:M("x · 6y = 6xy") + " und " + M("x · 3 = 3x") + "."},
+    {e:"ab − 4a",      auftrag:AUSMUL, q:M("a(b − 4)"),          s:M("a · b = ab") + " und " + M("a · 4 = 4a") + "."},
+    {e:"ab − 4a",      auftrag:AUSMUL, q:M("(b − 4) · a"),       s:M("b · a") + " schreibt man alphabetisch als " + M("ab") + ", dazu " + M("−4a") + "."},
+    {e:"−10x + 15y",   auftrag:AUSMUL, q:M("−5(2x − 3y)"),       s:M("−5 · 2x = −10x") + " und " + M("−5 · (−3y) = +15y") + "."},
+    {e:"−10x + 15y",   auftrag:AUSMUL, q:M("5(3y − 2x)"),        s:"Das ergibt " + M("15y − 10x") + ", umsortiert " + M("−10x + 15y") + "."},
+    {e:"12a + 8b − 4", auftrag:AUSMUL, q:M("4(3a + 2b − 1)"),    s:"Drei Summanden, jeder wird mit 4 multipliziert."},
+    {e:"12a + 8b − 4", auftrag:AUSMUL, q:M("2(6a + 4b − 2)"),    s:"Jeder der drei Summanden wird verdoppelt."},
+    {e:"3x(x + 2)",    auftrag:AUSKL,  q:M("3x² + 6x"),          s:"Gemeinsam sind die 3 und ein " + M("x") + ": " + M("3x² : 3x = x") + " und " + M("6x : 3x = 2") + "."},
+    {e:"3x(x + 2)",    auftrag:AUSKL,  q:M("x² + 6x + 2x²"),     s:"Erst " + M("x² + 2x² = 3x²") + ", dann " + M("3x") + " ausklammern."},
+    {e:"a(a − 7)",     auftrag:AUSKL,  q:M("a² − 7a"),           s:"Nur das " + M("a") + " steckt in beiden Gliedern: " + M("a² : a = a") + " und " + M("7a : a = 7") + "."},
+    {e:"a(a − 7)",     auftrag:AUSKL,  q:M("2a² − 7a − a²"),     s:M("2a² − a² = a²") + ", dann " + M("a") + " ausklammern."},
+    {e:"4(2x − 3y)",   auftrag:AUSKL,  q:M("8x − 12y"),          s:"Größter gemeinsamer Faktor von 8 und 12 ist 4."},
+    {e:"4(2x − 3y)",   auftrag:AUSKL,  q:M("10x − 12y − 2x"),    s:M("10x − 2x = 8x") + ", dann die 4 ausklammern."},
+    {e:"5b(a + 2)",    auftrag:AUSKL,  q:M("5ab + 10b"),         s:"Gemeinsam sind 5 und " + M("b") + ", das " + M("a") + " steckt nur im ersten Glied."},
+    {e:"5b(a + 2)",    auftrag:AUSKL,  q:M("7ab + 10b − 2ab"),   s:M("7ab − 2ab = 5ab") + ", dann " + M("5b") + " ausklammern."},
+    {e:"6(x + y)",     auftrag:AUSKL,  q:M("6x + 6y"),           s:"Beide Glieder haben den Faktor 6, aber keine gemeinsame Variable."},
+    {e:"6(x + y)",     auftrag:AUSKL,  q:M("2x + 6y + 4x"),      s:M("2x + 4x = 6x") + ", dann die 6 ausklammern."},
+    {e:"x(y + 1)",     auftrag:AUSKL,  q:M("xy + x"),            s:"Das zweite Glied ist " + M("x · 1") + ". Die 1 muss in der Klammer bleiben."},
+    {e:"x(y + 1)",     auftrag:AUSKL,  q:M("3xy + x − 2xy"),     s:M("3xy − 2xy = xy") + ", übrig bleibt " + M("xy + x") + "."},
+    {e:"2a(3 − b)",    auftrag:AUSKL,  q:M("6a − 2ab"),          s:M("6a : 2a = 3") + " und " + M("2ab : 2a = b") + "."},
+    {e:"2a(3 − b)",    auftrag:AUSKL,  q:M("8a − 2ab − 2a"),     s:M("8a − 2a = 6a") + ", dann " + M("2a") + " ausklammern."},
+    {e:"7(x − 2y + 1)", auftrag:AUSKL, q:M("7x − 14y + 7"),      s:"Alle drei Glieder sind durch 7 teilbar, aus der letzten 7 wird die 1."},
+    {e:"7(x − 2y + 1)", auftrag:AUSKL, q:M("9x − 14y + 7 − 2x"), s:M("9x − 2x = 7x") + ", dann die 7 ausklammern."}
+  ]
+};
+
+var B8_DIST_SCHWER = {
+  stufe:"8",
+  titel:"Distributivgesetz, schwer",
+  unter:"Klasse 8, Summe mal Summe, mehrere Klammern, Potenzen",
+  pool:[
+    {k:"x² + 5x + 6",      h:M("x² + 5x + 6")},
+    {k:"2a² − 5a − 3",     h:M("2a² − 5a − 3")},
+    {k:"7x − 2",           h:M("7x − 2")},
+    {k:"−4a + 11",         h:M("−4a + 11")},
+    {k:"x² − 9",           h:M("x² − 9")},
+    {k:"6x² + x − 2",      h:M("6x² + x − 2")},
+    {k:"x² − x − 12",      h:M("x² − x − 12")},
+    {k:"−2x² + 7x",        h:M("−2x² + 7x")},
+    {k:"4x(2x − 3)",       h:M("4x(2x − 3)")},
+    {k:"3a²(a + 2)",       h:M("3a²(a + 2)")},
+    {k:"(x + 5)(a + 2)",   h:M("(x + 5)(a + 2)")},
+    {k:"(2x − 1)(y − 3)",  h:M("(2x − 1)(y − 3)")},
+    {k:"−5(x + 3)",        h:M("−5(x + 3)")},
+    {k:"2xy(3x − 2y)",     h:M("2xy(3x − 2y)")},
+    {k:"x³(x + 1)",        h:M("x³(x + 1)")},
+    {k:"6ab(a − 2)",       h:M("6ab(a − 2)")}
+  ],
+  aufgaben:[
+    {e:"x² + 5x + 6",      auftrag:AUSMUL, q:M("(x + 2)(x + 3)"),            s:"Jedes Glied mit jedem: " + M("x² + 3x + 2x + 6") + "."},
+    {e:"x² + 5x + 6",      auftrag:AUSMUL, q:M("2x(x + 1) − x(x − 3) + 6"),  s:M("2x² + 2x − x² + 3x + 6") + ", das Minus vor " + M("x") + " dreht beide Vorzeichen der zweiten Klammer um."},
+    {e:"2a² − 5a − 3",     auftrag:AUSMUL, q:M("(2a + 1)(a − 3)"),           s:"Vier Produkte: " + M("2a² − 6a + a − 3") + "."},
+    {e:"2a² − 5a − 3",     auftrag:AUSMUL, q:M("3a(a − 1) − (a² + 2a + 3)"), s:M("3a² − 3a − a² − 2a − 3") + ", das Minus vor der Klammer dreht alle drei Vorzeichen um."},
+    {e:"7x − 2",           auftrag:AUSMUL, q:M("5(3x − 2) − 4(2x − 2)"),     s:M("15x − 10 − 8x + 8") + ", denn " + M("−4 · (−2) = +8") + "."},
+    {e:"7x − 2",           auftrag:AUSMUL, q:M("2(x + 3) − (8 − 5x)"),       s:M("2x + 6 − 8 + 5x") + "."},
+    {e:"−4a + 11",         auftrag:AUSMUL, q:M("3(a + 5) − (7a + 4)"),       s:M("3a + 15 − 7a − 4") + "."},
+    {e:"−4a + 11",         auftrag:AUSMUL, q:M("−2(2a − 3) + 5"),            s:M("−4a + 6 + 5") + ", denn " + M("−2 · (−3) = +6") + "."},
+    {e:"x² − 9",           auftrag:AUSMUL, q:M("(x + 3)(x − 3)"),            s:M("x² − 3x + 3x − 9") + ", die mittleren Glieder heben sich auf."},
+    {e:"x² − 9",           auftrag:AUSMUL, q:M("x(x + 4) − 4(x + 2) − 1"),   s:M("x² + 4x − 4x − 8 − 1") + "."},
+    {e:"6x² + x − 2",      auftrag:AUSMUL, q:M("(2x − 1)(3x + 2)"),          s:"Vier Produkte: " + M("6x² + 4x − 3x − 2") + "."},
+    {e:"6x² + x − 2",      auftrag:AUSMUL, q:M("2x(3x + 2) − 3x − 2"),       s:M("6x² + 4x − 3x − 2") + ", dann " + M("4x − 3x = x") + "."},
+    {e:"x² − x − 12",      auftrag:AUSMUL, q:M("(x + 3)(x − 4)"),            s:"Jedes Glied mit jedem: " + M("x² − 4x + 3x − 12") + "."},
+    {e:"x² − x − 12",      auftrag:AUSMUL, q:M("x(x + 2) − 3(x + 4)"),       s:"Beide Klammern einzeln: " + M("x² + 2x") + " und " + M("−3x − 12") + "."},
+    {e:"−2x² + 7x",        auftrag:AUSMUL, q:M("x(3 − 2x) + 4x"),            s:M("3x − 2x² + 4x") + ", dann " + M("3x + 4x = 7x") + "."},
+    {e:"−2x² + 7x",        auftrag:AUSMUL, q:M("−x(2x − 7)"),                s:M("−x · 2x = −2x²") + " und " + M("−x · (−7) = +7x") + "."},
+    {e:"4x(2x − 3)",       auftrag:AUSKL,  q:M("8x² − 12x"),                 s:"Größter gemeinsamer Faktor ist " + M("4x") + ": " + M("8x² : 4x = 2x") + " und " + M("12x : 4x = 3") + "."},
+    {e:"4x(2x − 3)",       auftrag:AUSKL,  q:M("6x² − 12x + 2x²"),           s:M("6x² + 2x² = 8x²") + ", dann " + M("4x") + " ausklammern."},
+    {e:"3a²(a + 2)",       auftrag:AUSKL,  q:M("3a³ + 6a²"),                 s:"Die kleinere Potenz " + M("a²") + " steckt in beiden Gliedern, dazu die 3."},
+    {e:"3a²(a + 2)",       auftrag:AUSKL,  q:M("5a³ + 6a² − 2a³"),           s:M("5a³ − 2a³ = 3a³") + ", dann " + M("3a²") + " ausklammern."},
+    {e:"(x + 5)(a + 2)",   auftrag:AUSKL,  q:M("a(x + 5) + 2(x + 5)"),       s:"Die ganze Klammer " + M("(x + 5)") + " ist der gemeinsame Faktor, übrig bleiben " + M("a") + " und " + M("2") + "."},
+    {e:"(x + 5)(a + 2)",   auftrag:AUSKL,  q:M("a(x + 5) + 2x + 10"),        s:"Erst " + M("2x + 10 = 2(x + 5)") + ", dann die gemeinsame Klammer ausklammern."},
+    {e:"(2x − 1)(y − 3)",  auftrag:AUSKL,  q:M("y(2x − 1) − 3(2x − 1)"),     s:"Gemeinsamer Faktor ist die Klammer " + M("(2x − 1)") + ", übrig bleiben " + M("y") + " und " + M("−3") + "."},
+    {e:"(2x − 1)(y − 3)",  auftrag:AUSKL,  q:M("y(2x − 1) + 3(1 − 2x)"),     s:M("3(1 − 2x) = −3(2x − 1)") + ". Erst dann haben beide Glieder dieselbe Klammer."},
+    {e:"−5(x + 3)",        auftrag:"klammere −5 aus", q:M("−5x − 15"),       s:M("−5x : (−5) = x") + " und " + M("−15 : (−5) = 3") + "."},
+    {e:"−5(x + 3)",        auftrag:"klammere −5 aus", q:M("−2x − 15 − 3x"),  s:"Erst " + M("−2x − 3x = −5x") + ", dann " + M("−5") + " ausklammern."},
+    {e:"2xy(3x − 2y)",     auftrag:AUSKL,  q:M("6x²y − 4xy²"),               s:"Gemeinsam sind 2, ein " + M("x") + " und ein " + M("y") + ": " + M("6x²y : 2xy = 3x") + " und " + M("4xy² : 2xy = 2y") + "."},
+    {e:"2xy(3x − 2y)",     auftrag:AUSKL,  q:M("8x²y − 4xy² − 2x²y"),        s:M("8x²y − 2x²y = 6x²y") + ", dann " + M("2xy") + " ausklammern."},
+    {e:"x³(x + 1)",        auftrag:AUSKL,  q:M("x⁴ + x³"),                   s:"Die kleinere Potenz " + M("x³") + " ausklammern, vom zweiten Glied bleibt die 1."},
+    {e:"x³(x + 1)",        auftrag:AUSKL,  q:M("x² · x² + x · x²"),          s:"Erst die Potenzen: " + M("x⁴ + x³") + ", dann " + M("x³") + " ausklammern."},
+    {e:"6ab(a − 2)",       auftrag:AUSKL,  q:M("6a²b − 12ab"),               s:"Gemeinsam sind 6, ein " + M("a") + " und das " + M("b") + ": " + M("12ab : 6ab = 2") + "."},
+    {e:"6ab(a − 2)",       auftrag:AUSKL,  q:M("4a²b − 12ab + 2a²b"),        s:M("4a²b + 2a²b = 6a²b") + ", dann " + M("6ab") + " ausklammern."}
+  ]
+};
+
 /* Neue Saetze kommen ans Ende, damit gespeicherte Runden ihren Index
    behalten. Die Reihenfolge der Dropdowns entsteht ohnehin erst in
    bSetupFuellen aus dem Feld stufe. */
 var B_SAETZE = [B_GANZE, B_DEZIMAL, B_BRUECHE, B_GEMISCHT,
                 B5_LEICHT, B5_MITTEL, B5_SCHWER,
-                B8_LEICHT, B8_MITTEL, B8_SCHWER];
+                B8_LEICHT, B8_MITTEL, B8_SCHWER,
+                B8_DIST_LEICHT, B8_DIST_MITTEL, B8_DIST_SCHWER];
 
 
 /* -----------------------------------------------------------------------
@@ -6551,6 +6749,9 @@ function boffen(){
 function bbreit(){
   return bpool().some(function(e){ return e.k.length > 5; });
 }
+function blang(){
+  return bpool().some(function(e){ return e.k.length > 10; });
+}
 
 /* -----------------------------------------------------------------------
    BINGO: Timer
@@ -6608,7 +6809,8 @@ function bTimerPlus(){
    Pflicht, sonst liesse sich am Pool ablesen, welche Zahl gerade dran war. */
 function renderPool(box, klein, marken){
   var p = bpool();
-  box.className = "pool" + (klein ? " klein" : "") + (marken ? "" : " ruhig");
+  box.className = "pool" + (klein ? " klein" : "") + (blang() ? " lang" : "") +
+    (marken ? "" : " ruhig");
   box.style.setProperty("--pspalten",
     (klein && bbreit()) ? 2 : Math.ceil(Math.sqrt(p.length)));
   box.innerHTML = "";
@@ -6622,7 +6824,8 @@ function renderPool(box, klein, marken){
 
 function renderSpiel(){
   var a = bstate.aktuell;
-  el("bAufgabeLabel").textContent = "Aufgabe " + bstate.nummer + ", berechne";
+  el("bAufgabeLabel").textContent = "Aufgabe " + bstate.nummer + ", " +
+    ((a && a.auftrag) || "berechne");
   var t = el("bTerm");
   t.innerHTML = a ? a.q : "";
   t.className = "term" + (t.textContent.length > 16 ? " lang" : "");
@@ -6865,7 +7068,7 @@ var bPruefStand = {};
 
 function bCheckRender(){
   var box = el("bCheckPool");
-  box.className = "pool klein pruef";
+  box.className = "pool klein pruef" + (blang() ? " lang" : "");
   box.style.setProperty("--pspalten", bbreit() ? 4 : 8);
   box.innerHTML = "";
   bpool().forEach(function(e){
@@ -7514,7 +7717,258 @@ var FM7_RATIONAL = {
   ]
 };
 
-var F_SAETZE = [F8_TERME, F8_GLEICHUNGEN, FM7_RATIONAL];
+/* -----------------------------------------------------------------------
+   Klasse 8, Distributivgesetz in drei Stufen, passend zu den Bingo-Saetzen
+     leicht  Zahlfaktoren, Punkt vor Strich, geschickt rechnen
+     mittel  negative Faktoren, Variablen als Faktor, Minusklammern
+     schwer  Summe mal Summe, gemeinsame Klammer, Potenzen, Verschachtelung
+   ----------------------------------------------------------------------- */
+
+var FM8_DIST_LEICHT = {
+  fach:"Mathematik",
+  stufe:"8",
+  titel:"Distributivgesetz, leicht",
+  unter:"Klasse 8, ausmultiplizieren und ausklammern mit Zahlfaktoren",
+  aufgaben:[
+    {
+      auftrag:"Vereinfache den Term.",
+      start:M("4(x + 3) + 2x"),
+      zeilen:[M("= 4x + 3 + 2x"), M("= 6x + 3")],
+      fehler:1,
+      art:"Nur den ersten Summanden der Klammer mit 4 multipliziert",
+      richtig:M("= 4x + 12 + 2x"),
+      s:"Der Faktor vor der Klammer trifft jeden Summanden: "+M("4 · x")+" und "+M("4 · 3 = 12")+". Richtig ist "+M("6x + 12")+"."
+    },
+    {
+      auftrag:"Multipliziere aus.",
+      start:M("5(2a − 1)"),
+      zeilen:[M("= 5 · 2a − 5 · 1"), M("= 7a − 5")],
+      fehler:2,
+      art:M("5 · 2a")+" als Summe statt als Produkt gerechnet",
+      richtig:M("= 10a − 5"),
+      s:M("5 · 2a = 5 · 2 · a = 10a")+". Die erste Zeile ist noch richtig, erst beim Ausrechnen wurde aus dem Malpunkt ein Plus."
+    },
+    {
+      auftrag:"Klammere so weit wie möglich aus.",
+      start:M("6x + 18"),
+      zeilen:[M("= 6 · x + 6 · 3"), M("= 6(x + 18)")],
+      fehler:2,
+      art:"In der Klammer die ursprüngliche Zahl stehen gelassen",
+      richtig:M("= 6(x + 3)"),
+      s:"In die Klammer kommt, was nach dem Herausziehen der 6 übrig bleibt, also "+M("18 : 6 = 3")+". Probe: "+M("6(x + 18) = 6x + 108")+"."
+    },
+    {
+      auftrag:"Klammere 3 aus.",
+      start:M("9x + 3"),
+      zeilen:[M("= 3 · 3x + 3 · 1"), M("= 3 · 3x")],
+      fehler:2,
+      art:"Beim Ausklammern die 1 weggelassen",
+      richtig:M("= 3(3x + 1)"),
+      s:"Die 3 ist ganz herausgezogen, zurück bleibt der Faktor 1, und der muss in die Klammer. Probe: "+M("3 · 3x = 9x")+", da fehlt die 3."
+    },
+    {
+      auftrag:"Vereinfache den Term.",
+      start:M("10 − 2(x + 4)"),
+      zeilen:[M("= 10 − 2x + 8"), M("= −2x + 18")],
+      fehler:1,
+      art:"Das Minus vor dem Faktor nur beim ersten Summanden berücksichtigt",
+      richtig:M("= 10 − 2x − 8"),
+      s:"Multipliziert wird mit "+M("−2")+", also "+M("−2 · x = −2x")+" und "+M("−2 · 4 = −8")+". Richtig ist "+M("−2x + 2")+"."
+    },
+    {
+      auftrag:"Vereinfache den Term.",
+      start:M("3 + 4(x + 2)"),
+      zeilen:[M("= 7(x + 2)"), M("= 7x + 14")],
+      fehler:1,
+      art:"Zuerst addiert, obwohl Punkt vor Strich gilt",
+      richtig:M("= 3 + 4x + 8"),
+      s:"Die 4 gehört zur Klammer, die 3 nicht. Erst ausmultiplizieren, dann addieren: "+M("4x + 11")+". Probe mit "+M("x = 0")+": "+M("3 + 4 · 2 = 11")+", aber "+M("7 · 2 = 14")+"."
+    },
+    {
+      auftrag:"Rechne geschickt mit dem Distributivgesetz.",
+      start:M("7 · 98"),
+      zeilen:[M("= 7 · (100 − 2)"), M("= 700 − 2"), M("= 698")],
+      fehler:2,
+      art:"Die 7 nur mit der 100 multipliziert",
+      richtig:M("= 700 − 14"),
+      s:"Die 7 trifft beide Zahlen der Klammer: "+M("7 · 100")+" und "+M("7 · 2 = 14")+". Richtig ist "+M("686")+"."
+    },
+    {
+      auftrag:"Vereinfache den Term.",
+      start:M("2(3x + 1) + 3(x + 4)"),
+      zeilen:[M("= 6x + 2 + 3x + 12"), M("= 23x")],
+      fehler:2,
+      art:"Zahlen und "+M("x")+"-Glieder zusammengefasst",
+      richtig:M("= 9x + 14"),
+      s:"Nur gleichartige Glieder lassen sich zusammenfassen: "+M("6x + 3x = 9x")+" und "+M("2 + 12 = 14")+". Probe mit "+M("x = 0")+": der Term hat den Wert 14, nicht 0."
+    }
+  ]
+};
+
+var FM8_DIST_MITTEL = {
+  fach:"Mathematik",
+  stufe:"8",
+  titel:"Distributivgesetz, mittel",
+  unter:"Klasse 8, negative Faktoren, Variablen als Faktor, Minusklammern",
+  aufgaben:[
+    {
+      auftrag:"Vereinfache den Term.",
+      start:M("−3(2x − 5) + 4x"),
+      zeilen:[M("= −6x − 15 + 4x"), M("= −2x − 15")],
+      fehler:1,
+      art:"Minus mal minus als minus gerechnet",
+      richtig:M("= −6x + 15 + 4x"),
+      s:M("−3 · (−5) = +15")+". Richtig ist "+M("−2x + 15")+"."
+    },
+    {
+      auftrag:"Vereinfache den Term.",
+      start:M("a(a + 4) − 2a"),
+      zeilen:[M("= a² + 4 − 2a"), M("= a² − 2a + 4")],
+      fehler:1,
+      art:"Den Faktor "+M("a")+" nur mit dem ersten Summanden multipliziert",
+      richtig:M("= a² + 4a − 2a"),
+      s:"Auch die 4 wird mit "+M("a")+" multipliziert: "+M("a · 4 = 4a")+". Richtig ist "+M("a² + 2a")+"."
+    },
+    {
+      auftrag:"Multipliziere aus.",
+      start:M("2x(3x − 4)"),
+      zeilen:[M("= 2x · 3x − 2x · 4"), M("= 6x − 8x"), M("= −2x")],
+      fehler:2,
+      art:M("x · x")+" als "+M("x")+" statt als "+M("x²")+" gerechnet",
+      richtig:M("= 6x² − 8x"),
+      s:M("2x · 3x = 2 · 3 · x · x = 6x²")+". Damit sind die beiden Glieder nicht gleichartig und lassen sich nicht zusammenfassen."
+    },
+    {
+      auftrag:"Klammere so weit wie möglich aus.",
+      start:M("4x² + 6x"),
+      zeilen:[M("= 2x · 2x + 2x · 3"), M("= 2x(2x² + 3)")],
+      fehler:2,
+      art:"In der Klammer das ausgeklammerte "+M("x")+" nicht herausgenommen",
+      richtig:M("= 2x(2x + 3)"),
+      s:"In die Klammer kommen die Faktoren aus Zeile 1, die nach "+M("2x")+" übrig sind: "+M("2x")+" und "+M("3")+". Probe: "+M("2x · 2x² = 4x³")+", gegeben war "+M("4x²")+"."
+    },
+    {
+      auftrag:"Vereinfache den Term.",
+      start:M("5x − (3x − 2y) + y"),
+      zeilen:[M("= 5x − 3x − 2y + y"), M("= 2x − y")],
+      fehler:1,
+      art:"Das Minus vor der Klammer nur auf den ersten Summanden angewendet",
+      richtig:M("= 5x − 3x + 2y + y"),
+      s:"Eine Minusklammer ist "+M("−1 · (3x − 2y)")+", also "+M("−3x")+" und "+M("+2y")+". Richtig ist "+M("2x + 3y")+"."
+    },
+    {
+      auftrag:"Klammere "+M("−4")+" aus.",
+      start:M("−8a + 12"),
+      zeilen:[M("= −4 · 2a + (−4) · (−3)"), M("= −4(2a + 3)")],
+      fehler:2,
+      art:"Das Vorzeichen des zweiten Faktors in der Klammer nicht übernommen",
+      richtig:M("= −4(2a − 3)"),
+      s:"Nach Zeile 1 bleiben "+M("2a")+" und "+M("−3")+" übrig. Probe: "+M("−4(2a + 3) = −8a − 12")+", gegeben war "+M("+12")+"."
+    },
+    {
+      auftrag:"Klammere so weit wie möglich aus.",
+      start:M("12a − 8ab"),
+      zeilen:[M("= 4a · 3 − 4a · 2ab"), M("= 4a(3 − 2ab)")],
+      fehler:1,
+      art:"Das "+M("a")+" im zweiten Summanden nicht herausgeteilt",
+      richtig:M("= 4a · 3 − 4a · 2b"),
+      s:M("8ab : 4a = 2b")+". Probe: "+M("4a · 2ab = 8a²b")+", gegeben war "+M("8ab")+". Richtig ist "+M("4a(3 − 2b)")+"."
+    },
+    {
+      auftrag:"Stelle einen Term für den Flächeninhalt auf und vereinfache ihn.",
+      start:"Ein Rechteck ist "+M("x")+" cm breit und 5 cm länger als breit.",
+      zeilen:[M("A = x · x + 5"), M("A = x² + 5")],
+      fehler:1,
+      art:"Klammer um die Länge vergessen",
+      richtig:M("A = x · (x + 5)"),
+      s:"Die Länge ist "+M("x + 5")+" als Ganzes, sie muss in Klammern. Dann gilt "+M("A = x² + 5x")+". Probe mit "+M("x = 2")+": das Rechteck ist 2 cm mal 7 cm, also 14 cm², nicht 9 cm²."
+    }
+  ]
+};
+
+var FM8_DIST_SCHWER = {
+  fach:"Mathematik",
+  stufe:"8",
+  titel:"Distributivgesetz, schwer",
+  unter:"Klasse 8, Summe mal Summe, gemeinsame Klammer, Potenzen, Verschachtelung",
+  aufgaben:[
+    {
+      auftrag:"Multipliziere aus und fasse zusammen.",
+      start:M("(x + 4)(x − 3)"),
+      zeilen:[M("= x² − 3x + 4x + 12"), M("= x² + x + 12")],
+      fehler:1,
+      art:"Vorzeichen beim letzten Produkt falsch",
+      richtig:M("= x² − 3x + 4x − 12"),
+      s:M("4 · (−3) = −12")+". Richtig ist "+M("x² + x − 12")+". Probe mit "+M("x = 0")+": der gegebene Term liefert "+M("4 · (−3) = −12")+", der falsche Weg aber "+M("+12")+"."
+    },
+    {
+      auftrag:"Multipliziere aus und fasse zusammen.",
+      start:M("(2a − 1)(3a + 5)"),
+      zeilen:[M("= 2a · 3a + (−1) · 5"), M("= 6a² − 5")],
+      fehler:1,
+      art:"Nur die ersten und die letzten Glieder miteinander multipliziert",
+      richtig:M("= 2a · 3a + 2a · 5 − 1 · 3a − 1 · 5"),
+      s:"Jedes Glied der ersten Klammer wird mit jedem der zweiten multipliziert, das sind vier Produkte. Richtig ist "+M("6a² + 7a − 5")+"."
+    },
+    {
+      auftrag:"Vereinfache den Term.",
+      start:M("x² − (x + 2)(x − 5)"),
+      zeilen:[M("= x² − (x² − 5x + 2x − 10)"), M("= x² − x² − 5x + 2x − 10"), M("= −3x − 10")],
+      fehler:2,
+      art:"Die Minusklammer nur beim ersten Glied aufgelöst",
+      richtig:M("= x² − x² + 5x − 2x + 10"),
+      s:"Das Minus vor der Klammer dreht alle vier Vorzeichen um. Zeile 1 ist richtig, erst beim Auflösen der Klammer geht es schief. Richtig ist "+M("3x + 10")+"."
+    },
+    {
+      auftrag:"Klammere den gemeinsamen Faktor aus.",
+      start:M("x(y − 3) + 4(3 − y)"),
+      zeilen:[M("= x(y − 3) + 4(y − 3)"), M("= (y − 3)(x + 4)")],
+      fehler:1,
+      art:M("3 − y")+" mit "+M("y − 3")+" gleichgesetzt, obwohl sich das Vorzeichen umkehrt",
+      richtig:M("= x(y − 3) − 4(y − 3)"),
+      s:M("3 − y = −(y − 3)")+". Richtig ist "+M("(y − 3)(x − 4)")+". Probe mit "+M("x = 0")+" und "+M("y = 0")+": gegeben "+M("4 · 3 = 12")+", falsch "+M("(−3) · 4 = −12")+", richtig "+M("(−3) · (−4) = 12")+"."
+    },
+    {
+      auftrag:"Klammere so weit wie möglich aus.",
+      start:M("15a³ − 10a²"),
+      zeilen:[M("= 5a² · 3a − 5a² · 2a"), M("= 5a²(3a − 2a)"), M("= 5a² · a = 5a³")],
+      fehler:1,
+      art:"Beim zweiten Glied ein "+M("a")+" zu viel stehen gelassen",
+      richtig:M("= 5a² · 3a − 5a² · 2"),
+      s:M("10a² : 5a² = 2")+", ohne "+M("a")+". Probe: "+M("5a² · 2a = 10a³")+", gegeben war "+M("10a²")+". Richtig ist "+M("5a²(3a − 2)")+"."
+    },
+    {
+      auftrag:"Vereinfache den Term.",
+      start:M("3x(x − 2) − 2x(x − 4)"),
+      zeilen:[M("= 3x² − 6x − 2x² − 8x"), M("= x² − 14x")],
+      fehler:1,
+      art:"Minus mal minus als minus gerechnet",
+      richtig:M("= 3x² − 6x − 2x² + 8x"),
+      s:M("−2x · (−4) = +8x")+". Richtig ist "+M("x² + 2x")+"."
+    },
+    {
+      auftrag:"Vereinfache den Term.",
+      start:M("2[3 − 4(x − 1)] + 8x"),
+      zeilen:[M("= 2[3 − 4x + 4] + 8x"), M("= 2[7 − 4x] + 8x"), M("= 14 − 4x + 8x"), M("= 14 + 4x")],
+      fehler:3,
+      art:"Die 2 vor der eckigen Klammer nur mit dem ersten Glied multipliziert",
+      richtig:M("= 14 − 8x + 8x"),
+      s:M("2 · (−4x) = −8x")+". Dann heben sich die "+M("x")+"-Glieder auf, der Term hat für jedes "+M("x")+" den Wert 14."
+    },
+    {
+      auftrag:"Stelle einen Term für den Flächeninhalt auf und vereinfache ihn.",
+      start:"Ein Quadrat mit der Seitenlänge "+M("a")+" wird zu einem Rechteck: eine Seite wird um 3 verlängert, die andere um 2 verkürzt.",
+      zeilen:[M("A = a + 3 · a − 2"), M("A = 4a − 2")],
+      fehler:1,
+      art:"Klammern um die Seitenlängen vergessen",
+      richtig:M("A = (a + 3)(a − 2)"),
+      s:"Beide Seitenlängen sind Summen und brauchen Klammern. Ausmultipliziert: "+M("a² − 2a + 3a − 6 = a² + a − 6")+". Probe mit "+M("a = 5")+": 8 mal 3 ergibt 24, und "+M("25 + 5 − 6 = 24")+"."
+    }
+  ]
+};
+
+var F_SAETZE = [F8_TERME, F8_GLEICHUNGEN, FM7_RATIONAL,
+                FM8_DIST_LEICHT, FM8_DIST_MITTEL, FM8_DIST_SCHWER];
 
 
 /* -----------------------------------------------------------------------
