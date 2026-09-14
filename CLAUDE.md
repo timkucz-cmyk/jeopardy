@@ -113,7 +113,9 @@ Fehlt Schritt 4 oder 7, ist das Spiel unerreichbar, ohne dass ein Fehler auftrit
 und **hinten** an `B_SAETZE` anhängen. `pool` braucht **genau 16** Ergebnisse,
 `aufgaben` **genau zwei** je Poolzahl (`{e:Poolschlüssel, q:Term als HTML, s:Rechenweg}`).
 Brüche im Pool als `{k:Schlüssel, h:HTML}` über die Helfer `f(z,n)` und `nf(z,n)`.
-Optional trägt eine Aufgabe `auftrag` („klammere aus“), das ersetzt „berechne“
+Variablen heißen immer `x`, bei zweien `x` und `y`, bei dreien `x`, `y`, `z` —
+sonst schließt die Klasse Poolterme schon am Buchstaben aus. Produkte alphabetisch
+(`5xy`, nicht `5yx`). Optional trägt eine Aufgabe `auftrag` („klammere aus“), das ersetzt „berechne“
 über dem Term. Sind Poolterme länger als 10 Zeichen, schaltet `blang()` den Pool
 auf kleinere Schrift; über ~14 Zeichen bricht es im schmalen Pool trotzdem um,
 dann lieber einen kürzeren Term wählen. Poolterme dürfen nicht gleichwertig sein

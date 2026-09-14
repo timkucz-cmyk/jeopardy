@@ -757,13 +757,8 @@
       <span class="label">Schritt 2</span>
       <h2 style="margin-top:8px">Runde einstellen</h2>
       <div class="katalogwahl" style="margin-top:16px">
-        <label class="feld"><span class="label">Zeit je Aufgabe</span>
-          <select id="bZeit">
-            <option value="45">45 Sekunden</option>
-            <option value="60">1 Minute</option>
-            <option value="90" selected>1:30 Minuten</option>
-            <option value="120">2 Minuten</option>
-          </select></label>
+        <label class="feld"><span class="label">Sekunden je Aufgabe</span>
+          <input type="number" id="bZeit" min="1" step="1" value="90"></label>
         <label class="feld"><span class="label">Runde endet nach</span>
           <select id="bZiel">
             <option value="1">1 Bingo</option>
@@ -5965,6 +5960,8 @@ if(saved){
                ist aber jedes Mal eine andere.
                Optional auftrag, z. B. "klammere aus": ersetzt das Wort
                "berechne" in der Zeile ueber dem Term.
+     Variablen immer x, dann y, dann z. Sonst liesse sich eine Aufgabe mit
+     a und b schon am Buchstaben den passenden Poolzahlen zuordnen.
 
    Alle Saetze haben sechzehn Ergebnisse. Davon haengt B_PK ab, die
    Tabelle fuer die Laengenschaetzung weiter unten.
@@ -6309,54 +6306,54 @@ var B8_LEICHT = {
   titel:"Termumformungen, leicht",
   unter:"Klasse 8, zusammenfassen und einfach ausmultiplizieren",
   pool:[
-    {k:"2a",     h:M("2a")},
+    {k:"2x",     h:M("2x")},
     {k:"5x",     h:M("5x")},
     {k:"7x",     h:M("7x")},
-    {k:"8a",     h:M("8a")},
-    {k:"9b",     h:M("9b")},
+    {k:"8x",     h:M("8x")},
+    {k:"9x",     h:M("9x")},
     {k:"12x",    h:M("12x")},
-    {k:"6ab",    h:M("6ab")},
-    {k:"10y",    h:M("10y")},
+    {k:"6xy",    h:M("6xy")},
+    {k:"10x",    h:M("10x")},
     {k:"x²",     h:M("x²")},
     {k:"4x²",    h:M("4x²")},
-    {k:"a³",     h:M("a³")},
+    {k:"x³",     h:M("x³")},
     {k:"3x + 6", h:M("3x + 6")},
-    {k:"2a − 8", h:M("2a − 8")},
+    {k:"2x − 8", h:M("2x − 8")},
     {k:"5x + 1", h:M("5x + 1")},
-    {k:"4a + 3", h:M("4a + 3")},
+    {k:"4x + 3", h:M("4x + 3")},
     {k:"x + 5",  h:M("x + 5")}
   ],
   aufgaben:[
-    {e:"2a",     q:M("5a − 3a"),        s:"Gleiche Variable, also nur die Zahlen davor verrechnen: 5 − 3 = 2."},
-    {e:"2a",     q:M("2 · (a + 3) − 6"), s:"Distributivgesetz ergibt " + M("2a + 6") + ", dann heben sich " + M("+6") + " und " + M("−6") + " auf."},
+    {e:"2x",     q:M("5x − 3x"),        s:"Gleiche Variable, also nur die Zahlen davor verrechnen: 5 − 3 = 2."},
+    {e:"2x",     q:M("2 · (x + 3) − 6"), s:"Distributivgesetz ergibt " + M("2x + 6") + ", dann heben sich " + M("+6") + " und " + M("−6") + " auf."},
     {e:"5x",     q:M("2x + 3x"),        s:"Gleiche Variable, die Zahlen davor addieren."},
     {e:"5x",     q:M("8x − (2x + x)"),  s:"Erst die Klammer zusammenfassen: " + M("3x") + ". Das Minus davor zieht sie ab."},
     {e:"7x",     q:M("4x + x + 2x"),    s:"Das einzelne " + M("x") + " zählt als " + M("1x") + ", also 4 + 1 + 2."},
     {e:"7x",     q:M("10x − (4x − x)"), s:"In der Klammer bleiben " + M("3x") + ", die abgezogen werden."},
-    {e:"8a",     q:M("3a + 9a − 4a"),   s:"Von links nach rechts: 3 + 9 = 12, dann 12 − 4."},
-    {e:"8a",     q:M("2 · (3a + a)"),   s:"Erst die Klammer: " + M("4a") + ". Dann verdoppeln."},
-    {e:"9b",     q:M("12b − 5b + 2b"),  s:"12 − 5 = 7, dann 7 + 2."},
-    {e:"9b",     q:M("3 · (4b − b)"),   s:"Die Klammer ergibt " + M("3b") + ", dreimal genommen sind es " + M("9b") + "."},
+    {e:"8x",     q:M("3x + 9x − 4x"),   s:"Von links nach rechts: 3 + 9 = 12, dann 12 − 4."},
+    {e:"8x",     q:M("2 · (3x + x)"),   s:"Erst die Klammer: " + M("4x") + ". Dann verdoppeln."},
+    {e:"9x",     q:M("12x − 5x + 2x"),  s:"12 − 5 = 7, dann 7 + 2."},
+    {e:"9x",     q:M("3 · (4x − x)"),   s:"Die Klammer ergibt " + M("3x") + ", dreimal genommen sind es " + M("9x") + "."},
     {e:"12x",    q:M("3 · 4x"),         s:"Assoziativgesetz: erst " + M("(3 · 4)") + ", dann mal " + M("x") + "."},
     {e:"12x",    q:M("5x + 9x − 2x"),   s:"5 + 9 = 14, dann 14 − 2."},
-    {e:"6ab",    q:M("2 · a · 3 · b"),  s:"Kommutativgesetz: erst die Zahlen " + M("2 · 3 = 6") + ", dann die Variablen."},
-    {e:"6ab",    q:M("10ab − 4ab"),     s:"Der Teil " + M("ab") + " ist bei beiden gleich, also nur 10 − 4 rechnen."},
-    {e:"10y",    q:M("2 · 5 · y"),      s:"Das Assoziativgesetz erlaubt es, zuerst " + M("2 · 5") + " zu rechnen."},
-    {e:"10y",    q:M("4y + 8y − 2y"),   s:"4 + 8 = 12, dann 12 − 2."},
+    {e:"6xy",    q:M("2 · x · 3 · y"),  s:"Kommutativgesetz: erst die Zahlen " + M("2 · 3 = 6") + ", dann die Variablen."},
+    {e:"6xy",    q:M("10xy − 4xy"),     s:"Der Teil " + M("xy") + " ist bei beiden gleich, also nur 10 − 4 rechnen."},
+    {e:"10x",    q:M("2 · 5 · x"),      s:"Das Assoziativgesetz erlaubt es, zuerst " + M("2 · 5") + " zu rechnen."},
+    {e:"10x",    q:M("4x + 8x − 2x"),   s:"4 + 8 = 12, dann 12 − 2."},
     {e:"x²",     q:M("x · x"),          s:"Zwei gleiche Faktoren schreibt man als Potenz."},
     {e:"x²",     q:M("4x² − 3x²"),      s:"Beide haben " + M("x²") + ", also 4 − 3 = 1."},
     {e:"4x²",    q:M("2x · 2x"),        s:"Zahlen mal Zahlen, Variablen mal Variablen: " + M("2 · 2 = 4") + " und " + M("x · x = x²") + "."},
     {e:"4x²",    q:M("x² + 3x²"),       s:"Gleiche Potenz, also 1 + 3."},
-    {e:"a³",     q:M("a · a · a"),      s:"Drei gleiche Faktoren, der Exponent zählt sie."},
-    {e:"a³",     q:M("a² · a"),         s:"Bei gleicher Basis werden die Exponenten addiert: 2 + 1."},
+    {e:"x³",     q:M("x · x · x"),      s:"Drei gleiche Faktoren, der Exponent zählt sie."},
+    {e:"x³",     q:M("x² · x"),         s:"Bei gleicher Basis werden die Exponenten addiert: 2 + 1."},
     {e:"3x + 6", q:M("3 · (x + 2)"),    s:"Distributivgesetz: die 3 trifft beide Summanden."},
     {e:"3x + 6", q:M("5x + 6 − 2x"),    s:"Nur die " + M("x") + " zusammenfassen, die 6 bleibt stehen."},
-    {e:"2a − 8", q:M("2 · (a − 4)"),    s:"Distributivgesetz: auch der abgezogene Teil wird verdoppelt."},
-    {e:"2a − 8", q:M("5a − 8 − 3a"),    s:M("5a − 3a = 2a") + ", die 8 bleibt abgezogen."},
+    {e:"2x − 8", q:M("2 · (x − 4)"),    s:"Distributivgesetz: auch der abgezogene Teil wird verdoppelt."},
+    {e:"2x − 8", q:M("5x − 8 − 3x"),    s:M("5x − 3x = 2x") + ", die 8 bleibt abgezogen."},
     {e:"5x + 1", q:M("6x + 1 − x"),     s:M("6x − x = 5x") + ", die 1 bleibt stehen."},
     {e:"5x + 1", q:M("7x − (2x − 1)"),  s:"Das Minus vor der Klammer dreht beide Vorzeichen um: " + M("−2x") + " und " + M("+1") + "."},
-    {e:"4a + 3", q:M("4 · (a + 1) − 1"), s:"Erst ausmultiplizieren: " + M("4a + 4") + ", dann 4 − 1."},
-    {e:"4a + 3", q:M("6a + 3 − 2a"),    s:M("6a − 2a = 4a") + ", die 3 bleibt stehen."},
+    {e:"4x + 3", q:M("4 · (x + 1) − 1"), s:"Erst ausmultiplizieren: " + M("4x + 4") + ", dann 4 − 1."},
+    {e:"4x + 3", q:M("6x + 3 − 2x"),    s:M("6x − 2x = 4x") + ", die 3 bleibt stehen."},
     {e:"x + 5",  q:M("3x + 5 − 2x"),    s:M("3x − 2x") + " ist " + M("1x") + ", also " + M("x") + ". Die 5 bleibt stehen."},
     {e:"x + 5",  q:M("4x − (3x − 5)"),  s:"Das Minus vor der Klammer dreht beide Vorzeichen um: " + M("−3x") + " und " + M("+5") + "."}
   ]
@@ -6368,53 +6365,53 @@ var B8_MITTEL = {
   unter:"Klasse 8, Minusklammern, negative Faktoren, einfache Potenzen",
   pool:[
     {k:"−2x",      h:M("−2x")},
-    {k:"3a",       h:M("3a")},
-    {k:"−5b",      h:M("−5b")},
-    {k:"7y",       h:M("7y")},
+    {k:"3x",       h:M("3x")},
+    {k:"−5x",      h:M("−5x")},
+    {k:"7x",       h:M("7x")},
     {k:"6x + 4",   h:M("6x + 4")},
-    {k:"4a − 10",  h:M("4a − 10")},
+    {k:"4x − 10",  h:M("4x − 10")},
     {k:"−3x + 12", h:M("−3x + 12")},
     {k:"2x + 5y",  h:M("2x + 5y")},
-    {k:"a + 9",    h:M("a + 9")},
+    {k:"x + 9",    h:M("x + 9")},
     {k:"8x²",      h:M("8x²")},
-    {k:"6a³",      h:M("6a³")},
-    {k:"12ab",     h:M("12ab")},
+    {k:"6x³",      h:M("6x³")},
+    {k:"12xy",     h:M("12xy")},
     {k:"5x − 3",   h:M("5x − 3")},
     {k:"x + 14",   h:M("x + 14")},
-    {k:"−4a − 2",  h:M("−4a − 2")},
+    {k:"−4x − 2",  h:M("−4x − 2")},
     {k:"9x²",      h:M("9x²")}
   ],
   aufgaben:[
     {e:"−2x",      q:M("3x − 5x"),               s:"5 ist größer als 3, das Ergebnis liegt unter null."},
     {e:"−2x",      q:M("2 · (x − 3) − 4x + 6"),  s:"Ausmultiplizieren ergibt " + M("2x − 6") + ", dann " + M("2x − 4x = −2x") + " und " + M("−6 + 6 = 0") + "."},
-    {e:"3a",       q:M("−2a + 8a − 3a"),         s:"−2 + 8 = 6, dann 6 − 3."},
-    {e:"3a",       q:M("5a − 2 · (a − 1) − 2"),  s:"Punkt vor Strich: " + M("2 · (a − 1) = 2a − 2") + ". Das Minus davor dreht beide Vorzeichen um."},
-    {e:"−5b",      q:M("4b − 9b"),               s:"9 ist um 5 größer als 4."},
-    {e:"−5b",      q:M("−(3b + 2b)"),            s:"Erst die Klammer: " + M("5b") + ". Das Minus davor macht daraus " + M("−5b") + "."},
-    {e:"7y",       q:M("12y − (8y − 3y)"),       s:"In der Klammer bleiben " + M("5y") + ", die abgezogen werden."},
-    {e:"7y",       q:M("3 · (2y + y) − 2y"),     s:"Die Klammer ergibt " + M("3y") + ", verdreifacht " + M("9y") + ", dann " + M("9y − 2y") + "."},
+    {e:"3x",       q:M("−2x + 8x − 3x"),         s:"−2 + 8 = 6, dann 6 − 3."},
+    {e:"3x",       q:M("5x − 2 · (x − 1) − 2"),  s:"Punkt vor Strich: " + M("2 · (x − 1) = 2x − 2") + ". Das Minus davor dreht beide Vorzeichen um."},
+    {e:"−5x",      q:M("4x − 9x"),               s:"9 ist um 5 größer als 4."},
+    {e:"−5x",      q:M("−(3x + 2x)"),            s:"Erst die Klammer: " + M("5x") + ". Das Minus davor macht daraus " + M("−5x") + "."},
+    {e:"7x",       q:M("12x − (8x − 3x)"),       s:"In der Klammer bleiben " + M("5x") + ", die abgezogen werden."},
+    {e:"7x",       q:M("3 · (2x + x) − 2x"),     s:"Die Klammer ergibt " + M("3x") + ", verdreifacht " + M("9x") + ", dann " + M("9x − 2x") + "."},
     {e:"6x + 4",   q:M("2 · (3x + 2)"),          s:"Distributivgesetz: die 2 trifft beide Summanden."},
     {e:"6x + 4",   q:M("9x − (3x − 4)"),         s:"Das Minus vor der Klammer dreht beide Vorzeichen um: " + M("−3x") + " und " + M("+4") + "."},
-    {e:"4a − 10",  q:M("2 · (2a − 5)"),          s:"Beide Teile der Klammer werden verdoppelt."},
-    {e:"4a − 10",  q:M("6a − (2a + 10)"),        s:"Das Minus gilt für die ganze Klammer, also " + M("−2a") + " und " + M("−10") + "."},
+    {e:"4x − 10",  q:M("2 · (2x − 5)"),          s:"Beide Teile der Klammer werden verdoppelt."},
+    {e:"4x − 10",  q:M("6x − (2x + 10)"),        s:"Das Minus gilt für die ganze Klammer, also " + M("−2x") + " und " + M("−10") + "."},
     {e:"−3x + 12", q:M("−3 · (x − 4)"),          s:"Minus mal minus ergibt plus: " + M("−3 · (−4) = +12") + "."},
     {e:"−3x + 12", q:M("5 − (3x − 7)"),          s:"Das Minus dreht beide Vorzeichen um: " + M("−3x") + " und " + M("+7") + ", dann 5 + 7."},
     {e:"2x + 5y",  q:M("5x + 2y − 3x + 3y"),     s:"Die " + M("x") + " und die " + M("y") + " getrennt sammeln: 5 − 3 und 2 + 3."},
     {e:"2x + 5y",  q:M("3 · (x + y) − x + 2y"),  s:"Ausmultiplizieren ergibt " + M("3x + 3y") + ", dann getrennt zusammenfassen."},
-    {e:"a + 9",    q:M("3 · (a + 3) − 2a"),      s:M("3a + 9") + " minus " + M("2a") + " lässt " + M("1a") + " übrig."},
-    {e:"a + 9",    q:M("5a − (4a − 9)"),         s:"Das Minus dreht beide Vorzeichen um: " + M("−4a") + " und " + M("+9") + "."},
+    {e:"x + 9",    q:M("3 · (x + 3) − 2x"),      s:M("3x + 9") + " minus " + M("2x") + " lässt " + M("1x") + " übrig."},
+    {e:"x + 9",    q:M("5x − (4x − 9)"),         s:"Das Minus dreht beide Vorzeichen um: " + M("−4x") + " und " + M("+9") + "."},
     {e:"8x²",      q:M("2x · 4x"),               s:"Zahlen mal Zahlen, Variablen mal Variablen: " + M("2 · 4 = 8") + " und " + M("x · x = x²") + "."},
     {e:"8x²",      q:M("5x² + 6x² − 3x²"),       s:"Alle Glieder haben " + M("x²") + ", also nur 5 + 6 − 3 rechnen."},
-    {e:"6a³",      q:M("2a · 3a²"),              s:M("2 · 3 = 6") + ", und " + M("a · a² = a³") + ", denn die Exponenten werden addiert."},
-    {e:"6a³",      q:M("10a³ − 4a³"),            s:"Gleiche Potenz, also 10 − 4."},
-    {e:"12ab",     q:M("3a · 4b"),               s:"Kommutativgesetz: erst " + M("3 · 4") + ", dann " + M("a · b") + "."},
-    {e:"12ab",     q:M("4 · (5ab − 2ab)"),       s:"Die Klammer ergibt " + M("3ab") + ", das Vierfache davon ist " + M("12ab") + "."},
+    {e:"6x³",      q:M("2x · 3x²"),              s:M("2 · 3 = 6") + ", und " + M("x · x² = x³") + ", denn die Exponenten werden addiert."},
+    {e:"6x³",      q:M("10x³ − 4x³"),            s:"Gleiche Potenz, also 10 − 4."},
+    {e:"12xy",     q:M("3x · 4y"),               s:"Kommutativgesetz: erst " + M("3 · 4") + ", dann " + M("x · y") + "."},
+    {e:"12xy",     q:M("4 · (5xy − 2xy)"),       s:"Die Klammer ergibt " + M("3xy") + ", das Vierfache davon ist " + M("12xy") + "."},
     {e:"5x − 3",   q:M("3 · (2x − 1) − x"),      s:M("6x − 3 − x") + ", und " + M("6x − x = 5x") + "."},
     {e:"5x − 3",   q:M("8x − (3x + 3)"),         s:"Das Minus gilt für beide Glieder der Klammer."},
     {e:"x + 14",   q:M("4x − (3x − 14)"),        s:"Das Minus dreht beide Vorzeichen um: " + M("−3x") + " und " + M("+14") + "."},
     {e:"x + 14",   q:M("2 · (x + 7) − x"),       s:M("2x + 14") + " minus " + M("x") + " lässt " + M("1x") + " übrig."},
-    {e:"−4a − 2",  q:M("−2 · (2a + 1)"),         s:"Der Faktor " + M("−2") + " trifft beide Summanden."},
-    {e:"−4a − 2",  q:M("3a − (7a + 2)"),         s:M("3a − 7a = −4a") + ", dazu die abgezogene 2."},
+    {e:"−4x − 2",  q:M("−2 · (2x + 1)"),         s:"Der Faktor " + M("−2") + " trifft beide Summanden."},
+    {e:"−4x − 2",  q:M("3x − (7x + 2)"),         s:M("3x − 7x = −4x") + ", dazu die abgezogene 2."},
     {e:"9x²",      q:M("(3x)²"),                 s:"Die ganze Klammer wird quadriert: " + M("3² = 9") + " und " + M("x · x = x²") + "."},
     {e:"9x²",      q:M("12x² − 5x² + 2x²"),      s:"12 − 5 = 7, dann 7 + 2."}
   ]
@@ -6427,54 +6424,54 @@ var B8_SCHWER = {
   pool:[
     {k:"2x + 1",   h:M("2x + 1")},
     {k:"5x − 5",   h:M("5x − 5")},
-    {k:"8a − 16",  h:M("8a − 16")},
-    {k:"3a + 12",  h:M("3a + 12")},
+    {k:"8x − 16",  h:M("8x − 16")},
+    {k:"3x + 12",  h:M("3x + 12")},
     {k:"4x − 3",   h:M("4x − 3")},
     {k:"−8x + 3y", h:M("−8x + 3y")},
-    {k:"6ab²",     h:M("6ab²")},
-    {k:"7a⁵",      h:M("7a⁵")},
+    {k:"6xy²",     h:M("6xy²")},
+    {k:"7x⁵",      h:M("7x⁵")},
     {k:"3x³",      h:M("3x³")},
     {k:"8x³",      h:M("8x³")},
-    {k:"a⁶",       h:M("a⁶")},
-    {k:"2a + b",   h:M("2a + b")},
+    {k:"x⁶",       h:M("x⁶")},
+    {k:"2x + y",   h:M("2x + y")},
     {k:"6x + 2y",  h:M("6x + 2y")},
     {k:"−x − 2",   h:M("−x − 2")},
-    {k:"12a − 4",  h:M("12a − 4")},
-    {k:"−4a + 9",  h:M("−4a + 9")}
+    {k:"12x − 4",  h:M("12x − 4")},
+    {k:"−4x + 9",  h:M("−4x + 9")}
   ],
   aufgaben:[
     {e:"2x + 1",   q:M("2x − [3x − (4x − (x − 1))]"), s:"Von innen nach außen: " + M("4x − (x − 1) = 3x + 1") + ", dann " + M("3x − (3x + 1) = −1") + ", zuletzt " + M("2x − (−1)") + "."},
     {e:"2x + 1",   q:M("3 · (2x − 1) − (4x − 4)"),    s:M("6x − 3 − 4x + 4") + ", also " + M("2x") + " und " + M("−3 + 4 = 1") + "."},
     {e:"5x − 5",   q:M("4x − [2x − (3x − 5)]"),       s:"Innen bleibt " + M("−x + 5") + ". Das Minus davor dreht das zu " + M("+x − 5") + "."},
     {e:"5x − 5",   q:M("5 · (2x − 3) − (5x − 10)"),   s:M("10x − 15 − 5x + 10") + ", also " + M("5x") + " und " + M("−15 + 10") + "."},
-    {e:"8a − 16",  q:M("−2 · [3 − (2a − 5)] + 4a"),   s:"Innen: " + M("3 − 2a + 5 = 8 − 2a") + ". Mal " + M("(−2)") + " ergibt " + M("−16 + 4a") + ", dazu die " + M("4a") + " am Ende."},
-    {e:"8a − 16",  q:M("4 · (3a − 2) − (4a + 8)"),    s:M("12a − 8 − 4a − 8") + "."},
-    {e:"3a + 12",  q:M("3 · [2a − (a − 4)]"),         s:"Innen bleibt " + M("a + 4") + ", das Dreifache davon ist " + M("3a + 12") + "."},
-    {e:"3a + 12",  q:M("5 · (a + 2) − (2a − 2)"),     s:M("5a + 10 − 2a + 2") + "."},
+    {e:"8x − 16",  q:M("−2 · [3 − (2x − 5)] + 4x"),   s:"Innen: " + M("3 − 2x + 5 = 8 − 2x") + ". Mal " + M("(−2)") + " ergibt " + M("−16 + 4x") + ", dazu die " + M("4x") + " am Ende."},
+    {e:"8x − 16",  q:M("4 · (3x − 2) − (4x + 8)"),    s:M("12x − 8 − 4x − 8") + "."},
+    {e:"3x + 12",  q:M("3 · [2x − (x − 4)]"),         s:"Innen bleibt " + M("x + 4") + ", das Dreifache davon ist " + M("3x + 12") + "."},
+    {e:"3x + 12",  q:M("5 · (x + 2) − (2x − 2)"),     s:M("5x + 10 − 2x + 2") + "."},
     {e:"4x − 3",   q:M("5x − [2x + (3 − x)]"),        s:"Die Klammer ergibt " + M("x + 3") + ", das Minus zieht beides ab."},
     {e:"4x − 3",   q:M("2 · (3x − 1) − (2x + 1)"),    s:M("6x − 2 − 2x − 1") + "."},
     {e:"−8x + 3y", q:M("2x · (3y − 4) − 3y · (2x − 1)"), s:M("6xy − 8x − 6xy + 3y") + ". Die beiden " + M("xy") + " heben sich auf."},
     {e:"−8x + 3y", q:M("4 · (y − 2x) − y"),           s:M("4y − 8x − y") + ", also " + M("3y") + " und " + M("−8x") + "."},
-    {e:"6ab²",     q:M("2ab · 3b"),                   s:M("2 · 3 = 6") + ", das " + M("a") + " bleibt, und " + M("b · b = b²") + "."},
-    {e:"6ab²",     q:M("10ab² − (6ab² − 2ab²)"),      s:"Die Klammer ergibt " + M("4ab²") + "."},
-    {e:"7a⁵",      q:M("2a³ · 5a² − 3a⁵"),            s:M("2 · 5 = 10") + " und " + M("a³ · a² = a⁵") + ", dann " + M("10a⁵ − 3a⁵") + "."},
-    {e:"7a⁵",      q:M("(a²)² · a + 6a⁵"),            s:"Beim Potenzieren werden die Exponenten multipliziert: " + M("(a²)² = a⁴") + ", mal " + M("a") + " ergibt " + M("a⁵") + "."},
+    {e:"6xy²",     q:M("2xy · 3y"),                   s:M("2 · 3 = 6") + ", das " + M("x") + " bleibt, und " + M("y · y = y²") + "."},
+    {e:"6xy²",     q:M("10xy² − (6xy² − 2xy²)"),      s:"Die Klammer ergibt " + M("4xy²") + "."},
+    {e:"7x⁵",      q:M("2x³ · 5x² − 3x⁵"),            s:M("2 · 5 = 10") + " und " + M("x³ · x² = x⁵") + ", dann " + M("10x⁵ − 3x⁵") + "."},
+    {e:"7x⁵",      q:M("(x²)² · x + 6x⁵"),            s:"Beim Potenzieren werden die Exponenten multipliziert: " + M("(x²)² = x⁴") + ", mal " + M("x") + " ergibt " + M("x⁵") + "."},
     {e:"3x³",      q:M("2x² · 3x − (4x³ − x³)"),      s:"Vorn " + M("6x³") + ", die Klammer ergibt " + M("3x³") + "."},
     {e:"3x³",      q:M("x · x² + 2x³"),               s:M("x · x² = x³") + ", dazu " + M("2x³") + "."},
     {e:"8x³",      q:M("(2x)³"),                      s:"Beide Faktoren der Klammer werden dreimal genommen: " + M("2³ = 8") + " und " + M("x³") + "."},
     {e:"8x³",      q:M("12x³ − (6x³ − 2x³)"),         s:"Die Klammer ergibt " + M("4x³") + "."},
-    {e:"a⁶",       q:M("(a³)²"),                      s:"Potenz einer Potenz: die Exponenten werden multipliziert."},
-    {e:"a⁶",       q:M("a² · a³ · a"),                s:"Gleiche Basis, also Exponenten addieren: 2 + 3 + 1."},
-    {e:"2a + b",   q:M("3a + 2b − (a + b)"),          s:"Das Minus zieht beides ab: " + M("3a − a") + " und " + M("2b − b") + "."},
-    {e:"2a + b",   q:M("4a − 2 · (a − b) − b"),       s:"Punkt vor Strich: " + M("2 · (a − b) = 2a − 2b") + ", das Minus dreht beide Vorzeichen um."},
+    {e:"x⁶",       q:M("(x³)²"),                      s:"Potenz einer Potenz: die Exponenten werden multipliziert."},
+    {e:"x⁶",       q:M("x² · x³ · x"),                s:"Gleiche Basis, also Exponenten addieren: 2 + 3 + 1."},
+    {e:"2x + y",   q:M("3x + 2y − (x + y)"),          s:"Das Minus zieht beides ab: " + M("3x − x") + " und " + M("2y − y") + "."},
+    {e:"2x + y",   q:M("4x − 2 · (x − y) − y"),       s:"Punkt vor Strich: " + M("2 · (x − y) = 2x − 2y") + ", das Minus dreht beide Vorzeichen um."},
     {e:"6x + 2y",  q:M("2 · (4x + y) − 2x"),          s:M("8x + 2y") + ", dann " + M("8x − 2x") + "."},
     {e:"6x + 2y",  q:M("3 · (x + y) + 3x − y"),       s:M("3x + 3y + 3x − y") + "."},
     {e:"−x − 2",   q:M("5 − (2x + 3) − (4 − x)"),     s:"Beide Minusklammern auflösen: " + M("5 − 2x − 3 − 4 + x") + "."},
     {e:"−x − 2",   q:M("2x − 3 · (x + 1) + 1"),       s:"Punkt vor Strich: " + M("3x + 3") + " wird abgezogen."},
-    {e:"12a − 4",  q:M("4 · [3a − (2a + 1)] + 8a"),   s:"Innen bleibt " + M("a − 1") + ", das Vierfache ist " + M("4a − 4") + ", dazu " + M("8a") + "."},
-    {e:"12a − 4",  q:M("15a − (3a + 4)"),             s:"Das Minus gilt für beide Glieder der Klammer."},
-    {e:"−4a + 9",  q:M("2 · (3 − 2a) + 3"),           s:M("6 − 4a + 3") + "."},
-    {e:"−4a + 9",  q:M("5 − (4a − 4)"),               s:"Das Minus dreht beide Vorzeichen um: " + M("−4a") + " und " + M("+4") + ", dann 5 + 4."}
+    {e:"12x − 4",  q:M("4 · [3x − (2x + 1)] + 8x"),   s:"Innen bleibt " + M("x − 1") + ", das Vierfache ist " + M("4x − 4") + ", dazu " + M("8x") + "."},
+    {e:"12x − 4",  q:M("15x − (3x + 4)"),             s:"Das Minus gilt für beide Glieder der Klammer."},
+    {e:"−4x + 9",  q:M("2 · (3 − 2x) + 3"),           s:M("6 − 4x + 3") + "."},
+    {e:"−4x + 9",  q:M("5 − (4x − 4)"),               s:"Das Minus dreht beide Vorzeichen um: " + M("−4x") + " und " + M("+4") + ", dann 5 + 4."}
   ]
 };
 
@@ -6503,17 +6500,17 @@ var B8_DIST_LEICHT = {
     {k:"6x + 12",  h:M("6x + 12")},
     {k:"4x + 20",  h:M("4x + 20")},
     {k:"5x − 10",  h:M("5x − 10")},
-    {k:"8a + 4",   h:M("8a + 4")},
-    {k:"3a − 21",  h:M("3a − 21")},
+    {k:"8x + 4",   h:M("8x + 4")},
+    {k:"3x − 21",  h:M("3x − 21")},
     {k:"10x + 15", h:M("10x + 15")},
-    {k:"6y − 9",   h:M("6y − 9")},
+    {k:"6x − 9",   h:M("6x − 9")},
     {k:"7x + 7",   h:M("7x + 7")},
     {k:"2(x + 4)", h:M("2(x + 4)")},
     {k:"3(x + 5)", h:M("3(x + 5)")},
-    {k:"4(a − 3)", h:M("4(a − 3)")},
-    {k:"5(y + 2)", h:M("5(y + 2)")},
+    {k:"4(x − 3)", h:M("4(x − 3)")},
+    {k:"5(x + 2)", h:M("5(x + 2)")},
     {k:"6(x − 1)", h:M("6(x − 1)")},
-    {k:"7(a + 2)", h:M("7(a + 2)")},
+    {k:"7(x + 2)", h:M("7(x + 2)")},
     {k:"2(3x + 5)", h:M("2(3x + 5)")},
     {k:"9(x − 2)", h:M("9(x − 2)")}
   ],
@@ -6524,28 +6521,28 @@ var B8_DIST_LEICHT = {
     {e:"4x + 20",  auftrag:AUSMUL, q:M("2(2x + 10)"),   s:M("2 · 2x = 4x") + " und " + M("2 · 10 = 20") + "."},
     {e:"5x − 10",  auftrag:AUSMUL, q:M("5(x − 2)"),     s:"Auch der abgezogene Teil wird mit 5 multipliziert: " + M("5 · 2 = 10") + "."},
     {e:"5x − 10",  auftrag:AUSMUL, q:M("(x − 2) · 5"),  s:"Der Faktor darf auch hinter der Klammer stehen, er trifft trotzdem beide Glieder."},
-    {e:"8a + 4",   auftrag:AUSMUL, q:M("4(2a + 1)"),    s:M("4 · 2a = 8a") + ", und aus der 1 wird " + M("4 · 1 = 4") + "."},
-    {e:"8a + 4",   auftrag:AUSMUL, q:M("2(4a + 2)"),    s:M("2 · 4a = 8a") + " und " + M("2 · 2 = 4") + "."},
-    {e:"3a − 21",  auftrag:AUSMUL, q:M("3(a − 7)"),     s:"Die 3 trifft beide Glieder: " + M("3 · a") + " und " + M("3 · 7 = 21") + "."},
-    {e:"3a − 21",  auftrag:AUSMUL, q:M("(a − 7) · 3"),  s:"Faktor hinter der Klammer, die Rechnung bleibt dieselbe."},
+    {e:"8x + 4",   auftrag:AUSMUL, q:M("4(2x + 1)"),    s:M("4 · 2x = 8x") + ", und aus der 1 wird " + M("4 · 1 = 4") + "."},
+    {e:"8x + 4",   auftrag:AUSMUL, q:M("2(4x + 2)"),    s:M("2 · 4x = 8x") + " und " + M("2 · 2 = 4") + "."},
+    {e:"3x − 21",  auftrag:AUSMUL, q:M("3(x − 7)"),     s:"Die 3 trifft beide Glieder: " + M("3 · x") + " und " + M("3 · 7 = 21") + "."},
+    {e:"3x − 21",  auftrag:AUSMUL, q:M("(x − 7) · 3"),  s:"Faktor hinter der Klammer, die Rechnung bleibt dieselbe."},
     {e:"10x + 15", auftrag:AUSMUL, q:M("5(2x + 3)"),    s:M("5 · 2x = 10x") + " und " + M("5 · 3 = 15") + "."},
     {e:"10x + 15", auftrag:AUSMUL, q:M("(2x + 3) · 5"), s:"Faktor hinter der Klammer: " + M("2x · 5 = 10x") + " und " + M("3 · 5 = 15") + "."},
-    {e:"6y − 9",   auftrag:AUSMUL, q:M("3(2y − 3)"),    s:M("3 · 2y = 6y") + " und " + M("3 · 3 = 9") + "."},
-    {e:"6y − 9",   auftrag:AUSMUL, q:M("(2y − 3) · 3"), s:"Faktor hinter der Klammer, er trifft beide Glieder."},
+    {e:"6x − 9",   auftrag:AUSMUL, q:M("3(2x − 3)"),    s:M("3 · 2x = 6x") + " und " + M("3 · 3 = 9") + "."},
+    {e:"6x − 9",   auftrag:AUSMUL, q:M("(2x − 3) · 3"), s:"Faktor hinter der Klammer, er trifft beide Glieder."},
     {e:"7x + 7",   auftrag:AUSMUL, q:M("7(x + 1)"),     s:"Die 1 nicht vergessen: " + M("7 · 1 = 7") + "."},
     {e:"7x + 7",   auftrag:AUSMUL, q:M("(x + 1) · 7"),  s:M("x · 7") + " schreibt man als " + M("7x") + ", dazu " + M("1 · 7 = 7") + "."},
     {e:"2(x + 4)", auftrag:AUSKL,  q:M("2x + 8"),       s:"Beide Glieder sind durch 2 teilbar: " + M("2x : 2 = x") + " und " + M("8 : 2 = 4") + "."},
     {e:"2(x + 4)", auftrag:AUSKL,  q:M("x + 8 + x"),    s:"Erst zusammenfassen zu " + M("2x + 8") + ", dann die 2 ausklammern."},
     {e:"3(x + 5)", auftrag:AUSKL,  q:M("3x + 15"),      s:"Der gemeinsame Faktor ist 3: " + M("3x : 3 = x") + " und " + M("15 : 3 = 5") + "."},
     {e:"3(x + 5)", auftrag:AUSKL,  q:M("x + 15 + 2x"),  s:"Zusammenfassen ergibt " + M("3x + 15") + ", dann die 3 ausklammern."},
-    {e:"4(a − 3)", auftrag:AUSKL,  q:M("4a − 12"),      s:"Größter gemeinsamer Faktor ist 4, nicht nur 2: " + M("12 : 4 = 3") + "."},
-    {e:"4(a − 3)", auftrag:AUSKL,  q:M("6a − 12 − 2a"), s:M("6a − 2a = 4a") + ", dann die 4 ausklammern."},
-    {e:"5(y + 2)", auftrag:AUSKL,  q:M("5y + 10"),      s:M("5y : 5 = y") + " und " + M("10 : 5 = 2") + "."},
-    {e:"5(y + 2)", auftrag:AUSKL,  q:M("10 + 5y"),      s:"Die Reihenfolge der Summanden ist egal, der Term ist derselbe wie " + M("5y + 10") + "."},
+    {e:"4(x − 3)", auftrag:AUSKL,  q:M("4x − 12"),      s:"Größter gemeinsamer Faktor ist 4, nicht nur 2: " + M("12 : 4 = 3") + "."},
+    {e:"4(x − 3)", auftrag:AUSKL,  q:M("6x − 12 − 2x"), s:M("6x − 2x = 4x") + ", dann die 4 ausklammern."},
+    {e:"5(x + 2)", auftrag:AUSKL,  q:M("5x + 10"),      s:M("5x : 5 = x") + " und " + M("10 : 5 = 2") + "."},
+    {e:"5(x + 2)", auftrag:AUSKL,  q:M("10 + 5x"),      s:"Die Reihenfolge der Summanden ist egal, der Term ist derselbe wie " + M("5x + 10") + "."},
     {e:"6(x − 1)", auftrag:AUSKL,  q:M("6x − 6"),       s:M("6 : 6 = 1") + ". Die 1 bleibt in der Klammer stehen, sonst fehlt beim Ausmultiplizieren ein Glied."},
     {e:"6(x − 1)", auftrag:AUSKL,  q:M("4x − 6 + 2x"),  s:"Zusammenfassen ergibt " + M("6x − 6") + ", die 1 bleibt in der Klammer."},
-    {e:"7(a + 2)", auftrag:AUSKL,  q:M("7a + 14"),      s:M("7a : 7 = a") + " und " + M("14 : 7 = 2") + "."},
-    {e:"7(a + 2)", auftrag:AUSKL,  q:M("14 + 7a"),      s:"Umsortiert ist das " + M("7a + 14") + ", daraus die 7 ausklammern."},
+    {e:"7(x + 2)", auftrag:AUSKL,  q:M("7x + 14"),      s:M("7x : 7 = x") + " und " + M("14 : 7 = 2") + "."},
+    {e:"7(x + 2)", auftrag:AUSKL,  q:M("14 + 7x"),      s:"Umsortiert ist das " + M("7x + 14") + ", daraus die 7 ausklammern."},
     {e:"2(3x + 5)", auftrag:AUSKL, q:M("6x + 10"),      s:"6 und 10 haben nur den gemeinsamen Faktor 2: " + M("6x : 2 = 3x") + " und " + M("10 : 2 = 5") + "."},
     {e:"2(3x + 5)", auftrag:AUSKL, q:M("10 + 6x"),      s:"Umsortiert ist das " + M("6x + 10") + ", gemeinsamer Faktor ist 2."},
     {e:"9(x − 2)", auftrag:AUSKL,  q:M("9x − 18"),      s:"Nicht bei 3 aufhören: 9 teilt beide Zahlen, " + M("18 : 9 = 2") + "."},
@@ -6559,53 +6556,53 @@ var B8_DIST_MITTEL = {
   unter:"Klasse 8, negative Faktoren, Variablen als Faktor, zwei Variablen",
   pool:[
     {k:"−3x + 6",      h:M("−3x + 6")},
-    {k:"−8a − 12",     h:M("−8a − 12")},
+    {k:"−8x − 12",     h:M("−8x − 12")},
     {k:"x² + 5x",      h:M("x² + 5x")},
-    {k:"2a² − 6a",     h:M("2a² − 6a")},
+    {k:"2x² − 6x",     h:M("2x² − 6x")},
     {k:"6xy + 3x",     h:M("6xy + 3x")},
-    {k:"ab − 4a",      h:M("ab − 4a")},
+    {k:"xy − 4x",      h:M("xy − 4x")},
     {k:"−10x + 15y",   h:M("−10x + 15y")},
-    {k:"12a + 8b − 4", h:M("12a + 8b − 4")},
+    {k:"12x + 8y − 4", h:M("12x + 8y − 4")},
     {k:"3x(x + 2)",    h:M("3x(x + 2)")},
-    {k:"a(a − 7)",     h:M("a(a − 7)")},
+    {k:"x(x − 7)",     h:M("x(x − 7)")},
     {k:"4(2x − 3y)",   h:M("4(2x − 3y)")},
-    {k:"5b(a + 2)",    h:M("5b(a + 2)")},
+    {k:"5x(y + 2)",    h:M("5x(y + 2)")},
     {k:"6(x + y)",     h:M("6(x + y)")},
     {k:"x(y + 1)",     h:M("x(y + 1)")},
-    {k:"2a(3 − b)",    h:M("2a(3 − b)")},
+    {k:"2x(3 − y)",    h:M("2x(3 − y)")},
     {k:"7(x − 2y + 1)", h:M("7(x − 2y + 1)")}
   ],
   aufgaben:[
     {e:"−3x + 6",      auftrag:AUSMUL, q:M("−3(x − 2)"),         s:"Minus mal minus ergibt plus: " + M("−3 · (−2) = +6") + "."},
     {e:"−3x + 6",      auftrag:AUSMUL, q:M("3(2 − x)"),          s:M("3 · 2 = 6") + " und " + M("3 · (−x) = −3x") + ", nur in anderer Reihenfolge."},
-    {e:"−8a − 12",     auftrag:AUSMUL, q:M("−4(2a + 3)"),        s:"Der negative Faktor macht beide Glieder negativ: " + M("−4 · 2a") + " und " + M("−4 · 3") + "."},
-    {e:"−8a − 12",     auftrag:AUSMUL, q:M("−2(4a + 6)"),        s:M("−2 · 4a = −8a") + " und " + M("−2 · 6 = −12") + "."},
+    {e:"−8x − 12",     auftrag:AUSMUL, q:M("−4(2x + 3)"),        s:"Der negative Faktor macht beide Glieder negativ: " + M("−4 · 2x") + " und " + M("−4 · 3") + "."},
+    {e:"−8x − 12",     auftrag:AUSMUL, q:M("−2(4x + 6)"),        s:M("−2 · 4x = −8x") + " und " + M("−2 · 6 = −12") + "."},
     {e:"x² + 5x",      auftrag:AUSMUL, q:M("x(x + 5)"),          s:M("x · x = x²") + " und " + M("x · 5 = 5x") + "."},
     {e:"x² + 5x",      auftrag:AUSMUL, q:M("(x + 5) · x"),       s:"Der Faktor hinter der Klammer trifft ebenfalls beide Summanden."},
-    {e:"2a² − 6a",     auftrag:AUSMUL, q:M("2a(a − 3)"),         s:M("2a · a = 2a²") + " und " + M("2a · 3 = 6a") + "."},
-    {e:"2a² − 6a",     auftrag:AUSMUL, q:M("a(2a − 6)"),         s:M("a · 2a = 2a²") + " und " + M("a · 6 = 6a") + "."},
+    {e:"2x² − 6x",     auftrag:AUSMUL, q:M("2x(x − 3)"),         s:M("2x · x = 2x²") + " und " + M("2x · 3 = 6x") + "."},
+    {e:"2x² − 6x",     auftrag:AUSMUL, q:M("x(2x − 6)"),         s:M("x · 2x = 2x²") + " und " + M("x · 6 = 6x") + "."},
     {e:"6xy + 3x",     auftrag:AUSMUL, q:M("3x(2y + 1)"),        s:M("3x · 2y = 6xy") + ", und die 1 liefert " + M("3x") + "."},
     {e:"6xy + 3x",     auftrag:AUSMUL, q:M("x(6y + 3)"),         s:M("x · 6y = 6xy") + " und " + M("x · 3 = 3x") + "."},
-    {e:"ab − 4a",      auftrag:AUSMUL, q:M("a(b − 4)"),          s:M("a · b = ab") + " und " + M("a · 4 = 4a") + "."},
-    {e:"ab − 4a",      auftrag:AUSMUL, q:M("(b − 4) · a"),       s:M("b · a") + " schreibt man alphabetisch als " + M("ab") + ", dazu " + M("−4a") + "."},
+    {e:"xy − 4x",      auftrag:AUSMUL, q:M("x(y − 4)"),          s:M("x · y = xy") + " und " + M("x · 4 = 4x") + "."},
+    {e:"xy − 4x",      auftrag:AUSMUL, q:M("(y − 4) · x"),       s:M("y · x") + " schreibt man alphabetisch als " + M("xy") + ", dazu " + M("−4x") + "."},
     {e:"−10x + 15y",   auftrag:AUSMUL, q:M("−5(2x − 3y)"),       s:M("−5 · 2x = −10x") + " und " + M("−5 · (−3y) = +15y") + "."},
     {e:"−10x + 15y",   auftrag:AUSMUL, q:M("5(3y − 2x)"),        s:"Das ergibt " + M("15y − 10x") + ", umsortiert " + M("−10x + 15y") + "."},
-    {e:"12a + 8b − 4", auftrag:AUSMUL, q:M("4(3a + 2b − 1)"),    s:"Drei Summanden, jeder wird mit 4 multipliziert."},
-    {e:"12a + 8b − 4", auftrag:AUSMUL, q:M("2(6a + 4b − 2)"),    s:"Jeder der drei Summanden wird verdoppelt."},
+    {e:"12x + 8y − 4", auftrag:AUSMUL, q:M("4(3x + 2y − 1)"),    s:"Drei Summanden, jeder wird mit 4 multipliziert."},
+    {e:"12x + 8y − 4", auftrag:AUSMUL, q:M("2(6x + 4y − 2)"),    s:"Jeder der drei Summanden wird verdoppelt."},
     {e:"3x(x + 2)",    auftrag:AUSKL,  q:M("3x² + 6x"),          s:"Gemeinsam sind die 3 und ein " + M("x") + ": " + M("3x² : 3x = x") + " und " + M("6x : 3x = 2") + "."},
     {e:"3x(x + 2)",    auftrag:AUSKL,  q:M("x² + 6x + 2x²"),     s:"Erst " + M("x² + 2x² = 3x²") + ", dann " + M("3x") + " ausklammern."},
-    {e:"a(a − 7)",     auftrag:AUSKL,  q:M("a² − 7a"),           s:"Nur das " + M("a") + " steckt in beiden Gliedern: " + M("a² : a = a") + " und " + M("7a : a = 7") + "."},
-    {e:"a(a − 7)",     auftrag:AUSKL,  q:M("2a² − 7a − a²"),     s:M("2a² − a² = a²") + ", dann " + M("a") + " ausklammern."},
+    {e:"x(x − 7)",     auftrag:AUSKL,  q:M("x² − 7x"),           s:"Nur das " + M("x") + " steckt in beiden Gliedern: " + M("x² : x = x") + " und " + M("7x : x = 7") + "."},
+    {e:"x(x − 7)",     auftrag:AUSKL,  q:M("2x² − 7x − x²"),     s:M("2x² − x² = x²") + ", dann " + M("x") + " ausklammern."},
     {e:"4(2x − 3y)",   auftrag:AUSKL,  q:M("8x − 12y"),          s:"Größter gemeinsamer Faktor von 8 und 12 ist 4."},
     {e:"4(2x − 3y)",   auftrag:AUSKL,  q:M("10x − 12y − 2x"),    s:M("10x − 2x = 8x") + ", dann die 4 ausklammern."},
-    {e:"5b(a + 2)",    auftrag:AUSKL,  q:M("5ab + 10b"),         s:"Gemeinsam sind 5 und " + M("b") + ", das " + M("a") + " steckt nur im ersten Glied."},
-    {e:"5b(a + 2)",    auftrag:AUSKL,  q:M("7ab + 10b − 2ab"),   s:M("7ab − 2ab = 5ab") + ", dann " + M("5b") + " ausklammern."},
+    {e:"5x(y + 2)",    auftrag:AUSKL,  q:M("5xy + 10x"),         s:"Gemeinsam sind 5 und " + M("x") + ", das " + M("y") + " steckt nur im ersten Glied."},
+    {e:"5x(y + 2)",    auftrag:AUSKL,  q:M("7xy + 10x − 2xy"),   s:M("7xy − 2xy = 5xy") + ", dann " + M("5x") + " ausklammern."},
     {e:"6(x + y)",     auftrag:AUSKL,  q:M("6x + 6y"),           s:"Beide Glieder haben den Faktor 6, aber keine gemeinsame Variable."},
     {e:"6(x + y)",     auftrag:AUSKL,  q:M("2x + 6y + 4x"),      s:M("2x + 4x = 6x") + ", dann die 6 ausklammern."},
     {e:"x(y + 1)",     auftrag:AUSKL,  q:M("xy + x"),            s:"Das zweite Glied ist " + M("x · 1") + ". Die 1 muss in der Klammer bleiben."},
     {e:"x(y + 1)",     auftrag:AUSKL,  q:M("3xy + x − 2xy"),     s:M("3xy − 2xy = xy") + ", übrig bleibt " + M("xy + x") + "."},
-    {e:"2a(3 − b)",    auftrag:AUSKL,  q:M("6a − 2ab"),          s:M("6a : 2a = 3") + " und " + M("2ab : 2a = b") + "."},
-    {e:"2a(3 − b)",    auftrag:AUSKL,  q:M("8a − 2ab − 2a"),     s:M("8a − 2a = 6a") + ", dann " + M("2a") + " ausklammern."},
+    {e:"2x(3 − y)",    auftrag:AUSKL,  q:M("6x − 2xy"),          s:M("6x : 2x = 3") + " und " + M("2xy : 2x = y") + "."},
+    {e:"2x(3 − y)",    auftrag:AUSKL,  q:M("8x − 2xy − 2x"),     s:M("8x − 2x = 6x") + ", dann " + M("2x") + " ausklammern."},
     {e:"7(x − 2y + 1)", auftrag:AUSKL, q:M("7x − 14y + 7"),      s:"Alle drei Glieder sind durch 7 teilbar, aus der letzten 7 wird die 1."},
     {e:"7(x − 2y + 1)", auftrag:AUSKL, q:M("9x − 14y + 7 − 2x"), s:M("9x − 2x = 7x") + ", dann die 7 ausklammern."}
   ]
@@ -6617,31 +6614,31 @@ var B8_DIST_SCHWER = {
   unter:"Klasse 8, Summe mal Summe, mehrere Klammern, Potenzen",
   pool:[
     {k:"x² + 5x + 6",      h:M("x² + 5x + 6")},
-    {k:"2a² − 5a − 3",     h:M("2a² − 5a − 3")},
+    {k:"2x² − 5x − 3",     h:M("2x² − 5x − 3")},
     {k:"7x − 2",           h:M("7x − 2")},
-    {k:"−4a + 11",         h:M("−4a + 11")},
+    {k:"−4x + 11",         h:M("−4x + 11")},
     {k:"x² − 9",           h:M("x² − 9")},
     {k:"6x² + x − 2",      h:M("6x² + x − 2")},
     {k:"x² − x − 12",      h:M("x² − x − 12")},
     {k:"−2x² + 7x",        h:M("−2x² + 7x")},
     {k:"4x(2x − 3)",       h:M("4x(2x − 3)")},
-    {k:"3a²(a + 2)",       h:M("3a²(a + 2)")},
-    {k:"(x + 5)(a + 2)",   h:M("(x + 5)(a + 2)")},
+    {k:"3x²(x + 2)",       h:M("3x²(x + 2)")},
+    {k:"(x + 5)(y + 2)",   h:M("(x + 5)(y + 2)")},
     {k:"(2x − 1)(y − 3)",  h:M("(2x − 1)(y − 3)")},
     {k:"−5(x + 3)",        h:M("−5(x + 3)")},
     {k:"2xy(3x − 2y)",     h:M("2xy(3x − 2y)")},
     {k:"x³(x + 1)",        h:M("x³(x + 1)")},
-    {k:"6ab(a − 2)",       h:M("6ab(a − 2)")}
+    {k:"6xy(x − 2)",       h:M("6xy(x − 2)")}
   ],
   aufgaben:[
     {e:"x² + 5x + 6",      auftrag:AUSMUL, q:M("(x + 2)(x + 3)"),            s:"Jedes Glied mit jedem: " + M("x² + 3x + 2x + 6") + "."},
     {e:"x² + 5x + 6",      auftrag:AUSMUL, q:M("2x(x + 1) − x(x − 3) + 6"),  s:M("2x² + 2x − x² + 3x + 6") + ", das Minus vor " + M("x") + " dreht beide Vorzeichen der zweiten Klammer um."},
-    {e:"2a² − 5a − 3",     auftrag:AUSMUL, q:M("(2a + 1)(a − 3)"),           s:"Vier Produkte: " + M("2a² − 6a + a − 3") + "."},
-    {e:"2a² − 5a − 3",     auftrag:AUSMUL, q:M("3a(a − 1) − (a² + 2a + 3)"), s:M("3a² − 3a − a² − 2a − 3") + ", das Minus vor der Klammer dreht alle drei Vorzeichen um."},
+    {e:"2x² − 5x − 3",     auftrag:AUSMUL, q:M("(2x + 1)(x − 3)"),           s:"Vier Produkte: " + M("2x² − 6x + x − 3") + "."},
+    {e:"2x² − 5x − 3",     auftrag:AUSMUL, q:M("3x(x − 1) − (x² + 2x + 3)"), s:M("3x² − 3x − x² − 2x − 3") + ", das Minus vor der Klammer dreht alle drei Vorzeichen um."},
     {e:"7x − 2",           auftrag:AUSMUL, q:M("5(3x − 2) − 4(2x − 2)"),     s:M("15x − 10 − 8x + 8") + ", denn " + M("−4 · (−2) = +8") + "."},
     {e:"7x − 2",           auftrag:AUSMUL, q:M("2(x + 3) − (8 − 5x)"),       s:M("2x + 6 − 8 + 5x") + "."},
-    {e:"−4a + 11",         auftrag:AUSMUL, q:M("3(a + 5) − (7a + 4)"),       s:M("3a + 15 − 7a − 4") + "."},
-    {e:"−4a + 11",         auftrag:AUSMUL, q:M("−2(2a − 3) + 5"),            s:M("−4a + 6 + 5") + ", denn " + M("−2 · (−3) = +6") + "."},
+    {e:"−4x + 11",         auftrag:AUSMUL, q:M("3(x + 5) − (7x + 4)"),       s:M("3x + 15 − 7x − 4") + "."},
+    {e:"−4x + 11",         auftrag:AUSMUL, q:M("−2(2x − 3) + 5"),            s:M("−4x + 6 + 5") + ", denn " + M("−2 · (−3) = +6") + "."},
     {e:"x² − 9",           auftrag:AUSMUL, q:M("(x + 3)(x − 3)"),            s:M("x² − 3x + 3x − 9") + ", die mittleren Glieder heben sich auf."},
     {e:"x² − 9",           auftrag:AUSMUL, q:M("x(x + 4) − 4(x + 2) − 1"),   s:M("x² + 4x − 4x − 8 − 1") + "."},
     {e:"6x² + x − 2",      auftrag:AUSMUL, q:M("(2x − 1)(3x + 2)"),          s:"Vier Produkte: " + M("6x² + 4x − 3x − 2") + "."},
@@ -6652,10 +6649,10 @@ var B8_DIST_SCHWER = {
     {e:"−2x² + 7x",        auftrag:AUSMUL, q:M("−x(2x − 7)"),                s:M("−x · 2x = −2x²") + " und " + M("−x · (−7) = +7x") + "."},
     {e:"4x(2x − 3)",       auftrag:AUSKL,  q:M("8x² − 12x"),                 s:"Größter gemeinsamer Faktor ist " + M("4x") + ": " + M("8x² : 4x = 2x") + " und " + M("12x : 4x = 3") + "."},
     {e:"4x(2x − 3)",       auftrag:AUSKL,  q:M("6x² − 12x + 2x²"),           s:M("6x² + 2x² = 8x²") + ", dann " + M("4x") + " ausklammern."},
-    {e:"3a²(a + 2)",       auftrag:AUSKL,  q:M("3a³ + 6a²"),                 s:"Die kleinere Potenz " + M("a²") + " steckt in beiden Gliedern, dazu die 3."},
-    {e:"3a²(a + 2)",       auftrag:AUSKL,  q:M("5a³ + 6a² − 2a³"),           s:M("5a³ − 2a³ = 3a³") + ", dann " + M("3a²") + " ausklammern."},
-    {e:"(x + 5)(a + 2)",   auftrag:AUSKL,  q:M("a(x + 5) + 2(x + 5)"),       s:"Die ganze Klammer " + M("(x + 5)") + " ist der gemeinsame Faktor, übrig bleiben " + M("a") + " und " + M("2") + "."},
-    {e:"(x + 5)(a + 2)",   auftrag:AUSKL,  q:M("a(x + 5) + 2x + 10"),        s:"Erst " + M("2x + 10 = 2(x + 5)") + ", dann die gemeinsame Klammer ausklammern."},
+    {e:"3x²(x + 2)",       auftrag:AUSKL,  q:M("3x³ + 6x²"),                 s:"Die kleinere Potenz " + M("x²") + " steckt in beiden Gliedern, dazu die 3."},
+    {e:"3x²(x + 2)",       auftrag:AUSKL,  q:M("5x³ + 6x² − 2x³"),           s:M("5x³ − 2x³ = 3x³") + ", dann " + M("3x²") + " ausklammern."},
+    {e:"(x + 5)(y + 2)",   auftrag:AUSKL,  q:M("y(x + 5) + 2(x + 5)"),       s:"Die ganze Klammer " + M("(x + 5)") + " ist der gemeinsame Faktor, übrig bleiben " + M("y") + " und " + M("2") + "."},
+    {e:"(x + 5)(y + 2)",   auftrag:AUSKL,  q:M("y(x + 5) + 2x + 10"),        s:"Erst " + M("2x + 10 = 2(x + 5)") + ", dann die gemeinsame Klammer ausklammern."},
     {e:"(2x − 1)(y − 3)",  auftrag:AUSKL,  q:M("y(2x − 1) − 3(2x − 1)"),     s:"Gemeinsamer Faktor ist die Klammer " + M("(2x − 1)") + ", übrig bleiben " + M("y") + " und " + M("−3") + "."},
     {e:"(2x − 1)(y − 3)",  auftrag:AUSKL,  q:M("y(2x − 1) + 3(1 − 2x)"),     s:M("3(1 − 2x) = −3(2x − 1)") + ". Erst dann haben beide Glieder dieselbe Klammer."},
     {e:"−5(x + 3)",        auftrag:"klammere −5 aus", q:M("−5x − 15"),       s:M("−5x : (−5) = x") + " und " + M("−15 : (−5) = 3") + "."},
@@ -6664,8 +6661,8 @@ var B8_DIST_SCHWER = {
     {e:"2xy(3x − 2y)",     auftrag:AUSKL,  q:M("8x²y − 4xy² − 2x²y"),        s:M("8x²y − 2x²y = 6x²y") + ", dann " + M("2xy") + " ausklammern."},
     {e:"x³(x + 1)",        auftrag:AUSKL,  q:M("x⁴ + x³"),                   s:"Die kleinere Potenz " + M("x³") + " ausklammern, vom zweiten Glied bleibt die 1."},
     {e:"x³(x + 1)",        auftrag:AUSKL,  q:M("x² · x² + x · x²"),          s:"Erst die Potenzen: " + M("x⁴ + x³") + ", dann " + M("x³") + " ausklammern."},
-    {e:"6ab(a − 2)",       auftrag:AUSKL,  q:M("6a²b − 12ab"),               s:"Gemeinsam sind 6, ein " + M("a") + " und das " + M("b") + ": " + M("12ab : 6ab = 2") + "."},
-    {e:"6ab(a − 2)",       auftrag:AUSKL,  q:M("4a²b − 12ab + 2a²b"),        s:M("4a²b + 2a²b = 6a²b") + ", dann " + M("6ab") + " ausklammern."}
+    {e:"6xy(x − 2)",       auftrag:AUSKL,  q:M("6x²y − 12xy"),               s:"Gemeinsam sind 6, ein " + M("x") + " und das " + M("y") + ": " + M("12xy : 6xy = 2") + "."},
+    {e:"6xy(x − 2)",       auftrag:AUSKL,  q:M("4x²y − 12xy + 2x²y"),        s:M("4x²y + 2x²y = 6x²y") + ", dann " + M("6xy") + " ausklammern."}
   ]
 };
 
@@ -7173,20 +7170,28 @@ function bSatzInfoText(){
   el("bSatzInfo").textContent = txt;
 }
 
+/* Jede ganze Sekundenzahl ab 1 ist erlaubt. Kommazahlen werden gerundet,
+   ein leeres oder unlesbares Feld faellt auf 90 Sekunden zurueck. */
+function bZeitSek(){
+  var n = Math.round(parseFloat(el("bZeit").value));
+  return isNaN(n) ? 90 : Math.max(1, n);
+}
+
 function bSchaetzungText(){
   var ziel = +el("bZiel").value;
   var klasse = Math.max(5, Math.min(40, parseInt(el("bKlasse").value, 10) || 28));
-  var sek = +el("bZeit").value;
+  var sek = bZeitSek();
   var k = bMedianAufgaben(ziel, klasse);
   if(!k){
     el("bSchaetzung").textContent =
       "So viele Bingos fallen bei dieser Klassengröße meist nicht. Die Runde läuft dann, bis alle sechzehn Zahlen gezogen sind.";
     return;
   }
-  var min = Math.round(k * sek / 60);
+  var gesamt = k * sek;
+  var dauer = gesamt < 90 ? gesamt + " Sekunden" : Math.round(gesamt / 60) + " Minuten";
   el("bSchaetzung").textContent =
     "Schätzung: Bei " + klasse + " Personen sind " + ziel + " Bingos meist nach etwa " +
-    k + " Aufgaben gefallen, das sind rund " + min + " Minuten. Für eine längere Phase " +
+    k + " Aufgaben gefallen, das sind rund " + dauer + ". Für eine längere Phase " +
     "lieber zwei kürzere Runden mit verschiedenen Aufgabensätzen spielen als auf sehr viele Bingos zu warten.";
 }
 
@@ -7219,7 +7224,8 @@ function bSetupFuellen(){
 
 function bStart(){
   bstate.satz     = +el("bSatzSel").value;
-  bstate.sekunden = +el("bZeit").value;
+  bstate.sekunden = bZeitSek();
+  el("bZeit").value = bstate.sekunden;
   bstate.ziel     = +el("bZiel").value;
   bstate.klasse   = Math.max(5, Math.min(40, parseInt(el("bKlasse").value, 10) || 28));
   bKopf();
@@ -7264,6 +7270,8 @@ el("bSatzSel").addEventListener("change", function(){
   bSatzInfoText();
   bKopf();
 });
+/* Beim Verlassen des Feldes steht dort die Zahl, mit der auch gespielt wird. */
+el("bZeit").addEventListener("change", function(){ el("bZeit").value = bZeitSek(); });
 ["bZiel", "bZeit", "bKlasse"].forEach(function(id){
   el(id).addEventListener("input", bSchaetzungText);
   el(id).addEventListener("change", bSchaetzungText);
