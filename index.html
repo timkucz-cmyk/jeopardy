@@ -7967,8 +7967,93 @@ var FM8_DIST_SCHWER = {
   ]
 };
 
+var FM10_POTENZEN = {
+  fach:"Mathematik",
+  stufe:"10",
+  titel:"Potenzen",
+  unter:"Klasse 10, Potenzschreibweise, Potenzgesetze, negative und gebrochene Exponenten, wissenschaftliche Schreibweise",
+  aufgaben:[
+    {
+      auftrag:"Schreibe als Potenz und berechne.",
+      start:M("6 · 6 · 6"),
+      zeilen:[M("= 6³"), M("= 18")],
+      fehler:2,
+      art:"Potenz mit dem Produkt aus Basis und Exponent verwechselt (Potenz als Malaufgabe gerechnet)",
+      richtig:M("= 216"),
+      s:M("6³ = 6 · 6 · 6 = 216")+". Der Exponent gibt an, wie oft die Basis als Faktor auftritt, er wird nicht mit ihr multipliziert."
+    },
+    {
+      auftrag:"Vereinfache den Term.",
+      start:M("a³ · a⁴ : a²"),
+      zeilen:[M("= a^(3+4) : a²"), M("= a^(7+2)"), M("= a⁹")],
+      fehler:2,
+      art:"Potenzgesetz für die Division gleicher Basis ebenfalls mit Addition der Exponenten gerechnet (Gesetz für Multiplikation und Division verwechselt)",
+      richtig:M("= a^(7−2)"),
+      s:"Nur bei einem Produkt gleicher Basis werden die Exponenten addiert. Bei einer Division gleicher Basis werden sie subtrahiert: "+M("a⁷ : a² = a^(7−2) = a⁵")+". Richtig ist "+M("a⁵")+", nicht "+M("a⁹")+"."
+    },
+    {
+      auftrag:"Vereinfache den Term.",
+      start:M("(b²)⁵"),
+      zeilen:[M("= b^(2+5)"), M("= b⁷")],
+      fehler:1,
+      art:"Potenz einer Potenz mit dem Gesetz für ein Produkt gleicher Basis verwechselt (Exponenten addiert statt multipliziert)",
+      richtig:M("= b^(2·5)"),
+      s:"Bei einer Potenz einer Potenz werden die Exponenten multipliziert: "+M("(b²)⁵ = b^(2·5) = b¹⁰")+". Ausgeschrieben stehen fünf Klammern mit je zwei Faktoren "+M("b")+", zusammen zehn."
+    },
+    {
+      auftrag:"Vereinfache den Term.",
+      start:M("x⁶ : x²"),
+      zeilen:[M("= x^(6:2)"), M("= x³")],
+      fehler:1,
+      art:"Bei der Division gleicher Basis die Exponenten dividiert statt subtrahiert",
+      richtig:M("= x^(6−2)"),
+      s:"Bei der Division gleicher Basis werden die Exponenten subtrahiert: "+M("x⁶ : x² = x^(6−2) = x⁴")+". Ausgeschrieben kürzen sich zwei der sechs Faktoren "+M("x")+" weg, vier bleiben übrig."
+    },
+    {
+      auftrag:"Berechne den Wert.",
+      start:M("4⁻²"),
+      zeilen:[M("= −4²"), M("= −16")],
+      fehler:1,
+      art:"Negativen Exponenten als negatives Vorzeichen des Ergebnisses gedeutet",
+      richtig:M("= 1 : 4²"),
+      s:"Ein negativer Exponent bedeutet Kehrwert, kein negatives Vorzeichen: "+M("4⁻² = 1 : 4² = 1/16")+". Richtig ist "+M("0,0625")+", eine positive Zahl."
+    },
+    {
+      auftrag:"Berechne den Wert.",
+      start:M("64^(2/3)"),
+      zeilen:[M("= (²√64)³"), M("= 8³"), M("= 512")],
+      fehler:1,
+      art:"Zähler und Nenner des gebrochenen Exponenten vertauscht (Wurzelexponent und Potenzexponent verwechselt)",
+      richtig:M("= (³√64)²"),
+      s:"Der Nenner des Exponenten ist der Wurzelexponent, der Zähler die Potenz: "+M("64^(2/3) = (³√64)² = 4² = 16")+". Vertauscht man beide, entsteht "+M("(²√64)³ = 8³ = 512")+" — ein ganz anderer Wert."
+    },
+    {
+      auftrag:"Berechne den Wert.",
+      start:M("3² + 4²"),
+      zeilen:[M("= (3 + 4)²"), M("= 7²"), M("= 49")],
+      fehler:1,
+      art:"Potenz einer Summe mit der Summe der Potenzen verwechselt (Potenzieren fälschlich über die Addition verteilt)",
+      richtig:M("= 9 + 16"),
+      s:"Für das Potenzieren gibt es kein Distributivgesetz über die Addition: "+M("3² + 4² ≠ (3 + 4)²")+", denn "+M("9 + 16 = 25")+", aber "+M("7² = 49")+". Richtig ist "+M("25")+"."
+    },
+    {
+      auftrag:"Schreibe die Zahl in wissenschaftlicher Schreibweise und mache die Probe.",
+      start:M("0,0047"),
+      zeilen:[
+        "Der Vorfaktor liegt zwischen "+M("1")+" und "+M("10")+": "+M("4,7")+".",
+        "Die Zahl "+M("0,0047")+" ist kleiner als "+M("1")+", das Komma wandert nach rechts.",
+        M("= 4,7 · 10³")
+      ],
+      fehler:3,
+      art:"Beim Umwandeln einer Zahl kleiner als 1 in wissenschaftliche Schreibweise das Vorzeichen des Exponenten vergessen",
+      richtig:M("= 4,7 · 10⁻³"),
+      s:"Wandert das Komma bei einer Zahl kleiner als "+M("1")+" nach rechts, wird der Exponent negativ: "+M("0,0047 = 4,7 · 10⁻³")+". Die Probe zeigt den Fehler sofort: "+M("4,7 · 10³ = 4700")+", gesucht war aber "+M("0,0047")+"."
+    }
+  ]
+};
+
 var F_SAETZE = [F8_TERME, F8_GLEICHUNGEN, FM7_RATIONAL,
-                FM8_DIST_LEICHT, FM8_DIST_MITTEL, FM8_DIST_SCHWER];
+                FM8_DIST_LEICHT, FM8_DIST_MITTEL, FM8_DIST_SCHWER, FM10_POTENZEN];
 
 
 /* -----------------------------------------------------------------------
