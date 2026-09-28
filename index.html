@@ -14,6 +14,8 @@
     --line-1:#e4e5e3; --line-2:#cfd1cf; --line-3:#a8acaa;
     --mathe:#B61E33; --mathe-soft:#f5e1e3; --mathe-line:#e8b8be; --mathe-ink:#6f0f1c;
     --ok:#3f6e3a; --ok-soft:#e7eee5; --warn:#8a6a1e; --warn-soft:#f3ecd9;
+    /* Live-Quiz: vier Antwortfarben, jede mit weisser Schrift ueber 4,5:1 */
+    --qa0:#B61E33; --qa1:#1f5f8b; --qa2:#8f5d0b; --qa3:#5b4a8e;
 
     --shadow-1:0 1px 2px rgba(20,22,25,.04);
     --shadow-2:0 1px 3px rgba(20,22,25,.06);
@@ -593,6 +595,135 @@
   /* Aufloesung am Rundenende: die Aufgabenstellung klein ueber der
      korrigierten Zeile, damit beide in dieselbe Gitterzelle passen. */
   .auf-frage{display:block; font-size:.62em; font-weight:600; color:var(--fg-3); margin-bottom:4px;}
+  /* ---------- Live-Quiz am Beamer ---------- */
+  .qlobby{display:grid; grid-template-columns:minmax(0, 460px) minmax(0, 1fr); gap:24px; align-items:start;}
+  @media (max-width:980px){ .qlobby{grid-template-columns:minmax(0, 1fr);} }
+  .qqr{margin-top:12px;}
+  .qqr svg{display:block; width:100%; max-width:360px; height:auto; margin:0 auto;}
+  .qcode{
+    font-family:var(--mono); font-size:clamp(48px, 5vw, 76px); font-weight:700; letter-spacing:.14em;
+    text-align:center; color:var(--fg-1); line-height:1.1; margin:14px 0 6px;
+  }
+  .qurl{font-family:var(--mono); font-weight:700; color:var(--fg-1);}
+  .qanzahl{font-family:var(--mono); font-size:30px; font-weight:700; color:var(--mathe); line-height:1;}
+  .qspieler{display:flex; flex-wrap:wrap; gap:10px; margin-top:16px; min-height:64px; align-content:flex-start;}
+  .qname{
+    font-size:21px; font-weight:600; color:var(--fg-1); background:var(--surface-page);
+    border:1px solid var(--line-2); border-radius:999px; padding:7px 18px;
+    animation:qrein 320ms var(--ease);
+    transition:background 160ms var(--ease), border-color 160ms var(--ease), color 160ms var(--ease);
+  }
+  .qname:hover{border-color:var(--mathe); background:var(--mathe-soft); color:var(--mathe-ink); text-decoration:line-through;}
+  @keyframes qrein{from{opacity:0; transform:scale(.8);} to{opacity:1; transform:none;}}
+
+  .qnetz{display:inline-flex; align-items:center; gap:8px; font-size:15px; color:var(--fg-3);}
+  .qpunkt{flex:none; width:10px; height:10px; border-radius:50%; background:var(--fg-5);}
+  .qpunkt.ok{background:var(--ok);}
+  .qpunkt.weg{background:var(--mathe);}
+  .qpunkt.warte{background:var(--warn);}
+  .qtest{display:flex; align-items:center; gap:10px; margin-top:8px; font-size:17px;}
+  .qtest .sub{font-size:16px;}
+  .qfehler{margin-top:16px; color:var(--mathe-ink); background:var(--mathe-soft); border-radius:4px; padding:12px 16px;}
+
+  .qfragekopf{display:grid; grid-template-columns:120px minmax(0, 1fr) 120px; gap:24px; align-items:center; margin-bottom:28px;}
+  .quhr{
+    width:108px; height:108px; border-radius:50%; border:3px solid var(--fg-1); color:var(--fg-1);
+    display:flex; align-items:center; justify-content:center;
+    font-family:var(--mono); font-size:44px; font-weight:700; font-variant-numeric:tabular-nums;
+    transition:border-color 200ms var(--ease), color 200ms var(--ease);
+  }
+  .quhr.knapp{border-color:var(--mathe); color:var(--mathe);}
+  .quhr.aus{border-color:var(--ok); color:var(--ok);}
+  .qfragetext{font-size:clamp(28px, 3.2vw, 46px); font-weight:600; line-height:1.3; text-align:center; color:var(--fg-1);}
+  .qzaehler{display:flex; flex-direction:column; align-items:center; gap:4px;}
+  .qzaehler .num{font-family:var(--mono); font-size:44px; font-weight:700; line-height:1;}
+  .qantworten{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
+  .qant{
+    display:flex; align-items:center; gap:20px; min-height:124px; padding:18px 26px; border-radius:6px;
+    color:var(--surface-page); font-size:clamp(26px, 2.8vw, 40px); font-weight:600; line-height:1.25;
+    transition:opacity 300ms var(--ease), transform 300ms var(--ease), box-shadow 300ms var(--ease);
+  }
+  .qant.lang{font-size:clamp(20px, 1.9vw, 27px);}
+  .qant .qform, .qant .ic{flex:none;}
+  .qant-text{flex:1;}
+  .qant-zahl{font-family:var(--mono); font-size:34px; font-weight:700; min-width:1.6em; text-align:right;}
+  .qant.falsch{opacity:.28;}
+  .qant.richtig{transform:scale(1.02); box-shadow:var(--shadow-3);}
+  .qa0{background:var(--qa0);} .qa1{background:var(--qa1);} .qa2{background:var(--qa2);} .qa3{background:var(--qa3);}
+  .qant .fr .fn, .hknopf .fr .fn, .hloesung .fr .fn{border-top-color:currentColor;}
+
+  .qrangliste{list-style:none; margin:16px 0 0; padding:0;}
+  .qrangliste li{
+    display:grid; grid-template-columns:64px minmax(0, 1fr) 110px 130px; gap:16px; align-items:center;
+    padding:14px 16px; border-bottom:1px solid var(--line-1); font-size:28px;
+    animation:qrein 360ms var(--ease) both;
+  }
+  .qrangliste li:nth-child(2){animation-delay:60ms;} .qrangliste li:nth-child(3){animation-delay:120ms;}
+  .qrangliste li:nth-child(4){animation-delay:180ms;} .qrangliste li:nth-child(5){animation-delay:240ms;}
+  .qrangliste li:first-child{background:var(--mathe-soft);}
+  .qr-platz{font-family:var(--mono); font-weight:700; color:var(--fg-3);}
+  .qr-name{font-weight:600; overflow-wrap:anywhere;}
+  .qr-delta{font-family:var(--mono); font-size:21px; color:var(--ok); text-align:right;}
+  .qr-punkte{font-family:var(--mono); font-weight:700; color:var(--mathe); text-align:right;}
+
+  .qauswertung{list-style:none; margin:4px 20px 20px; padding:0;}
+  .qa-zeile{display:grid; grid-template-columns:76px minmax(0, 1fr); gap:16px; padding:12px 0; border-bottom:1px solid var(--line-1);}
+  .qa-quote{font-family:var(--mono); font-size:22px; font-weight:700; color:var(--fg-1);}
+  .qa-frage{font-size:19px; color:var(--fg-1);}
+  .qa-balken{height:8px; background:var(--surface-sunken); border-radius:4px; margin:8px 0 6px; overflow:hidden;}
+  .qa-balken span{display:block; height:100%; background:var(--ok);}
+  .qa-info{font-size:15px; color:var(--fg-3);}
+  @media (prefers-reduced-motion: reduce){
+    .qname, .qrangliste li{animation:none;}
+  }
+
+  /* ---------- Live-Quiz am Tablet ---------- */
+  body.handy{padding:0; background:var(--surface-soft);}
+  body.handy .topbar{display:none;}
+  body.handy .app{max-width:none;}
+  .hwrap{min-height:100vh; min-height:100dvh; display:flex; flex-direction:column;}
+  .hkopf{
+    display:flex; justify-content:space-between; align-items:center; gap:12px;
+    padding:14px 20px; background:var(--surface-page); border-bottom:1px solid var(--line-1);
+    font-size:20px; font-weight:600;
+  }
+  .hpunkte{font-family:var(--mono); color:var(--mathe);}
+  .hbody{flex:1; display:flex; flex-direction:column; gap:14px; padding:16px;}
+  .hmitte{flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:16px; text-align:center; padding:24px;}
+  .hmitte > .ic{color:var(--ok);}
+  .hgross{font-size:clamp(28px, 5.5vw, 46px); font-weight:700; line-height:1.2; color:var(--fg-1);}
+  .hklein{font-size:21px; color:var(--fg-3); max-width:520px;}
+  .hform{width:100%; max-width:440px; display:flex; flex-direction:column; gap:16px; margin:auto; padding:24px 0;}
+  .hform input[type=text]{font-size:26px; padding:14px 16px; text-align:center; width:100%;}
+  #hCodeIn{font-family:var(--mono); font-weight:700; letter-spacing:.24em; text-transform:uppercase;}
+  .hform .btn{justify-content:center; font-size:22px; padding:15px;}
+  .hfehler{color:var(--mathe-ink); background:var(--mathe-soft); border-radius:4px; padding:12px 14px; font-size:17px;}
+  .hfrage{display:flex; flex-direction:column; gap:10px;}
+  .hzeit{height:10px; background:var(--line-1); border-radius:5px; overflow:hidden;}
+  .hzeit span{display:block; height:100%; width:100%; background:var(--fg-3);}
+  .hknoepfe{flex:1; display:grid; grid-template-columns:1fr 1fr; grid-auto-rows:1fr; gap:14px;}
+  .hknopf{
+    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:14px;
+    border-radius:8px; padding:18px; min-height:140px; color:var(--surface-page);
+    font-size:clamp(22px, 3.6vw, 34px); font-weight:600; line-height:1.25; touch-action:manipulation;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .hknopf:active{transform:scale(.96);}
+  .hgewaehlt{width:128px; height:128px; border-radius:12px; display:flex; align-items:center; justify-content:center; color:var(--surface-page);}
+  .hergebnis{
+    flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:16px;
+    text-align:center; padding:28px; border-radius:8px; color:var(--surface-page);
+  }
+  .hergebnis .hgross{color:var(--surface-page);}
+  .hergebnis.gut{background:var(--ok);}
+  .hergebnis.schlecht{background:var(--mathe);}
+  .hergebnis.leer{background:var(--fg-3);}
+  .hklein-hell{font-size:23px; font-weight:600;}
+  .hloesung{
+    display:flex; align-items:center; gap:12px; border:2px solid currentColor; border-radius:6px;
+    padding:10px 18px; font-size:24px; font-weight:600;
+  }
+  .hpokal{color:var(--mathe);}
 </style>
 </head>
 <body>
@@ -604,6 +735,7 @@
       <p class="sub" id="kopfUnter">Wiederholung der Grundlagen aus der E-Phase</p>
     </div>
     <div class="row">
+      <button class="btn" id="hStartBtn" style="display:none"></button>
       <button class="btn btn-quiet" id="backToSetupBtn" style="display:none">Gruppen und Setup</button>
       <button class="btn" id="resetBtn" style="display:none">Spiel zurücksetzen</button>
       <button class="btn" id="endBtn" style="display:none"></button>
@@ -616,7 +748,7 @@
     <div class="card">
       <span class="label">Spielauswahl</span>
       <h2 style="margin-top:8px">Welches Spiel soll es sein?</h2>
-      <p class="sub">Alle Spiele laufen über den Beamer. Die Klasse braucht nur Heft und Stift.</p>
+      <p class="sub">Alle Spiele laufen über den Beamer. Die Klasse braucht nur Heft und Stift, beim Live-Quiz dazu Tablets.</p>
       <div class="kachelgrid" id="spielGrid"></div>
     </div>
   </section>
@@ -1103,6 +1235,189 @@
       </div>
     </div>
 
+  </section>
+
+
+  <!-- ============ LIVE-QUIZ: VORBEREITUNG ============ -->
+  <section id="quizSetup" style="display:none">
+
+    <div class="row zurueckzeile">
+      <button class="btn btn-quiet" id="qZurueckBtn"></button>
+    </div>
+
+    <div class="card" id="qResumeCard" style="display:none">
+      <span class="label">Live-Quiz</span>
+      <h2 style="margin-top:8px">Offener Raum</h2>
+      <div class="bhinweis">
+        <p class="sub" id="qResumeInfo" style="margin:0"></p>
+        <div class="row" style="margin-top:14px">
+          <button class="btn btn-primary" id="qResumeBtn">Raum wieder öffnen</button>
+          <button class="btn btn-quiet" id="qVerwerfenBtn">Verwerfen</button>
+        </div>
+        <p class="note">Die Tablets verbinden sich von selbst wieder und behalten ihre Punkte.</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <span class="label">Schritt 1</span>
+      <h2 style="margin-top:8px">Fach, Klasse und Fragensatz wählen</h2>
+      <div class="katalogwahl" style="margin-top:16px">
+        <label class="feld"><span class="label">Fach</span>
+          <select id="qFachSel"></select></label>
+        <label class="feld"><span class="label">Klassenstufe</span>
+          <select id="qStufeSel"></select></label>
+        <label class="feld"><span class="label">Fragensatz</span>
+          <select id="qSatzSel"></select></label>
+      </div>
+      <p class="note" id="qSatzInfo"></p>
+    </div>
+
+    <div class="card">
+      <span class="label">Schritt 2</span>
+      <h2 style="margin-top:8px">Runde einstellen</h2>
+      <div class="katalogwahl" style="margin-top:16px">
+        <label class="feld"><span class="label">Zeit je Frage</span>
+          <select id="qZeit">
+            <option value="0" selected>wie im Fragensatz</option>
+            <option value="10">10 Sekunden</option>
+            <option value="20">20 Sekunden</option>
+            <option value="30">30 Sekunden</option>
+            <option value="45">45 Sekunden</option>
+            <option value="60">1 Minute</option>
+          </select></label>
+        <label class="feld"><span class="label">Fragen in der Runde</span>
+          <select id="qAnzahl">
+            <option value="10">10 Fragen</option>
+            <option value="15">15 Fragen</option>
+            <option value="20" selected>20 Fragen</option>
+            <option value="0">alle des Satzes</option>
+          </select></label>
+        <label class="feld"><span class="label">Reihenfolge</span>
+          <select id="qReihenfolge">
+            <option value="1" selected>gemischt</option>
+            <option value="0">wie im Fragensatz</option>
+          </select></label>
+      </div>
+      <p class="note" id="qSchaetzung"></p>
+
+      <hr class="sep">
+      <span class="label">So läuft die Runde</span>
+      <ol class="ablauf">
+        <li><b>Beitreten.</b> Am Beamer stehen QR-Code und Raumcode. Die Tablets scannen den Code mit der Kamera und geben einen Spitznamen ein. Ein unpassender Name verschwindet per Klick.</li>
+        <li><b>Antworten.</b> Frage und Antworten stehen am Beamer, auf dem Tablet dieselben Farben und Formen. Jede und jeder tippt genau einmal, ändern geht nicht.</li>
+        <li><b>Punkte.</b> Richtig gibt 500 bis 1000 Punkte, je schneller desto mehr. Falsch oder gar nicht gibt null.</li>
+        <li><b>Auflösen.</b> Wenn die Zeit um ist oder alle geantwortet haben: richtige Antwort, Verteilung, Erklärung. Jedes Tablet zeigt das eigene Ergebnis und den eigenen Platz.</li>
+      </ol>
+      <p class="note">Nach der Siegerehrung steht unter „Auswertung für die Lehrkraft“, welche Fragen am schlechtesten liefen, mit dem häufigsten Fehler. Das ist der Stoff für die letzte Übung vor der Arbeit.</p>
+    </div>
+
+    <div class="card">
+      <span class="label">Schritt 3</span>
+      <h2 style="margin-top:8px">Verbindung</h2>
+      <p class="sub">Beamer und Tablets brauchen Internet. Sie treffen sich auf einem öffentlichen Vermittlungsserver (MQTT). Alles, was dort durchläuft, ist mit dem Raumcode verschlüsselt, der Server sieht weder Namen noch Antworten. Die Spitznamen stehen nur am Beamer und werden beim Schließen des Raums gelöscht.</p>
+      <div class="katalogwahl" style="margin-top:16px; align-items:flex-end">
+        <label class="feld"><span class="label">Server</span>
+          <select id="qServerSel"></select></label>
+        <label class="feld" id="qEigenFeld" style="display:none"><span class="label">Adresse</span>
+          <input type="text" id="qServerEigen" placeholder="wss://server:443/mqtt" style="min-width:320px"></label>
+        <button class="btn" id="qTestBtn"></button>
+      </div>
+      <div id="qTestErgebnis" style="margin-top:8px"></div>
+      <p class="note">Im Schulnetz vorher testen: erst „Verbindung testen“, dann mit einem Tablet im Schul-WLAN einen Probe-Raum betreten.</p>
+
+      <hr class="sep">
+      <button class="btn btn-primary" id="qStartBtn"></button>
+      <div class="qfehler" id="qSetupFehler" style="display:none"></div>
+    </div>
+
+  </section>
+
+  <!-- ============ LIVE-QUIZ: SPIEL ============ -->
+  <section id="quizGame" style="display:none">
+
+    <div class="turnbar">
+      <div class="who">
+        <span class="label" id="qPhaseLabel"></span>
+        <span id="qPhaseInfo"></span>
+      </div>
+      <div class="row">
+        <span class="qnetz" id="qNetz"></span>
+        <button class="btn btn-quiet" id="qBeendenBtn"></button>
+        <button class="btn btn-quiet" id="qBackBtn"></button>
+      </div>
+    </div>
+
+    <div id="qLobby" class="qlobby" style="display:none">
+      <div class="card">
+        <span class="label">Mitspielen</span>
+        <div class="qqr" id="qQr"></div>
+        <div class="qcode" id="qCode"></div>
+        <p class="sub" style="text-align:center">QR-Code mit der Kamera scannen – oder <span class="qurl" id="qUrl"></span> öffnen, „Am Tablet mitspielen“ tippen und den Code eingeben.</p>
+      </div>
+      <div class="card">
+        <div class="row" style="justify-content:space-between">
+          <span class="label">Dabei</span>
+          <span class="qanzahl" id="qSpielerZahl">0</span>
+        </div>
+        <div class="qspieler" id="qSpielerListe"></div>
+        <p class="note">Unpassender Name? Anklicken, dann fliegt das Tablet aus dem Raum.</p>
+        <hr class="sep">
+        <button class="btn btn-primary" id="qLosBtn"></button>
+      </div>
+    </div>
+
+    <div id="qFrage" style="display:none">
+      <div class="qfragekopf">
+        <div class="quhr" id="qUhr"></div>
+        <div class="qfragetext" id="qFrageText"></div>
+        <div class="qzaehler"><span class="num" id="qAntwortZahl">0</span><span class="label">Antworten</span></div>
+      </div>
+      <div class="qantworten" id="qAntworten"></div>
+      <div class="sbox" id="qErklaerung" style="display:none"></div>
+      <div class="row" style="margin-top:24px">
+        <button class="btn btn-primary" id="qAufloesenBtn"></button>
+        <button class="btn btn-quiet" id="qPlusBtn"></button>
+        <button class="btn btn-primary" id="qZwischenBtn"></button>
+        <button class="btn" id="qNaechsteBtn"></button>
+      </div>
+    </div>
+
+    <div id="qRang" style="display:none">
+      <div class="card">
+        <span class="label">Zwischenstand</span>
+        <h2 style="margin-top:8px" id="qRangTitel"></h2>
+        <ol class="qrangliste" id="qRangListe"></ol>
+        <p class="note" id="qRangRest"></p>
+      </div>
+      <div class="row">
+        <button class="btn btn-primary" id="qRangWeiterBtn"></button>
+      </div>
+    </div>
+
+    <div id="qEnde" style="display:none">
+      <div class="card">
+        <div class="podest-pokal" id="qPokal"></div>
+        <div class="podest" id="qPodest"></div>
+        <div class="podest-rest" id="qRest" style="display:none"></div>
+      </div>
+      <details class="teacher">
+        <summary>Auswertung für die Lehrkraft: welche Fragen saßen, welche nicht</summary>
+        <ol class="qauswertung" id="qAuswertung"></ol>
+      </details>
+      <div class="row" style="margin-top:24px">
+        <button class="btn btn-primary" id="qNochmalBtn"></button>
+        <button class="btn btn-quiet" id="qEndeBackBtn"></button>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ============ LIVE-QUIZ: TABLET ============ -->
+  <section id="quizHandy" style="display:none">
+    <div class="hwrap">
+      <div class="hkopf"><span id="hName">Live-Quiz</span><span class="hpunkte num" id="hPunkte"></span></div>
+      <div class="hbody" id="hBody"></div>
+    </div>
   </section>
 
 </div>
@@ -8571,6 +8886,1995 @@ el("fTimerResetBtn").addEventListener("click", function(){
 });
 
 
+/* =======================================================================
+   LIVE-QUIZ
+   Frage und Antworten stehen am Beamer, die Klasse tippt auf dem Tablet
+   eine der farbigen Formen an. Richtig gibt 500 bis 1000 Punkte, je
+   schneller desto mehr; falsch oder gar nicht gibt null.
+
+   Das ist das einzige Spiel der Sammlung, das Netz braucht. GitHub Pages
+   liefert nur Dateien aus, einen eigenen Server gibt es nicht. Beamer und
+   Tablets treffen sich deshalb auf einem oeffentlichen MQTT-Server
+   (WebSocket). Alles, was dort durchlaeuft, ist mit AES-GCM verschluesselt;
+   Schluessel und Thema werden aus dem Raumcode abgeleitet, den nur die
+   Klasse an der Wand sieht. Namen gehen gar nicht erst an die Tablets,
+   dort steht nur die eigene Kennung.
+
+   Rollen
+     Beamer   fuehrt den Zustand und rechnet die Punkte. Nach jeder
+              Aenderung schickt er den ganzen Zustand als "retained"-
+              Nachricht; ein Tablet, das neu laedt oder kurz weg war,
+              bekommt ihn beim Abonnieren sofort wieder.
+     Tablet   schickt nur Beitritt und Antwort, jeweils so lange
+              wiederholt, bis der Zustand vom Beamer sie bestaetigt. Die
+              richtige Antwort erfaehrt es erst mit der Aufloesung.
+
+   Aufbau eines Fragensatzes
+     fach, stufe, titel, unter   wie bei der Fehlerjagd
+     sekunden  Standardzeit je Frage
+     fragen    Liste von
+       q       Frage als HTML, Formeln ueber M() und f()
+       a       zwei bis vier Antworten, kurz halten, sie stehen auch auf
+               dem Tablet. Erlaubt sind dort nur span, i, b, sub, sup.
+       r       Index der richtigen Antwort in a
+       s       Erlaeuterung fuer die Aufloesung
+       zeit    optional: eigene Zeit in Sekunden
+       fest    optional: Antworten nicht mischen (wahr/falsch, Vorzeichen)
+
+   Neue Saetze hinten an Q_SAETZE anhaengen, der Index landet im
+   localStorage.
+   ======================================================================= */
+
+var Q7_RATIONAL = {
+  fach:"Mathematik",
+  stufe:"7",
+  titel:"Rationale Zahlen",
+  unter:"Klasse 7, Training vor der Arbeit: negative Zahlen deuten, Zahlengerade, Zahlenmengen, vier Grundrechenarten, verbinden, Rechenvorteile",
+  sekunden:20,
+  fragen:[
+    {
+      q:"Nachts zeigt das Thermometer "+M("−6")+" °C, mittags "+M("4")+" °C. Um wie viel Grad ist es wärmer geworden?",
+      a:[M("10")+" °C", M("2")+" °C", M("−2")+" °C", M("−10")+" °C"], r:0,
+      s:M("4 − (−6) = 4 + 6 = 10")+". Von "+M("−6")+" bis "+M("0")+" sind es 6 Grad, von "+M("0")+" bis "+M("4")+" noch einmal 4."
+    },
+    {
+      q:"Welche Zahl ist die kleinste?",
+      a:[M("−3"), M("−3,5"), M("−0,35"), M("0,5")], r:1,
+      s:"Auf der Zahlengeraden liegt "+M("−3,5")+" am weitesten links. Bei negativen Zahlen ist die mit dem größeren Betrag die kleinere."
+    },
+    {
+      q:"Welche Zahl liegt auf der Zahlengeraden genau in der Mitte zwischen "+M("−5")+" und "+M("3")+"?",
+      a:[M("−1"), M("−4"), M("1"), M("−2")], r:0,
+      s:"Von "+M("−5")+" bis "+M("3")+" sind es "+M("8")+" Einheiten, die Hälfte davon ist "+M("4")+". Also "+M("−5 + 4 = −1")+"."
+    },
+    {
+      q:"Was ist die Gegenzahl von "+M("−2,5")+"?",
+      a:[M("−2,5"), M("2,5"), M("−0,4"), M("0,4")], r:1,
+      s:"Die Gegenzahl liegt gleich weit von der Null entfernt auf der anderen Seite: "+M("2,5")+". "+M("−0,4")+" wäre der Kehrwert, das ist etwas anderes."
+    },
+    {
+      q:"Welche Zahl hat den größten Betrag?",
+      a:[M("8,9"), M("−4,5"), M("−9"), M("7")], r:2,
+      s:"Der Betrag ist der Abstand zur Null. "+M("|−9| = 9")+" ist größer als "+M("|8,9| = 8,9")+", das Vorzeichen spielt keine Rolle."
+    },
+    {
+      q:"Welche Aussage ist wahr?",
+      a:["Jede ganze Zahl ist auch eine rationale Zahl.", "Jede rationale Zahl ist auch eine ganze Zahl.",
+         M("−7")+" ist eine natürliche Zahl.", M("0,5")+" ist eine ganze Zahl."], r:0, zeit:30,
+      s:"Es gilt "+M("ℕ ⊂ ℤ ⊂ ℚ")+": Jede ganze Zahl "+M("z")+" lässt sich als Bruch "+f(M("z"), "1")+" schreiben. Umgekehrt ist "+M("0,5")+" rational, aber nicht ganz."
+    },
+    {
+      q:"Zu welchen Zahlenmengen gehört "+f("6", "3")+"?",
+      a:["nur zu "+M("ℚ"), "zu "+M("ℤ")+" und "+M("ℚ"), "zu "+M("ℕ")+", "+M("ℤ")+" und "+M("ℚ"), "zu keiner"], r:2,
+      s:"Erst kürzen, dann einordnen: "+f("6", "3")+M(" = 2")+" ist eine natürliche Zahl und damit auch ganz und rational."
+    },
+    {
+      q:"Welche Zahl gehört zu "+M("ℤ")+", aber nicht zu "+M("ℕ")+"?",
+      a:[M("12"), M("0"), M("−0,8"), M("−7")], r:3,
+      s:M("−7")+" ist ganz, aber negativ und damit nicht natürlich. "+M("−0,8")+" ist gar nicht ganz, "+M("0")+" und "+M("12")+" sind natürlich."
+    },
+    {
+      q:M("(−8) + (−5) = ?"),
+      a:[M("−3"), M("13"), M("−13"), M("3")], r:2,
+      s:"Gleiche Vorzeichen: Beträge addieren, Vorzeichen behalten. "+M("−(8 + 5) = −13")+"."
+    },
+    {
+      q:M("6 − (−9) = ?"),
+      a:[M("15"), M("−3"), M("3"), M("−15")], r:0,
+      s:"Eine negative Zahl subtrahieren heißt ihre Gegenzahl addieren: "+M("6 + 9 = 15")+"."
+    },
+    {
+      q:M("−2,5 + 4 = ?"),
+      a:[M("−6,5"), M("1,5"), M("−1,5"), M("6,5")], r:1,
+      s:"Verschiedene Vorzeichen: Beträge subtrahieren, "+M("4 − 2,5 = 1,5")+". Die "+M("4")+" hat den größeren Betrag, also ist das Ergebnis positiv."
+    },
+    {
+      q:M("−3,7 − 1,8 = ?"),
+      a:[M("−1,9"), M("1,9"), M("−5,5"), M("5,5")], r:2,
+      s:"Von "+M("−3,7")+" geht es noch "+M("1,8")+" weiter nach links: "+M("−(3,7 + 1,8) = −5,5")+"."
+    },
+    {
+      q:nf("1", "2")+M(" + ")+f("1", "4")+M(" = ?"),
+      a:[nf("1", "4"), nf("3", "4"), f("1", "4"), M("0")], r:0, zeit:30,
+      s:"Erst gleichnamig machen: "+nf("2", "4")+M(" + ")+f("1", "4")+M(" = ")+nf("1", "4")+". Zähler und Nenner nie einzeln addieren."
+    },
+    {
+      q:"Mias Konto steht bei "+M("−35")+" €. Sie zahlt "+M("50")+" € ein und hebt danach "+M("20")+" € ab. Wie hoch ist der Kontostand jetzt?",
+      a:[M("5")+" €", M("−5")+" €", M("−65")+" €", M("−105")+" €"], r:1, zeit:30,
+      s:M("−35 + 50 − 20 = 15 − 20 = −5")+". Das Konto ist immer noch mit 5 € im Minus."
+    },
+    {
+      q:"Welche Zahl gehört in das Kästchen? "+M("□ − 7 = −3"),
+      a:[M("−10"), M("4"), M("−4"), M("10")], r:1,
+      s:"Rückwärts rechnen: "+M("□ = −3 + 7 = 4")+". Probe: "+M("4 − 7 = −3")+"."
+    },
+    {
+      q:M("(−6) · (−7) = ?"),
+      a:[M("−42"), M("42"), M("−13"), M("13")], r:1,
+      s:"Minus mal Minus ergibt Plus: "+M("6 · 7 = 42")+"."
+    },
+    {
+      q:M("(−48) : 6 = ?"),
+      a:[M("8"), M("−8"), M("−7"), M("−42")], r:1,
+      s:"Verschiedene Vorzeichen ergeben ein negatives Ergebnis: "+M("48 : 6 = 8")+", also "+M("−8")+"."
+    },
+    {
+      q:"Welches Vorzeichen hat das Ergebnis? "+M("(−1) · (−2) · (−3) · (−4) · (−5)"),
+      a:["positiv", "negativ", "Das Ergebnis ist null.", "Das sieht man erst nach dem Ausrechnen."], r:1, fest:true,
+      s:"Fünf negative Faktoren, also eine ungerade Anzahl: Das Produkt ist negativ, genauer "+M("−120")+". Je zwei Minuszeichen heben sich auf, eins bleibt übrig."
+    },
+    {
+      q:M("−0,5 · 8 = ?"),
+      a:[M("4"), M("−40"), M("−4"), M("−0,4")], r:2,
+      s:M("0,5 · 8 = 4")+", das ist die Hälfte von 8. Ein Minuszeichen, also "+M("−4")+"."
+    },
+    {
+      q:M("(")+nf("3", "4")+M(") · (")+nf("2", "3")+M(") = ?"),
+      a:[f("1", "2"), nf("1", "2"), f("9", "8"), nf("5", "7")], r:0, zeit:30,
+      s:"Minus mal Minus ergibt Plus. Zähler mal Zähler, Nenner mal Nenner: "+f("3 · 2", "4 · 3")+M(" = ")+f("6", "12")+M(" = ")+f("1", "2")+"."
+    },
+    {
+      q:M("1,2 : (−0,4) = ?"),
+      a:[M("−3"), M("3"), M("−0,3"), M("−30")], r:0,
+      s:"Das Komma in beiden Zahlen um eine Stelle verschieben: "+M("12 : (−4) = −3")+"."
+    },
+    {
+      q:"Welche Zahl gehört in das Kästchen? "+M("(−4) · □ = 28"),
+      a:[M("7"), M("−7"), M("24"), M("−32")], r:1,
+      s:M("28 : (−4) = −7")+". Probe: "+M("(−4) · (−7) = 28")+"."
+    },
+    {
+      q:M("5 − 3 · (−4) = ?"),
+      a:[M("−8"), M("17"), M("−7"), M("8")], r:1, zeit:30,
+      s:"Punkt vor Strich: zuerst "+M("3 · (−4) = −12")+", dann "+M("5 − (−12) = 5 + 12 = 17")+". Wer "+M("−8")+" hat, hat von links nach rechts gerechnet."
+    },
+    {
+      q:M("(−8) : 4 − 6 = ?"),
+      a:[M("4"), M("−8"), M("−4"), M("8")], r:1, zeit:30,
+      s:"Punkt vor Strich: "+M("(−8) : 4 = −2")+", dann "+M("−2 − 6 = −8")+". Die "+M("4")+" entsteht, wenn man "+M("4 − 6")+" zuerst rechnet."
+    },
+    {
+      q:M("−2 · (3 − 7) = ?"),
+      a:[M("−8"), M("8"), M("−20"), M("−13")], r:1, zeit:30,
+      s:"Klammer zuerst: "+M("3 − 7 = −4")+". Dann "+M("−2 · (−4) = 8")+"."
+    },
+    {
+      q:"Berechne geschickt: "+M("(−25) · 7,3 · (−4)"),
+      a:[M("730"), M("−730"), M("73"), M("−73")], r:0, zeit:30,
+      s:"Faktoren vertauschen und zusammenfassen: "+M("(−25) · (−4) = 100")+", dann "+M("100 · 7,3 = 730")+". Kommutativ- und Assoziativgesetz."
+    },
+    {
+      q:"Welches Rechengesetz steckt in "+M("4,7 · (−13) + 4,7 · 3 = 4,7 · (−13 + 3)")+"?",
+      a:["Kommutativgesetz", "Assoziativgesetz", "Distributivgesetz", "Punkt vor Strich"], r:2, zeit:30,
+      s:"Der gemeinsame Faktor "+M("4,7")+" wird ausgeklammert, das ist das Distributivgesetz. Ergebnis: "+M("4,7 · (−10) = −47")+"."
+    },
+    {
+      q:"Stimmt das? „Für die Subtraktion gilt das Kommutativgesetz.“",
+      a:["wahr", "falsch"], r:1, fest:true,
+      s:M("15 − 9 = 6")+", aber "+M("9 − 15 = −6")+". Vertauschen darf man erst, wenn man die Subtraktion als Addition der Gegenzahl schreibt: "+M("15 + (−9) = (−9) + 15")+"."
+    },
+    {
+      q:M("7,5 − (2,5 − 4) = ?"),
+      a:[M("1"), M("9"), M("14"), M("6")], r:1, zeit:30,
+      s:"Eine Minusklammer dreht beim Auflösen jedes Vorzeichen in der Klammer um: "+M("7,5 − 2,5 + 4 = 9")+". Wer "+M("1")+" hat, hat das zweite Vorzeichen vergessen."
+    },
+    {
+      q:"Eine Taucherin ist in "+M("−12")+" m Tiefe. Sie steigt jede Minute "+M("1,5")+" m auf. Wo ist sie nach 4 Minuten?",
+      a:[M("−6")+" m", M("−18")+" m", M("−10,5")+" m", M("6")+" m"], r:0, zeit:30,
+      s:M("4 · 1,5 = 6")+" m nach oben, also "+M("−12 + 6 = −6")+". Aufsteigen heißt: in Richtung null."
+    },
+    {
+      q:"Ein U-Boot fährt in "+M("−120")+" m Tiefe, ein Hubschrauber fliegt genau darüber in "+M("250")+" m Höhe. Wie weit sind die beiden voneinander entfernt?",
+      a:[M("130")+" m", M("370")+" m", M("−130")+" m", M("−370")+" m"], r:1, zeit:30,
+      s:M("250 − (−120) = 250 + 120 = 370")+". Ein Abstand ist nie negativ."
+    }
+  ]
+};
+
+var Q_SAETZE = [Q7_RATIONAL];
+
+/* -----------------------------------------------------------------------
+   LIVE-QUIZ: QR-Code
+   Kleiner Encoder nur fuer den Beitrittslink: Byte-Modus, Fehlerkorrektur
+   Stufe M, Versionen 1 bis 10 (bis 213 Byte). Aufbau nach ISO/IEC 18004,
+   Maske mit der niedrigsten Strafpunktzahl. Gegengeprueft mit dem
+   QR-Leser von OpenCV fuer Versionen 1 bis 9.
+   ----------------------------------------------------------------------- */
+
+var QR_ECC_M    = [0, 10, 16, 26, 18, 24, 16, 18, 22, 22, 26];
+var QR_BLOECKE_M = [0, 1, 1, 1, 2, 2, 4, 4, 4, 5, 5];
+
+function qrRohModule(ver){
+  var r = (16 * ver + 128) * ver + 64;
+  if(ver >= 2){
+    var na = Math.floor(ver / 7) + 2;
+    r -= (25 * na - 10) * na - 55;
+    if(ver >= 7) r -= 36;
+  }
+  return r;
+}
+
+function qrDatenBytes(ver){
+  return Math.floor(qrRohModule(ver) / 8) - QR_ECC_M[ver] * QR_BLOECKE_M[ver];
+}
+
+function qrMal(x, y){
+  var z = 0;
+  for(var i = 7; i >= 0; i--){
+    z = (z << 1) ^ ((z >>> 7) * 0x11D);
+    z ^= ((y >>> i) & 1) * x;
+  }
+  return z;
+}
+
+function qrTeiler(grad){
+  var r = [], i, j, wurzel = 1;
+  for(i = 0; i < grad - 1; i++) r.push(0);
+  r.push(1);
+  for(i = 0; i < grad; i++){
+    for(j = 0; j < r.length; j++){
+      r[j] = qrMal(r[j], wurzel);
+      if(j + 1 < r.length) r[j] ^= r[j + 1];
+    }
+    wurzel = qrMal(wurzel, 2);
+  }
+  return r;
+}
+
+function qrRest(daten, teiler){
+  var r = [], i, j;
+  for(i = 0; i < teiler.length; i++) r.push(0);
+  for(i = 0; i < daten.length; i++){
+    var faktor = daten[i] ^ r.shift();
+    r.push(0);
+    for(j = 0; j < teiler.length; j++) r[j] ^= qrMal(teiler[j], faktor);
+  }
+  return r;
+}
+
+function qrUtf8(s){
+  var b = [], i, c;
+  for(i = 0; i < s.length; i++){
+    c = s.charCodeAt(i);
+    if(c < 0x80) b.push(c);
+    else if(c < 0x800) b.push(0xC0 | (c >> 6), 0x80 | (c & 63));
+    else b.push(0xE0 | (c >> 12), 0x80 | ((c >> 6) & 63), 0x80 | (c & 63));
+  }
+  return b;
+}
+
+function qrMatrix(text){
+  var bytes = qrUtf8(text), ver, i, j, x, y;
+  for(ver = 1; ver <= 10; ver++){
+    if(4 + (ver < 10 ? 8 : 16) + 8 * bytes.length <= qrDatenBytes(ver) * 8) break;
+  }
+  if(ver > 10) return null;
+
+  /* Bitstrom: Modus, Laenge, Daten, Terminator, Fuellbytes */
+  var bits = [];
+  function schreibe(wert, n){ for(var k = n - 1; k >= 0; k--) bits.push((wert >>> k) & 1); }
+  schreibe(4, 4);
+  schreibe(bytes.length, ver < 10 ? 8 : 16);
+  for(i = 0; i < bytes.length; i++) schreibe(bytes[i], 8);
+  var kap = qrDatenBytes(ver) * 8;
+  schreibe(0, Math.min(4, kap - bits.length));
+  while(bits.length % 8) bits.push(0);
+  for(var pad = 0xEC; bits.length < kap; pad ^= 0xEC ^ 0x11) schreibe(pad, 8);
+  var daten = [];
+  for(i = 0; i < bits.length; i += 8){
+    var w = 0;
+    for(j = 0; j < 8; j++) w = (w << 1) | bits[i + j];
+    daten.push(w);
+  }
+
+  /* Bloecke mit Fehlerkorrektur, dann spaltenweise verschraenkt */
+  var nb = QR_BLOECKE_M[ver], eccLen = QR_ECC_M[ver];
+  var roh = Math.floor(qrRohModule(ver) / 8);
+  var kurz = nb - roh % nb, kurzLen = Math.floor(roh / nb);
+  var teiler = qrTeiler(eccLen), bloecke = [], k = 0;
+  for(i = 0; i < nb; i++){
+    var dat = daten.slice(k, k + kurzLen - eccLen + (i < kurz ? 0 : 1));
+    k += dat.length;
+    var ecc = qrRest(dat, teiler);
+    if(i < kurz) dat.push(0);
+    bloecke.push(dat.concat(ecc));
+  }
+  var cw = [];
+  for(i = 0; i < bloecke[0].length; i++){
+    for(j = 0; j < bloecke.length; j++){
+      if(i !== kurzLen - eccLen || j >= kurz) cw.push(bloecke[j][i]);
+    }
+  }
+
+  /* Raster und Funktionsmuster */
+  var n = ver * 4 + 17, mod = [], fkt = [];
+  for(y = 0; y < n; y++){
+    mod.push([]); fkt.push([]);
+    for(x = 0; x < n; x++){ mod[y].push(false); fkt[y].push(false); }
+  }
+  function setze(px, py, dunkel){ mod[py][px] = dunkel; fkt[py][px] = true; }
+
+  for(i = 0; i < n; i++){ setze(6, i, i % 2 === 0); setze(i, 6, i % 2 === 0); }
+
+  function finder(cx, cy){
+    for(var dy = -4; dy <= 4; dy++) for(var dx = -4; dx <= 4; dx++){
+      var d = Math.max(Math.abs(dx), Math.abs(dy)), px = cx + dx, py = cy + dy;
+      if(px >= 0 && px < n && py >= 0 && py < n) setze(px, py, d !== 2 && d !== 4);
+    }
+  }
+  finder(3, 3); finder(n - 4, 3); finder(3, n - 4);
+
+  var pos = [];
+  if(ver > 1){
+    var na = Math.floor(ver / 7) + 2;
+    var schritt = Math.ceil((ver * 4 + 4) / (na * 2 - 2)) * 2;
+    pos = [6];
+    for(var p = n - 7; pos.length < na; p -= schritt) pos.splice(1, 0, p);
+  }
+  for(i = 0; i < pos.length; i++) for(j = 0; j < pos.length; j++){
+    if((i === 0 && j === 0) || (i === 0 && j === pos.length - 1) || (i === pos.length - 1 && j === 0)) continue;
+    for(var ay = -2; ay <= 2; ay++) for(var ax = -2; ax <= 2; ax++){
+      setze(pos[i] + ax, pos[j] + ay, Math.max(Math.abs(ax), Math.abs(ay)) !== 1);
+    }
+  }
+
+  function formatBits(maske){
+    var d = (0 << 3) | maske, r = d;   /* Stufe M hat die Kennung 00 */
+    for(var q = 0; q < 10; q++) r = (r << 1) ^ ((r >>> 9) * 0x537);
+    var b = ((d << 10) | r) ^ 0x5412;
+    function bit(q){ return ((b >>> q) & 1) !== 0; }
+    for(q = 0; q <= 5; q++) setze(8, q, bit(q));
+    setze(8, 7, bit(6)); setze(8, 8, bit(7)); setze(7, 8, bit(8));
+    for(q = 9; q < 15; q++) setze(14 - q, 8, bit(q));
+    for(q = 0; q < 8; q++) setze(n - 1 - q, 8, bit(q));
+    for(q = 8; q < 15; q++) setze(8, n - 15 + q, bit(q));
+    setze(8, n - 8, true);
+  }
+  formatBits(0);
+
+  if(ver >= 7){
+    var vr = ver;
+    for(i = 0; i < 12; i++) vr = (vr << 1) ^ ((vr >>> 11) * 0x1F25);
+    var vb = (ver << 12) | vr;
+    for(i = 0; i < 18; i++){
+      var vbit = ((vb >>> i) & 1) !== 0, va = n - 11 + i % 3, vc = Math.floor(i / 3);
+      setze(va, vc, vbit); setze(vc, va, vbit);
+    }
+  }
+
+  /* Daten im Zickzack von rechts unten */
+  var bi = 0;
+  for(var rechts = n - 1; rechts >= 1; rechts -= 2){
+    if(rechts === 6) rechts = 5;
+    for(var v = 0; v < n; v++) for(j = 0; j < 2; j++){
+      x = rechts - j;
+      var hoch = ((rechts + 1) & 2) === 0;
+      y = hoch ? n - 1 - v : v;
+      if(!fkt[y][x] && bi < cw.length * 8){
+        mod[y][x] = ((cw[bi >>> 3] >>> (7 - (bi & 7))) & 1) !== 0;
+        bi++;
+      }
+    }
+  }
+
+  function maskiere(m){
+    for(var my = 0; my < n; my++) for(var mx = 0; mx < n; mx++){
+      if(fkt[my][mx]) continue;
+      var t;
+      switch(m){
+        case 0: t = (mx + my) % 2 === 0; break;
+        case 1: t = my % 2 === 0; break;
+        case 2: t = mx % 3 === 0; break;
+        case 3: t = (mx + my) % 3 === 0; break;
+        case 4: t = (Math.floor(mx / 3) + Math.floor(my / 2)) % 2 === 0; break;
+        case 5: t = mx * my % 2 + mx * my % 3 === 0; break;
+        case 6: t = (mx * my % 2 + mx * my % 3) % 2 === 0; break;
+        default: t = ((mx + my) % 2 + mx * my % 3) % 2 === 0;
+      }
+      if(t) mod[my][mx] = !mod[my][mx];
+    }
+  }
+
+  function strafe(){
+    var s = 0, a, b, lauf, dunkel = 0, zeile, spalte;
+    for(a = 0; a < n; a++){
+      zeile = ""; spalte = "";
+      for(b = 0; b < n; b++){
+        zeile += mod[a][b] ? "1" : "0";
+        spalte += mod[b][a] ? "1" : "0";
+        if(mod[a][b]) dunkel++;
+      }
+      var linien = [zeile, spalte];
+      for(var l = 0; l < 2; l++){
+        var t = linien[l];
+        lauf = 1;
+        for(b = 1; b <= n; b++){
+          if(b < n && t.charAt(b) === t.charAt(b - 1)) lauf++;
+          else { if(lauf >= 5) s += lauf - 2; lauf = 1; }
+        }
+        var gerahmt = "0000" + t + "0000", suche = 0, fund;
+        while((fund = gerahmt.indexOf("1011101", suche)) >= 0){
+          if(gerahmt.substr(fund - 4, 4) === "0000" || gerahmt.substr(fund + 7, 4) === "0000") s += 40;
+          suche = fund + 1;
+        }
+      }
+    }
+    for(a = 0; a < n - 1; a++) for(b = 0; b < n - 1; b++){
+      var c = mod[a][b];
+      if(c === mod[a][b + 1] && c === mod[a + 1][b] && c === mod[a + 1][b + 1]) s += 3;
+    }
+    s += (Math.ceil(Math.abs(dunkel * 20 - n * n * 10) / (n * n)) - 1) * 10;
+    return s;
+  }
+
+  var beste = 0, besteStrafe = 1e9;
+  for(var m = 0; m < 8; m++){
+    maskiere(m); formatBits(m);
+    var st = strafe();
+    if(st < besteStrafe){ besteStrafe = st; beste = m; }
+    maskiere(m);
+  }
+  maskiere(beste); formatBits(beste);
+  return mod;
+}
+
+/* Als SVG mit vier Modulen Ruhezone; die Farbe kommt von aussen. */
+function qrSvg(text){
+  var m = qrMatrix(text);
+  if(!m) return "";
+  var n = m.length, d = "", x, y;
+  for(y = 0; y < n; y++) for(x = 0; x < n; x++){
+    if(m[y][x]) d += "M" + (x + 4) + " " + (y + 4) + "h1v1h-1z";
+  }
+  return '<svg viewBox="0 0 ' + (n + 8) + ' ' + (n + 8) + '" xmlns="http://www.w3.org/2000/svg" ' +
+    'shape-rendering="crispEdges" aria-label="QR-Code zum Mitspielen">' +
+    '<rect width="100%" height="100%" fill="var(--surface-page)"/>' +
+    '<path d="' + d + '" fill="var(--fg-1)"/></svg>';
+}
+
+
+/* -----------------------------------------------------------------------
+   LIVE-QUIZ: Verbindung
+   MQTT 3.1.1 ueber WebSocket, von Hand, weil die Sammlung keine
+   Bibliotheken laedt. Gebraucht werden nur CONNECT, SUBSCRIBE, PUBLISH
+   mit QoS 0, PING und DISCONNECT. Faellt die Leitung weg, baut sich die
+   Verbindung mit wachsendem Abstand neu auf und abonniert alles wieder.
+   ----------------------------------------------------------------------- */
+
+/* Oeffentliche Server mit WebSocket ueber TLS. Welcher im Schulnetz
+   durchkommt, zeigt der Verbindungstest in Schritt 3. Neue Server hinten
+   anhaengen, der Index steht im Beitrittslink. */
+var Q_SERVER = [
+  {name:"HiveMQ",    url:"wss://broker.hivemq.com:8884/mqtt"},
+  {name:"EMQX",      url:"wss://broker.emqx.io:8084/mqtt"},
+  {name:"Mosquitto", url:"wss://test.mosquitto.org:8081"}
+];
+
+/* Liegt die Sammlung lokal (file://), zeigt der QR-Code trotzdem auf die
+   Online-Fassung, denn die Tablets kommen an den Beamer-Rechner nicht heran. */
+var Q_ONLINE = "https://timkucz-cmyk.github.io/jeopardy/";
+
+function qBytes(s){ return new TextEncoder().encode(s); }
+
+function mqttLaenge(n){
+  var o = [];
+  do{
+    var d = n % 128;
+    n = Math.floor(n / 128);
+    if(n > 0) d |= 128;
+    o.push(d);
+  }while(n > 0);
+  return o;
+}
+function mqttText(s){
+  var b = qBytes(s);
+  return [b.length >> 8, b.length & 255].concat(Array.prototype.slice.call(b));
+}
+function mqttPaket(kopf, rumpf){
+  return new Uint8Array([kopf].concat(mqttLaenge(rumpf.length), rumpf));
+}
+
+function mqttNeu(url, hooks){
+  var v = {ws:null, zu:false, bereit:false, puffer:[], abos:[], pid:1, versuche:0, uhr:null, wecker:null, rx:0};
+
+  function roh(p){
+    if(v.ws && v.ws.readyState === 1){
+      try{ v.ws.send(p); return true; }catch(err){}
+    }
+    return false;
+  }
+  function abonnieren(thema){
+    roh(mqttPaket(0x82, [0, v.pid].concat(mqttText(thema), [0])));
+    v.pid = v.pid % 250 + 1;
+  }
+  function spaeter(){
+    if(v.zu) return;
+    v.versuche++;
+    clearTimeout(v.wecker);
+    v.wecker = setTimeout(oeffnen, Math.min(8000, 500 * v.versuche));
+  }
+  function pruefen(){
+    /* PINGRESP kommt normalerweise sofort. Bleibt 45 s lang alles still,
+       ist die Leitung tot, ohne dass der Browser es gemerkt hat. */
+    if(Date.now() - v.rx > 45000){ try{ v.ws.close(); }catch(err){} return; }
+    roh(new Uint8Array([0xC0, 0]));
+  }
+  function lesen(){
+    while(v.puffer.length >= 2){
+      var mult = 1, laenge = 0, i = 1, b;
+      do{
+        if(i >= v.puffer.length) return;
+        b = v.puffer[i++];
+        laenge += (b & 127) * mult;
+        mult *= 128;
+      }while(b & 128);
+      if(v.puffer.length < i + laenge) return;
+      var typ = v.puffer[0] >> 4, flags = v.puffer[0] & 15;
+      var rumpf = v.puffer.slice(i, i + laenge);
+      v.puffer = v.puffer.slice(i + laenge);
+      if(typ === 2){
+        if(rumpf[1] === 0){
+          v.bereit = true; v.versuche = 0;
+          v.abos.forEach(abonnieren);
+          clearInterval(v.uhr);
+          v.uhr = setInterval(pruefen, 15000);
+          if(hooks.status) hooks.status(true);
+        } else {
+          try{ v.ws.close(); }catch(err){}
+        }
+      } else if(typ === 3){
+        var tl = (rumpf[0] << 8) | rumpf[1];
+        var thema = new TextDecoder().decode(new Uint8Array(rumpf.slice(2, 2 + tl)));
+        var ab = 2 + tl + (((flags >> 1) & 3) ? 2 : 0);
+        if(hooks.nachricht) hooks.nachricht(thema, new Uint8Array(rumpf.slice(ab)));
+      }
+    }
+  }
+  function oeffnen(){
+    if(v.zu) return;
+    clearTimeout(v.wecker);
+    var ws;
+    try{ ws = new WebSocket(url, "mqtt"); }catch(err){ spaeter(); return; }
+    v.ws = ws; v.bereit = false; v.puffer = [];
+    ws.binaryType = "arraybuffer";
+    var frist = setTimeout(function(){
+      if(ws === v.ws && !v.bereit){ try{ ws.close(); }catch(err){} }
+    }, 8000);
+    ws.onopen = function(){
+      v.rx = Date.now();
+      roh(mqttPaket(0x10, [0, 4, 77, 81, 84, 84, 4, 2, 0, 60].concat(mqttText("lq" + qZufall(12)))));
+    };
+    ws.onmessage = function(ev){
+      if(ws !== v.ws) return;
+      v.rx = Date.now();
+      var neu = new Uint8Array(ev.data);
+      for(var i = 0; i < neu.length; i++) v.puffer.push(neu[i]);
+      lesen();
+    };
+    ws.onclose = function(){
+      clearTimeout(frist);
+      if(ws !== v.ws) return;
+      v.bereit = false;
+      clearInterval(v.uhr);
+      if(hooks.status && !v.zu) hooks.status(false);
+      spaeter();
+    };
+    ws.onerror = function(){};
+  }
+
+  oeffnen();
+  return {
+    abo:function(thema){
+      if(v.abos.indexOf(thema) < 0) v.abos.push(thema);
+      if(v.bereit) abonnieren(thema);
+    },
+    senden:function(thema, bytes, behalten){
+      if(!v.bereit) return false;
+      return roh(mqttPaket(0x30 | (behalten ? 1 : 0),
+        mqttText(thema).concat(Array.prototype.slice.call(bytes))));
+    },
+    bereit:function(){ return v.bereit; },
+    /* Nach dem Aufwachen eines Tablets: tote Leitung schnell erkennen,
+       statt 45 s auf den naechsten Ping zu warten. */
+    wecken:function(){
+      if(v.zu) return;
+      if(!v.ws || v.ws.readyState > 1){ v.versuche = 0; oeffnen(); return; }
+      if(v.bereit){
+        var t = Date.now();
+        roh(new Uint8Array([0xC0, 0]));
+        setTimeout(function(){ if(v.rx < t && v.ws){ try{ v.ws.close(); }catch(err){} } }, 4000);
+      }
+    },
+    schliessen:function(){
+      v.zu = true;
+      clearInterval(v.uhr); clearTimeout(v.wecker);
+      if(v.bereit) roh(new Uint8Array([0xE0, 0]));
+      try{ v.ws.close(); }catch(err){}
+    }
+  };
+}
+
+
+/* -----------------------------------------------------------------------
+   LIVE-QUIZ: Verschluesselung
+   Aus dem Raumcode entstehen per SHA-256 zwei unabhaengige Werte: das
+   Thema auf dem Server und der AES-Schluessel. Wer nur das Thema sieht,
+   kommt nicht an den Code und damit nicht an den Schluessel.
+   ----------------------------------------------------------------------- */
+
+var Q_CODEZEICHEN = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";   /* ohne 0/O und 1/I */
+
+/* 32 Zeichen teilen 256 glatt, Modulo verzerrt also nicht. */
+function qZufall(n, zeichen){
+  zeichen = zeichen || "abcdefghijkmnpqrstuvwxyz23456789";
+  var r = new Uint8Array(n), s = "";
+  crypto.getRandomValues(r);
+  for(var i = 0; i < n; i++) s += zeichen.charAt(r[i] % zeichen.length);
+  return s;
+}
+
+function qHex(buf){
+  var b = new Uint8Array(buf), s = "";
+  for(var i = 0; i < b.length; i++) s += (b[i] < 16 ? "0" : "") + b[i].toString(16);
+  return s;
+}
+
+function qRaumSchluessel(code){
+  var sub = window.crypto && window.crypto.subtle;
+  if(!sub) return Promise.reject(new Error("krypto"));
+  return Promise.all([
+    sub.digest("SHA-256", qBytes("lmg-quiz|thema|" + code)),
+    sub.digest("SHA-256", qBytes("lmg-quiz|schluessel|" + code))
+  ]).then(function(h){
+    return sub.importKey("raw", h[1], {name:"AES-GCM"}, false, ["encrypt", "decrypt"]).then(function(k){
+      return {thema:"lmgquiz/" + qHex(h[0]).slice(0, 24), key:k};
+    });
+  });
+}
+
+function qVerpacken(key, obj){
+  var iv = crypto.getRandomValues(new Uint8Array(12));
+  return crypto.subtle.encrypt({name:"AES-GCM", iv:iv}, key, qBytes(JSON.stringify(obj))).then(function(ct){
+    var out = new Uint8Array(12 + ct.byteLength);
+    out.set(iv);
+    out.set(new Uint8Array(ct), 12);
+    return out;
+  });
+}
+
+/* Leere Nachrichten (geloeschter Raum) und fremde Raeume scheitern hier
+   und werden vom Aufrufer still verworfen. */
+function qAuspacken(key, bytes){
+  if(bytes.length < 29) return Promise.reject(new Error("kurz"));
+  return crypto.subtle.decrypt({name:"AES-GCM", iv:bytes.subarray(0, 12)}, key, bytes.subarray(12)).then(function(pt){
+    return JSON.parse(new TextDecoder().decode(pt));
+  });
+}
+
+function qEsc(s){
+  return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+}
+
+/* Antworttexte kommen auf dem Tablet ueber das Netz an. Wer den Raumcode
+   kennt, koennte dort beliebiges HTML einschleusen; deshalb bleibt nur
+   uebrig, was Formeln und Brueche brauchen. DOMParser fuehrt nichts aus. */
+function qSauber(html){
+  var erlaubt = {SPAN:1, I:1, B:1, SUB:1, SUP:1};
+  var doc = new DOMParser().parseFromString("<div>" + String(html) + "</div>", "text/html");
+  function lauf(k){
+    var s = "";
+    for(var i = 0; i < k.childNodes.length; i++){
+      var c = k.childNodes[i];
+      if(c.nodeType === 3){ s += qEsc(c.nodeValue); continue; }
+      if(c.nodeType !== 1) continue;
+      var innen = lauf(c);
+      if(c.tagName === "BR"){ s += "<br>"; continue; }
+      if(!erlaubt[c.tagName]){ s += innen; continue; }
+      var t = c.tagName.toLowerCase();
+      var kl = (c.getAttribute("class") || "").replace(/[^a-z0-9 _-]/gi, "");
+      s += "<" + t + (kl ? ' class="' + kl + '"' : "") + ">" + innen + "</" + t + ">";
+    }
+    return s;
+  }
+  return doc.body.firstChild ? lauf(doc.body.firstChild) : "";
+}
+
+function qNameSauber(s){
+  return String(s || "").replace(/[\u0000-\u001f\u007f<>]/g, "").replace(/\s+/g, " ").trim().slice(0, 16);
+}
+
+/* Die vier Antwortformen. Farben kommen aus --qa0 bis --qa3. */
+var Q_FORMEN = [
+  '<circle cx="12" cy="12" r="9"/>',
+  '<path d="M12 2.8 22 20.5H2z"/>',
+  '<rect x="3.5" y="3.5" width="17" height="17" rx="1.5"/>',
+  '<path d="m12 2 3 6.3 6.9.9-5 4.8 1.2 6.8L12 17.5l-6.1 3.3 1.2-6.8-5-4.8 6.9-.9z"/>'
+];
+var Q_FORMNAMEN = ["Kreis", "Dreieck", "Quadrat", "Stern"];
+
+function qForm(i, size){
+  return '<svg class="qform" viewBox="0 0 24 24" width="' + size + '" height="' + size +
+    '" fill="currentColor" aria-label="' + Q_FORMNAMEN[i] + '">' + Q_FORMEN[i] + '</svg>';
+}
+
+function qTextLaenge(html){ return String(html).replace(/<[^>]*>/g, "").length; }
+
+
+/* -----------------------------------------------------------------------
+   LIVE-QUIZ: Zustand am Beamer
+   ----------------------------------------------------------------------- */
+
+var Q_KEY = "quiz_v1";
+
+var qstate = {
+  satz:0, sekunden:0, anzahl:20, mischen:true, server:0, eigen:"",
+  code:"", raum:"", seq:0, runde:1, phase:"aus",
+  reihenfolge:[], pos:0, perm:[], vert:[],
+  spieler:{}, reihe:[], kick:[],
+  antworten:{}, t0:0, dauerMs:0,
+  statistik:[]
+};
+
+/* Was nicht in den Speicher gehoert: Verbindung, Schluessel, Uhren. */
+var qnetz = {mqtt:null, thema:"", key:null, sendeTimer:null, uhr:null, verbunden:false};
+
+function qsatz(){ return Q_SAETZE[qstate.satz] || Q_SAETZE[0]; }
+function qAufgabe(){ return qsatz().fragen[qstate.reihenfolge[qstate.pos]]; }
+function qFid(){ return qstate.raum + "." + qstate.runde + "." + qstate.pos; }
+
+function qZeitMs(a){
+  return (qstate.sekunden || a.zeit || qsatz().sekunden || 20) * 1000;
+}
+
+function qServerUrl(){
+  return qstate.server < 0 ? qstate.eigen : Q_SERVER[qstate.server].url;
+}
+function qServerName(){
+  return qstate.server < 0 ? "eigenen Server" : Q_SERVER[qstate.server].name;
+}
+
+function qBasisUrl(){
+  return /^https?:$/.test(location.protocol) ? location.origin + location.pathname : Q_ONLINE;
+}
+function qLink(){
+  return qBasisUrl() + "#quiz=" + qstate.code + "&s=" + qstate.server +
+    (qstate.server < 0 ? "&u=" + encodeURIComponent(qstate.eigen) : "");
+}
+
+function qMischen(arr){
+  for(var i = arr.length - 1; i > 0; i--){
+    var j = Math.floor(Math.random() * (i + 1)), t = arr[i];
+    arr[i] = arr[j]; arr[j] = t;
+  }
+  return arr;
+}
+
+/* Bei fester Reihenfolge und begrenzter Anzahl eine zufaellige Auswahl
+   nehmen, aber in der Reihenfolge des Satzes zeigen. */
+function qNeueReihenfolge(){
+  var idx = qsatz().fragen.map(function(x, i){ return i; });
+  var n = qstate.anzahl ? Math.min(qstate.anzahl, idx.length) : idx.length;
+  if(qstate.mischen) idx = qMischen(idx).slice(0, n);
+  else if(n < idx.length) idx = qMischen(idx).slice(0, n).sort(function(a, b){ return a - b; });
+  qstate.reihenfolge = idx;
+  qstate.pos = 0;
+}
+
+function qPlatzierung(){
+  var l = qstate.reihe.map(function(id){
+    return {id:id, n:qstate.spieler[id].n, p:qstate.spieler[id].p, d:qstate.spieler[id].d};
+  });
+  l.sort(function(x, y){ return y.p - x.p; });
+  var platz = 0, vorher = null;
+  l.forEach(function(e, i){
+    if(e.p !== vorher){ platz = i + 1; vorher = e.p; }
+    e.platz = platz;
+  });
+  return l;
+}
+
+/* Doppelte Namen bekommen eine Nummer, sonst weiss am Podest niemand,
+   wer gemeint ist. */
+function qNameFrei(name){
+  var belegt = {};
+  qstate.reihe.forEach(function(id){ belegt[qstate.spieler[id].n.toLowerCase()] = true; });
+  if(!belegt[name.toLowerCase()]) return name;
+  for(var k = 2; ; k++){
+    var neu = name.slice(0, 13) + " " + k;
+    if(!belegt[neu.toLowerCase()]) return neu;
+  }
+}
+
+
+/* -----------------------------------------------------------------------
+   LIVE-QUIZ: Raum und Nachrichten am Beamer
+   ----------------------------------------------------------------------- */
+
+function qRaumOeffnen(){
+  if(!qstate.code){
+    qstate.code = qZufall(5, Q_CODEZEICHEN);
+    qstate.raum = qZufall(6);
+  }
+  qNetzZeigen("warte");
+  return qRaumSchluessel(qstate.code).then(function(r){
+    qnetz.thema = r.thema; qnetz.key = r.key;
+    if(qnetz.mqtt) qnetz.mqtt.schliessen();
+    qnetz.mqtt = mqttNeu(qServerUrl(), {
+      status:function(ok){
+        qnetz.verbunden = ok;
+        qNetzZeigen(ok ? "ok" : "weg");
+        if(ok) qSenden(true);
+      },
+      nachricht:qEmpfangen
+    });
+    qnetz.mqtt.abo(qnetz.thema + "/t");
+  });
+}
+
+/* Leere, behaltene Nachricht loescht den Raum auf dem Server; wer danach
+   noch mit dem alten Code kommt, findet nichts mehr. */
+function qRaumSchliessen(){
+  clearInterval(qnetz.uhr);
+  clearTimeout(qnetz.sendeTimer); qnetz.sendeTimer = null;
+  var m = qnetz.mqtt;
+  if(m){
+    m.senden(qnetz.thema + "/b", new Uint8Array(0), true);
+    setTimeout(function(){ m.schliessen(); }, 400);
+  }
+  qnetz.mqtt = null; qnetz.key = null; qnetz.verbunden = false;
+  qstate.code = ""; qstate.phase = "aus";
+  try{ localStorage.removeItem(Q_KEY); }catch(err){}
+}
+
+function qEmpfangen(thema, bytes){
+  if(thema !== qnetz.thema + "/t" || !qnetz.key) return;
+  qAuspacken(qnetz.key, bytes).then(qNachricht, function(){});
+}
+
+function qNachricht(m){
+  if(!m || typeof m.id !== "string" || m.id.length > 20 || typeof m.g !== "string") return;
+  if(qstate.kick.indexOf(m.id) >= 0){ qSenden(); return; }
+  var sp = qstate.spieler[m.id];
+
+  if(m.t === "j"){
+    if(!sp && qstate.phase !== "ende" && qstate.phase !== "aus"){
+      var name = qNameSauber(m.n);
+      if(!name) return;
+      qstate.spieler[m.id] = {n:qNameFrei(name), g:m.g, p:0, d:0, st:-1, serie:0};
+      qstate.reihe.push(m.id);
+      qSpeichern();
+      qAnzeigeSpieler();
+    }
+    qSenden();
+    return;
+  }
+
+  if(m.t === "a"){
+    /* Das Geheimnis g kennt nur das Tablet selbst. Die Kennungen stehen im
+       Zustand fuer alle lesbar, ohne g kann trotzdem niemand fuer andere
+       antworten. */
+    if(!sp || sp.g !== m.g) return;
+    if(qstate.phase === "frage" && m.f === qFid() && !qstate.antworten[m.id]){
+      var w = +m.w;
+      if(!(w >= 0 && w < qstate.perm.length)) return;
+      qstate.antworten[m.id] = {w:w, ms:Math.max(0, Date.now() - qstate.t0)};
+      qAnzeigeZaehler();
+      if(Object.keys(qstate.antworten).length >= qstate.reihe.length){
+        setTimeout(function(){ if(qstate.phase === "frage") qAufloesen(); }, 700);
+      }
+    }
+    qSenden();
+  }
+}
+
+/* Viele Tablets antworten fast gleichzeitig. Statt fuer jede Antwort
+   einzeln zu senden, fasst eine kurze Wartezeit sie zusammen. */
+function qSenden(sofort){
+  if(qnetz.sendeTimer) return;
+  qnetz.sendeTimer = setTimeout(function(){
+    qnetz.sendeTimer = null;
+    if(!qnetz.mqtt || !qnetz.key || qstate.phase === "aus") return;
+    /* Uhrzeit statt Zaehler: nach einem Neuladen des Beamers darf die
+       Nummer nicht hinter den Stand zurueckfallen, den die Tablets kennen. */
+    qstate.seq = Math.max(qstate.seq + 1, Date.now());
+    var z = qZustandFuerTablets();
+    qVerpacken(qnetz.key, z).then(function(b){
+      if(qnetz.mqtt) qnetz.mqtt.senden(qnetz.thema + "/b", b, true);
+    });
+  }, sofort ? 0 : 250);
+}
+
+function qZustandFuerTablets(){
+  var z = {v:1, raum:qstate.raum, seq:qstate.seq, ph:qstate.phase,
+           nr:qstate.pos + 1, von:qstate.reihenfolge.length,
+           sp:qstate.reihe.slice(), kick:qstate.kick.slice()};
+  if(qstate.phase === "frage" || qstate.phase === "aufl"){
+    var a = qAufgabe();
+    z.f = qFid();
+    z.a = qstate.perm.map(function(i){ return a.a[i]; });
+  }
+  if(qstate.phase === "frage"){
+    z.hat = Object.keys(qstate.antworten);
+    z.rest = Math.max(0, qstate.t0 + qstate.dauerMs - Date.now());
+    z.dauer = qstate.dauerMs;
+  }
+  if(qstate.phase === "aufl"){
+    var r = qAufgabe().r;
+    z.r = qstate.perm.indexOf(r);
+  }
+  if(qstate.phase === "aufl" || qstate.phase === "rang" || qstate.phase === "ende"){
+    z.erg = {};
+    qPlatzierung().forEach(function(e){
+      var s = qstate.spieler[e.id];
+      z.erg[e.id] = [s.p, s.d, s.st, e.platz, s.serie];
+    });
+    z.anz = qstate.reihe.length;
+  }
+  return z;
+}
+
+
+/* -----------------------------------------------------------------------
+   LIVE-QUIZ: Ablauf am Beamer
+   lobby -> frage -> aufl -> (rang) -> frage ... -> ende
+   ----------------------------------------------------------------------- */
+
+function qFrageStarten(){
+  var a = qAufgabe();
+  var perm = a.a.map(function(x, i){ return i; });
+  if(!a.fest) qMischen(perm);
+  qstate.perm = perm;
+  qstate.vert = [];
+  qstate.antworten = {};
+  qstate.phase = "frage";
+  qstate.dauerMs = qZeitMs(a);
+  qstate.t0 = Date.now();
+  qSpeichern();
+  qRender();
+  qSenden(true);
+  clearInterval(qnetz.uhr);
+  qnetz.uhr = setInterval(qUhrTick, 200);
+  qUhrTick();
+}
+
+function qUhrTick(){
+  if(qstate.phase !== "frage"){ clearInterval(qnetz.uhr); return; }
+  var rest = qstate.t0 + qstate.dauerMs - Date.now();
+  el("qUhr").textContent = Math.max(0, Math.ceil(rest / 1000));
+  el("qUhr").className = "quhr" + (rest < 5500 ? " knapp" : "");
+  if(rest <= 0){
+    clearInterval(qnetz.uhr);
+    beep();
+    qAufloesen();
+  }
+}
+
+/* 1000 Punkte fuer eine sofortige richtige Antwort, 500 in der letzten
+   Sekunde. Gemessen wird am Beamer ab dem Absenden der Frage; die
+   Laufzeit ueber den Server ist fuer alle Tablets etwa gleich. */
+function qAufloesen(){
+  if(qstate.phase !== "frage") return;
+  clearInterval(qnetz.uhr);
+  var a = qAufgabe(), T = qstate.dauerMs;
+  var vert = qstate.perm.map(function(){ return 0; }), richtig = 0, teil = 0;
+  qstate.reihe.forEach(function(id){
+    var s = qstate.spieler[id], an = qstate.antworten[id];
+    s.d = 0;
+    if(!an){ s.st = -1; s.serie = 0; return; }
+    teil++;
+    vert[an.w]++;
+    if(qstate.perm[an.w] === a.r){
+      s.st = 1; s.serie++; richtig++;
+      s.d = Math.round(1000 * (1 - Math.min(an.ms, T) / T / 2));
+      s.p += s.d;
+    } else {
+      s.st = 0; s.serie = 0;
+    }
+  });
+  var vOrig = a.a.map(function(){ return 0; });
+  qstate.perm.forEach(function(orig, anzeige){ vOrig[orig] = vert[anzeige]; });
+  qstate.statistik.push({i:qstate.reihenfolge[qstate.pos], v:vOrig, richtig:richtig, teil:teil});
+  qstate.vert = vert;
+  qstate.phase = "aufl";
+  qSpeichern();
+  qRender();
+  qSenden(true);
+}
+
+function qZwischenstand(){
+  qstate.phase = "rang";
+  qSpeichern(); qRender(); qSenden(true);
+}
+
+function qWeiter(){
+  if(qstate.pos + 1 >= qstate.reihenfolge.length){ qEnde(); return; }
+  qstate.pos++;
+  qFrageStarten();
+}
+
+function qEnde(){
+  clearInterval(qnetz.uhr);
+  qstate.phase = "ende";
+  qSpeichern(); qRender(); qSenden(true);
+}
+
+/* Gleicher Raum, gleiche Tablets, neue Fragenfolge und Punkte auf null. */
+function qNochmal(){
+  qstate.runde++;
+  qstate.statistik = [];
+  qstate.reihe.forEach(function(id){
+    var s = qstate.spieler[id];
+    s.p = 0; s.d = 0; s.st = -1; s.serie = 0;
+  });
+  qNeueReihenfolge();
+  qstate.phase = "lobby";
+  qSpeichern(); qRender(); qSenden(true);
+}
+
+function qEntfernen(id){
+  var s = qstate.spieler[id];
+  if(!s) return;
+  askConfirm("Tablet entfernen",
+    "„" + s.n + "“ fliegt aus dem Raum. Auf dem Tablet kann man danach mit einem anderen Namen neu beitreten.",
+    function(){
+      delete qstate.spieler[id];
+      qstate.reihe = qstate.reihe.filter(function(x){ return x !== id; });
+      qstate.kick.push(id);
+      delete qstate.antworten[id];
+      qSpeichern(); qRender(); qSenden(true);
+    });
+}
+
+
+/* -----------------------------------------------------------------------
+   LIVE-QUIZ: Anzeige am Beamer
+   Namen kommen von den Tablets und gehen deshalb nur per textContent in
+   die Seite.
+   ----------------------------------------------------------------------- */
+
+function qNetzZeigen(zustand){
+  var txt = {ok:"verbunden über " + qServerName(), weg:"Verbindung unterbrochen, verbinde neu …",
+             warte:"verbinde mit " + qServerName() + " …"}[zustand];
+  el("qNetz").innerHTML = '<span class="qpunkt ' + zustand + '"></span>';
+  el("qNetz").appendChild(document.createTextNode(txt));
+}
+
+function qAnzeigeSpieler(){
+  var liste = el("qSpielerListe");
+  liste.innerHTML = "";
+  qstate.reihe.forEach(function(id){
+    var b = document.createElement("button");
+    b.className = "qname";
+    b.textContent = qstate.spieler[id].n;
+    b.title = "Aus dem Raum entfernen";
+    b.addEventListener("click", function(){ qEntfernen(id); });
+    liste.appendChild(b);
+  });
+  var n = qstate.reihe.length;
+  el("qSpielerZahl").textContent = n;
+  el("qLosBtn").disabled = !n;
+  el("qLosBtn").innerHTML = n ? ic("play") + "Quiz starten" : "Warte auf Mitspielende …";
+  if(!n) el("qSpielerListe").innerHTML = '<span class="sub">Noch niemand da.</span>';
+}
+
+function qAnzeigeZaehler(){
+  el("qAntwortZahl").textContent = Object.keys(qstate.antworten).length;
+}
+
+function qKachelnHtml(a, aufl){
+  return qstate.perm.map(function(orig, i){
+    var kl = "qant qa" + i;
+    if(qTextLaenge(a.a[orig]) > 34) kl += " lang";
+    if(aufl) kl += (orig === a.r ? " richtig" : " falsch");
+    return '<div class="' + kl + '">' + qForm(i, 44) +
+      '<span class="qant-text">' + a.a[orig] + '</span>' +
+      (aufl ? (orig === a.r ? ic("check", 36) : "") +
+              '<span class="qant-zahl num">' + (qstate.vert[i] || 0) + '</span>' : "") +
+      '</div>';
+  }).join("");
+}
+
+function qRender(){
+  var ph = qstate.phase;
+  el("qLobby").style.display = ph === "lobby" ? "grid" : "none";
+  el("qFrage").style.display = (ph === "frage" || ph === "aufl") ? "block" : "none";
+  el("qRang").style.display  = ph === "rang" ? "block" : "none";
+  el("qEnde").style.display  = ph === "ende" ? "block" : "none";
+  el("qBeendenBtn").style.display = (ph === "frage" || ph === "aufl" || ph === "rang") ? "inline-flex" : "none";
+
+  var n = qstate.reihenfolge.length, letzte = qstate.pos + 1 >= n;
+  var label = {lobby:"Raum offen", frage:"Frage " + (qstate.pos + 1) + " von " + n,
+               aufl:"Frage " + (qstate.pos + 1) + " von " + n, rang:"Zwischenstand",
+               ende:"Siegerehrung"}[ph] || "";
+  el("qPhaseLabel").textContent = label;
+  el("qPhaseInfo").textContent = ph === "lobby"
+    ? "Code " + qstate.code + " · " + n + " Fragen"
+    : qsatz().titel;
+
+  if(ph === "lobby"){
+    el("qQr").innerHTML = qrSvg(qLink());
+    el("qCode").textContent = qstate.code;
+    el("qUrl").textContent = qBasisUrl().replace(/^https?:\/\//, "").replace(/\/$/, "");
+    qAnzeigeSpieler();
+  }
+
+  if(ph === "frage" || ph === "aufl"){
+    var a = qAufgabe(), aufl = ph === "aufl";
+    el("qFrageText").innerHTML = a.q;
+    el("qAntworten").innerHTML = qKachelnHtml(a, aufl);
+    el("qAntworten").className = "qantworten" + (a.a.length === 2 ? " zwei" : "");
+    el("qErklaerung").style.display = aufl ? "block" : "none";
+    el("qErklaerung").innerHTML = aufl ? '<span class="label">Erklärung</span>' + a.s : "";
+    qAnzeigeZaehler();
+    if(aufl){
+      el("qUhr").className = "quhr aus";
+      el("qUhr").innerHTML = ic("check", 40);
+    }
+    el("qAufloesenBtn").style.display = aufl ? "none" : "inline-flex";
+    el("qPlusBtn").style.display      = aufl ? "none" : "inline-flex";
+    el("qZwischenBtn").style.display  = aufl ? "inline-flex" : "none";
+    el("qNaechsteBtn").style.display  = aufl ? "inline-flex" : "none";
+    el("qZwischenBtn").innerHTML = letzte ? ic("trophy") + "Siegerehrung" : ic("right") + "Zwischenstand";
+    el("qNaechsteBtn").innerHTML = ic("right") + "Nächste Frage";
+    el("qNaechsteBtn").style.display = (aufl && !letzte) ? "inline-flex" : "none";
+  }
+
+  if(ph === "rang") qRangRender(letzte);
+  if(ph === "ende") qEndeRender();
+}
+
+function qRangRender(letzte){
+  var liste = qPlatzierung();
+  el("qRangTitel").textContent = "Nach " + (qstate.pos + 1) + " von " + qstate.reihenfolge.length + " Fragen";
+  var ol = el("qRangListe");
+  ol.innerHTML = "";
+  liste.slice(0, 5).forEach(function(e){
+    var li = document.createElement("li");
+    li.innerHTML = '<span class="qr-platz"></span><span class="qr-name"></span>' +
+      '<span class="qr-delta"></span><span class="qr-punkte num"></span>';
+    li.querySelector(".qr-platz").textContent = e.platz + ".";
+    li.querySelector(".qr-name").textContent = e.n;
+    li.querySelector(".qr-delta").textContent = e.d ? "+" + e.d : "";
+    li.querySelector(".qr-punkte").textContent = e.p;
+    ol.appendChild(li);
+  });
+  el("qRangRest").textContent = liste.length > 5
+    ? "und " + (liste.length - 5) + " weitere – den eigenen Platz zeigt das Tablet." : "";
+  el("qRangWeiterBtn").innerHTML = letzte ? ic("trophy") + "Siegerehrung" : ic("right") + "Nächste Frage";
+}
+
+function qEndeRender(){
+  var liste = qPlatzierung();
+  var oben = liste.filter(function(e){ return e.platz <= 3; });
+  var rest = liste.filter(function(e){ return e.platz > 3; });
+  var reihenfolge = oben.filter(function(e){ return e.platz === 2; })
+    .concat(oben.filter(function(e){ return e.platz === 1; }),
+            oben.filter(function(e){ return e.platz === 3; }));
+
+  var grid = el("qPodest");
+  grid.innerHTML = "";
+  reihenfolge.forEach(function(e){
+    var d = document.createElement("div");
+    d.className = "platz p" + e.platz;
+    d.innerHTML = '<div class="wer"></div><div class="punkte">' + e.p + '</div>' +
+      '<div class="koepfe"></div><div class="balken"><span class="rang">' + e.platz + '</span></div>';
+    d.querySelector(".wer").textContent = e.n;
+    grid.appendChild(d);
+  });
+
+  if(rest.length){
+    el("qRest").style.display = "block";
+    el("qRest").innerHTML = '<span class="label">Weitere Plätze</span><ol start="' + rest[0].platz + '"></ol>';
+    var ol = el("qRest").querySelector("ol");
+    rest.forEach(function(e){
+      var li = document.createElement("li");
+      li.textContent = e.n + " ";
+      var s = document.createElement("span");
+      s.className = "num"; s.textContent = e.p;
+      li.appendChild(s);
+      ol.appendChild(li);
+    });
+  } else {
+    el("qRest").style.display = "none";
+  }
+
+  el("qPokal").innerHTML = ic("trophy", 56);
+  el("qPokal").className = "podest-pokal";
+  var sparsam = sparsameBewegung();
+  Array.prototype.forEach.call(grid.querySelectorAll(".platz"), function(d, k){
+    var p = reihenfolge[k].platz;
+    var setzen = function(){
+      d.querySelector(".balken").style.height = PODEST_HOEHE[p] + "px";
+      zaehleHoch(d.querySelector(".punkte"), reihenfolge[k].p, 700);
+    };
+    if(sparsam) setzen(); else setTimeout(setzen, 80 + (3 - p) * 160);
+  });
+  if(sparsam) el("qPokal").classList.add("da");
+  else setTimeout(function(){ el("qPokal").classList.add("da"); }, 800);
+
+  qAuswertungRender();
+}
+
+/* Fuer die Lehrkraft: Fragen nach Quote, schwaechste zuerst, mit dem
+   haeufigsten Fehler. Daraus ergibt sich, was vor der Arbeit noch einmal
+   drankommt. */
+function qAuswertungRender(){
+  var ol = el("qAuswertung");
+  ol.innerHTML = "";
+  var zeilen = qstate.statistik.map(function(st){
+    return {st:st, quote:st.teil ? st.richtig / st.teil : 0};
+  });
+  zeilen.sort(function(x, y){ return x.quote - y.quote; });
+  if(!zeilen.length){ ol.innerHTML = '<li class="sub">Noch keine Frage gespielt.</li>'; return; }
+  zeilen.forEach(function(z){
+    var a = qsatz().fragen[z.st.i];
+    var fehler = -1, max = 0;
+    z.st.v.forEach(function(anz, i){ if(i !== a.r && anz > max){ max = anz; fehler = i; } });
+    var pct = Math.round(z.quote * 100);
+    var li = document.createElement("li");
+    li.className = "qa-zeile";
+    li.innerHTML =
+      '<span class="qa-quote num">' + pct + ' %</span>' +
+      '<div><div class="qa-frage">' + a.q + '</div>' +
+      '<div class="qa-balken"><span style="width:' + pct + '%"></span></div>' +
+      '<div class="qa-info">' + z.st.richtig + ' von ' + z.st.teil + ' richtig · richtig: ' + a.a[a.r] +
+      (fehler >= 0 ? ' · häufigster Fehler: ' + a.a[fehler] + ' (' + max + '×)' : '') + '</div></div>';
+    ol.appendChild(li);
+  });
+}
+
+
+/* -----------------------------------------------------------------------
+   LIVE-QUIZ: Speichern
+   Laedt der Beamer neu, oeffnet "Raum wieder oeffnen" denselben Code; die
+   Tablets verbinden sich von selbst wieder und behalten ihre Punkte.
+   ----------------------------------------------------------------------- */
+
+function qSpeichern(){
+  try{
+    localStorage.setItem(Q_KEY, JSON.stringify({
+      satz:qstate.satz, sekunden:qstate.sekunden, anzahl:qstate.anzahl, mischen:qstate.mischen,
+      server:qstate.server, eigen:qstate.eigen, code:qstate.code, raum:qstate.raum,
+      seq:qstate.seq, runde:qstate.runde, phase:qstate.phase,
+      reihenfolge:qstate.reihenfolge, pos:qstate.pos, perm:qstate.perm, vert:qstate.vert,
+      spieler:qstate.spieler, reihe:qstate.reihe, kick:qstate.kick, statistik:qstate.statistik,
+      ts:Date.now()
+    }));
+  }catch(err){}
+}
+
+function qLoad(){
+  try{
+    var raw = localStorage.getItem(Q_KEY);
+    if(!raw) return null;
+    var s = JSON.parse(raw);
+    return (s && s.code && s.reihenfolge && s.reihenfolge.length) ? s : null;
+  }catch(err){ return null; }
+}
+
+function qResumeAnzeigen(){
+  var s = qLoad();
+  if(!s || !Q_SAETZE[s.satz]){ el("qResumeCard").style.display = "none"; return; }
+  var n = s.reihe ? s.reihe.length : 0;
+  var wo = s.phase === "lobby" ? "noch vor der ersten Frage"
+         : s.phase === "ende" ? "bei der Siegerehrung"
+         : "bei Frage " + (s.pos + 1) + " von " + s.reihenfolge.length;
+  el("qResumeInfo").textContent =
+    "Raum " + s.code + ": " + fTitelLang(Q_SAETZE[s.satz]) + ", " + n + " Tablets, " + wo +
+    ", gespeichert am " + new Date(s.ts).toLocaleString("de-DE") + ".";
+  el("qResumeCard").style.display = "block";
+}
+
+
+/* -----------------------------------------------------------------------
+   LIVE-QUIZ: Vorbereitung
+   Kaskade Fach -> Stufe -> Satz wie bei der Fehlerjagd; deren Helfer
+   fFach, fStufeRang, fStufeName und fTitelLang taugen fuer jeden Satz.
+   ----------------------------------------------------------------------- */
+
+function qKopf(){
+  el("kopfUnter").textContent = fTitelLang(qsatz());
+  document.title = "Live-Quiz – " + fTitelLang(qsatz());
+}
+
+function qFaecher(){
+  var w = [];
+  Q_SAETZE.forEach(function(s){ if(w.indexOf(fFach(s)) < 0) w.push(fFach(s)); });
+  return w.sort();
+}
+function qStufen(fach){
+  var w = [];
+  Q_SAETZE.forEach(function(s){ if(fFach(s) === fach && w.indexOf(s.stufe) < 0) w.push(s.stufe); });
+  return w.sort(function(a, b){ return fStufeRang(a) - fStufeRang(b); });
+}
+function qSaetzeDerStufe(fach, stufe){
+  var idx = [];
+  Q_SAETZE.forEach(function(s, i){ if(fFach(s) === fach && s.stufe === stufe) idx.push(i); });
+  return idx;
+}
+
+function qSatzInfoText(){
+  var s = qsatz();
+  var kaputt = s.fragen.filter(function(a){
+    return !a.a || a.a.length < 2 || a.a.length > 4 || !(a.r >= 0 && a.r < a.a.length);
+  }).length;
+  var ohneText = s.fragen.filter(function(a){ return !a.q || !a.s; }).length;
+  var eigen = s.fragen.filter(function(a){ return !!a.zeit; }).length;
+  var txt = s.unter + " · " + s.fragen.length + " Fragen" + (eigen ? ", " + eigen + " davon mit längerer Zeit" : "");
+  if(kaputt)   txt += " · Achtung: " + kaputt + " Frage(n) ohne gültige richtige Antwort oder mit falscher Antwortzahl";
+  if(ohneText) txt += " · Achtung: " + ohneText + " Frage(n) ohne Fragetext oder Erklärung";
+  el("qSatzInfo").textContent = txt;
+}
+
+function qSchaetzungText(){
+  var alle = qsatz().fragen.length;
+  var n = +el("qAnzahl").value;
+  n = n ? Math.min(n, alle) : alle;
+  var sek = +el("qZeit").value || qsatz().sekunden || 20;
+  /* Aufloesung, Erklaerung und Zwischenstand brauchen erfahrungsgemaess
+     noch einmal eine halbe Minute je Frage. */
+  var min = Math.round(n * (sek + 35) / 60);
+  el("qSchaetzung").textContent = "Schätzung: " + n + " Fragen, mit Auflösung und Zwischenstand rund " + min + " Minuten.";
+}
+
+function qServerFuellen(){
+  var sel = el("qServerSel");
+  sel.innerHTML = "";
+  Q_SERVER.forEach(function(s, i){
+    var o = document.createElement("option");
+    o.value = i; o.textContent = s.name;
+    sel.appendChild(o);
+  });
+  var o = document.createElement("option");
+  o.value = -1; o.textContent = "Eigener Server …";
+  sel.appendChild(o);
+  sel.value = qstate.server;
+  el("qServerEigen").value = qstate.eigen;
+  el("qEigenFeld").style.display = qstate.server < 0 ? "flex" : "none";
+}
+
+function qSetupFuellen(){
+  var aktiv = qsatz();
+
+  var fachSel = el("qFachSel");
+  fachSel.innerHTML = "";
+  qFaecher().forEach(function(fa){
+    var o = document.createElement("option");
+    o.value = fa; o.textContent = fa;
+    if(fa === fFach(aktiv)) o.selected = true;
+    fachSel.appendChild(o);
+  });
+
+  var stufeSel = el("qStufeSel");
+  stufeSel.innerHTML = "";
+  qStufen(fFach(aktiv)).forEach(function(st){
+    var o = document.createElement("option");
+    o.value = st; o.textContent = fStufeName(st);
+    if(st === aktiv.stufe) o.selected = true;
+    stufeSel.appendChild(o);
+  });
+
+  var satzSel = el("qSatzSel");
+  satzSel.innerHTML = "";
+  qSaetzeDerStufe(fFach(aktiv), aktiv.stufe).forEach(function(i){
+    var o = document.createElement("option");
+    o.value = i; o.textContent = Q_SAETZE[i].titel;
+    satzSel.appendChild(o);
+  });
+  satzSel.value = qstate.satz;
+
+  el("qZeit").value = qstate.sekunden;
+  el("qAnzahl").value = qstate.anzahl;
+  el("qReihenfolge").value = qstate.mischen ? "1" : "0";
+  qServerFuellen();
+  qSatzInfoText();
+  qSchaetzungText();
+  qResumeAnzeigen();
+  el("qSetupFehler").style.display = "none";
+}
+
+function qEinstellungenLesen(){
+  qstate.satz     = +el("qSatzSel").value;
+  qstate.sekunden = +el("qZeit").value;
+  qstate.anzahl   = +el("qAnzahl").value;
+  qstate.mischen  = el("qReihenfolge").value === "1";
+  qstate.server   = +el("qServerSel").value;
+  qstate.eigen    = el("qServerEigen").value.trim();
+}
+
+function qSetupFehler(txt){
+  el("qSetupFehler").textContent = txt;
+  el("qSetupFehler").style.display = "block";
+}
+
+function qStart(){
+  qEinstellungenLesen();
+  if(qstate.server < 0 && !/^wss?:\/\/\S+$/.test(qstate.eigen)){
+    qSetupFehler("Der eigene Server braucht eine Adresse der Form wss://server:port/pfad.");
+    return;
+  }
+  if(qnetz.mqtt){ qnetz.mqtt.schliessen(); qnetz.mqtt = null; }
+  qstate.code = ""; qstate.seq = 0; qstate.runde = 1;
+  qstate.spieler = {}; qstate.reihe = []; qstate.kick = [];
+  qstate.antworten = {}; qstate.statistik = []; qstate.perm = []; qstate.vert = [];
+  qNeueReihenfolge();
+  qstate.phase = "lobby";
+  qRaumOeffnen().then(function(){
+    qSpeichern();
+    qKopf();
+    zeigeSeite("quizGame");
+    qRender();
+  }, function(){
+    qstate.phase = "aus";
+    qSetupFehler("Dieser Browser erlaubt hier keine Verschlüsselung. Öffne die Sammlung über " + Q_ONLINE + " oder in einem aktuellen Chrome, Edge oder Firefox.");
+  });
+}
+
+function qFortsetzen(){
+  var s = qLoad();
+  if(!s) return;
+  ["satz", "sekunden", "anzahl", "mischen", "server", "eigen", "code", "raum", "seq", "runde",
+   "phase", "reihenfolge", "pos", "perm", "vert", "spieler", "reihe", "kick", "statistik"].forEach(function(k){
+    if(s[k] !== undefined) qstate[k] = s[k];
+  });
+  qstate.antworten = {};
+  qRaumOeffnen().then(function(){
+    qKopf();
+    zeigeSeite("quizGame");
+    /* Eine unterbrochene Frage beginnt mit voller Zeit von vorn; die
+       Antworten davor sind mit dem alten Beamer verloren gegangen. */
+    if(qstate.phase === "frage") qFrageStarten();
+    else qRender();
+  }, function(){
+    qSetupFehler("Dieser Browser erlaubt hier keine Verschlüsselung.");
+  });
+}
+
+/* Prueft jeden Server einzeln: verbinden, behaltene Nachricht ablegen,
+   abonnieren, zurueckbekommen, wieder loeschen. Genau das braucht das
+   Spiel; ein Server, der hier besteht, traegt auch das Quiz. */
+function qEinzeltest(url){
+  return new Promise(function(ok, nein){
+    var t0 = Date.now(), thema = "lmgquiz/test/" + qZufall(12), fertig = false, m = null;
+    var frist = setTimeout(function(){ ende(false, "keine Antwort in 8 Sekunden"); }, 8000);
+    function ende(gut, info){
+      if(fertig) return;
+      fertig = true;
+      clearTimeout(frist);
+      var mm = m;
+      setTimeout(function(){ if(mm) mm.schliessen(); }, 300);
+      if(gut) ok(info); else nein(info);
+    }
+    m = mqttNeu(url, {
+      status:function(bereit){
+        if(!bereit || fertig) return;
+        m.senden(thema, qBytes("test"), true);
+        m.abo(thema);
+      },
+      nachricht:function(t, b){
+        if(t !== thema || !b.length) return;
+        m.senden(thema, new Uint8Array(0), true);
+        ende(true, Date.now() - t0);
+      }
+    });
+  });
+}
+
+function qServerTest(){
+  var liste = Q_SERVER.map(function(s, i){ return {name:s.name, url:s.url, i:i}; });
+  var eigen = el("qServerEigen").value.trim();
+  if(/^wss?:\/\/\S+$/.test(eigen)) liste.push({name:"Eigener Server", url:eigen, i:-1});
+  var box = el("qTestErgebnis");
+  box.innerHTML = "";
+  var offen = liste.length;
+  liste.forEach(function(s){
+    var z = document.createElement("div");
+    z.className = "qtest";
+    z.innerHTML = '<span class="qpunkt warte"></span><b></b><span class="sub">wird geprüft …</span>';
+    z.querySelector("b").textContent = s.name;
+    box.appendChild(z);
+    qEinzeltest(s.url).then(function(ms){
+      z.querySelector(".qpunkt").className = "qpunkt ok";
+      z.querySelector(".sub").textContent = "erreichbar, Antwort nach " + ms + " ms";
+    }, function(grund){
+      z.querySelector(".qpunkt").className = "qpunkt weg";
+      z.querySelector(".sub").textContent = "nicht erreichbar (" + grund + ")";
+    }).then(function(){
+      offen--;
+      if(offen) return;
+      var fazit = document.createElement("p");
+      fazit.className = "note";
+      var gewaehlt = +el("qServerSel").value;
+      /* Vorschlag ist der erste erreichbare in Listenreihenfolge, nicht der
+         schnellste; die Reihenfolge in Q_SERVER ist die Empfehlung. */
+      var gute = liste.filter(function(x, k){ return !!box.children[k].querySelector(".qpunkt.ok"); });
+      var gewaehltOk = gute.some(function(x){ return x.i === gewaehlt; });
+      var erster = gute.length ? gute[0].i : null;
+      if(erster === null){
+        fazit.textContent = "Kein Server erreichbar. Entweder fehlt das Internet, oder das Netz sperrt WebSocket-Verbindungen auf diesen Ports. Dann hilft nur ein Server auf Port 443, den die Schul-IT freigibt.";
+      } else if(!gewaehltOk){
+        el("qServerSel").value = erster;
+        el("qEigenFeld").style.display = erster < 0 ? "flex" : "none";
+        fazit.textContent = "Der gewählte Server kommt nicht durch, deshalb ist jetzt ein erreichbarer eingestellt.";
+      } else {
+        fazit.textContent = "Der gewählte Server ist erreichbar. Die Tablets müssen ihn aber auch erreichen: am besten einmal mit einem Tablet im Schul-WLAN einen Probe-Raum betreten.";
+      }
+      box.appendChild(fazit);
+    });
+  });
+}
+
+
+/* -----------------------------------------------------------------------
+   LIVE-QUIZ: Bedienung am Beamer
+   ----------------------------------------------------------------------- */
+
+ICONS.tablet = '<rect x="4.5" y="2.5" width="15" height="19" rx="2"/><path d="M11 18h2"/>';
+ICONS.wifi   = '<path d="M5 12.5a10 10 0 0 1 14 0"/><path d="M8.5 16a5 5 0 0 1 7 0"/><path d="M2 9a15 15 0 0 1 20 0"/><circle cx="12" cy="19.5" r=".8" fill="currentColor"/>';
+
+el("qZurueckBtn").innerHTML   = ic("left") + "Spielauswahl";
+el("qStartBtn").innerHTML     = ic("tablet") + "Raum öffnen";
+el("qTestBtn").innerHTML      = ic("wifi") + "Verbindung testen";
+el("qAufloesenBtn").innerHTML = ic("search") + "Jetzt auflösen";
+el("qPlusBtn").innerHTML      = ic("plus") + "10 s";
+el("qBeendenBtn").innerHTML   = ic("trophy") + "Quiz beenden";
+el("qBackBtn").innerHTML      = ic("cross") + "Raum schließen";
+el("qNochmalBtn").innerHTML   = ic("rotate") + "Noch eine Runde im selben Raum";
+el("qEndeBackBtn").innerHTML  = ic("cross") + "Raum schließen";
+
+el("qFachSel").addEventListener("change", function(){
+  var fach = el("qFachSel").value;
+  var idx = qSaetzeDerStufe(fach, qStufen(fach)[0]);
+  if(!idx.length) return;
+  qstate.satz = idx[0];
+  qSetupFuellen(); qKopf();
+});
+el("qStufeSel").addEventListener("change", function(){
+  var idx = qSaetzeDerStufe(el("qFachSel").value, el("qStufeSel").value);
+  if(!idx.length) return;
+  qstate.satz = idx[0];
+  qSetupFuellen(); qKopf();
+});
+el("qSatzSel").addEventListener("change", function(){
+  qstate.satz = +el("qSatzSel").value;
+  qSatzInfoText(); qSchaetzungText(); qKopf();
+});
+["qZeit", "qAnzahl"].forEach(function(id){ el(id).addEventListener("change", qSchaetzungText); });
+el("qServerSel").addEventListener("change", function(){
+  el("qEigenFeld").style.display = +el("qServerSel").value < 0 ? "flex" : "none";
+});
+
+el("qZurueckBtn").addEventListener("click", function(){ zeigeSeite("startseite"); });
+el("qStartBtn").addEventListener("click", qStart);
+el("qTestBtn").addEventListener("click", qServerTest);
+el("qResumeBtn").addEventListener("click", qFortsetzen);
+el("qVerwerfenBtn").addEventListener("click", function(){
+  var s = qLoad();
+  try{ localStorage.removeItem(Q_KEY); }catch(err){}
+  el("qResumeCard").style.display = "none";
+  /* Den alten Raum auch auf dem Server leeren, sonst finden Tablets mit
+     dem alten Code noch den letzten Stand. */
+  if(s && s.code){
+    var srv = s.server < 0 ? s.eigen : (Q_SERVER[s.server] || Q_SERVER[0]).url;
+    qRaumSchluessel(s.code).then(function(r){
+      var m = mqttNeu(srv, {status:function(ok){
+        if(!ok) return;
+        m.senden(r.thema + "/b", new Uint8Array(0), true);
+        setTimeout(function(){ m.schliessen(); }, 400);
+      }});
+      setTimeout(function(){ m.schliessen(); }, 10000);
+    }, function(){});
+  }
+});
+
+el("qLosBtn").addEventListener("click", function(){
+  if(!qstate.reihe.length) return;
+  qstate.pos = 0;
+  qFrageStarten();
+});
+el("qAufloesenBtn").addEventListener("click", qAufloesen);
+el("qPlusBtn").addEventListener("click", function(){
+  if(qstate.phase !== "frage") return;
+  qstate.dauerMs += 10000;
+  qUhrTick();
+  qSenden(true);
+});
+el("qZwischenBtn").addEventListener("click", function(){
+  if(qstate.pos + 1 >= qstate.reihenfolge.length) qEnde(); else qZwischenstand();
+});
+el("qNaechsteBtn").addEventListener("click", qWeiter);
+el("qRangWeiterBtn").addEventListener("click", qWeiter);
+el("qBeendenBtn").addEventListener("click", function(){
+  askConfirm("Quiz beenden", "Die restlichen Fragen entfallen, es geht direkt zur Siegerehrung.", function(){
+    if(qstate.phase === "frage") qAufloesen();
+    qEnde();
+  });
+});
+el("qNochmalBtn").addEventListener("click", qNochmal);
+
+function qSchliessenFragen(){
+  askConfirm("Raum schließen",
+    "Die Tablets verlieren die Verbindung, Punkte und Namen werden gelöscht. Für ein neues Quiz gibt es einen neuen Code.",
+    function(){
+      qRaumSchliessen();
+      qSetupFuellen();
+      qKopf();
+      zeigeSeite("quizSetup");
+    });
+}
+el("qBackBtn").addEventListener("click", qSchliessenFragen);
+el("qEndeBackBtn").addEventListener("click", qSchliessenFragen);
+
+
+/* -----------------------------------------------------------------------
+   LIVE-QUIZ: Tablet
+   Dieselbe Datei, aufgerufen mit #quiz=CODE (aus dem QR-Code) oder ueber
+   "Am Tablet mitspielen". Kennung und Name bleiben pro Code im
+   localStorage, damit ein Neuladen den Punktestand nicht kostet.
+   ----------------------------------------------------------------------- */
+
+var H_KEY = "quiz_tablet_v1";
+
+var hstate = {code:"", id:"", g:"", name:"", server:-1, eigen:"",
+              mqtt:null, thema:"", key:null, raum:"", seq:-1, z:null,
+              antwort:null, nachhaken:null, fehler:"", verbunden:false, lauf:0};
+
+function hSpeichern(){
+  try{
+    localStorage.setItem(H_KEY, JSON.stringify({code:hstate.code, id:hstate.id, g:hstate.g, name:hstate.name}));
+  }catch(err){}
+}
+function hLaden(){
+  try{ return JSON.parse(localStorage.getItem(H_KEY) || "null"); }catch(err){ return null; }
+}
+function hVergessen(){
+  try{ localStorage.removeItem(H_KEY); }catch(err){}
+}
+
+function qHashLesen(){
+  var h = location.hash.replace(/^#/, "");
+  if(h === "mitspielen") return {};
+  if(h.indexOf("quiz=") !== 0) return null;
+  var p = {};
+  h.split("&").forEach(function(teil){
+    var k = teil.indexOf("=");
+    if(k > 0){
+      try{ p[teil.slice(0, k)] = decodeURIComponent(teil.slice(k + 1)); }catch(err){}
+    }
+  });
+  return {code:(p.quiz || "").toUpperCase(), s:p.s !== undefined ? +p.s : -1, u:p.u || ""};
+}
+
+function hStart(param){
+  param = param || {};
+  hstate.code = param.code || "";
+  hstate.server = (param.s >= 0 && param.s < Q_SERVER.length) ? param.s : -1;
+  hstate.eigen = /^wss?:\/\//.test(param.u || "") ? param.u : "";
+  zeigeSeite("quizHandy");
+  /* Automatisch zurueck in den Raum nur, wenn der Link denselben Code
+     traegt, also nach einem Neuladen. Sonst Formular mit Vorbelegung. */
+  var alt = hLaden();
+  if(alt && alt.id && hstate.code && alt.code === hstate.code){
+    hstate.id = alt.id; hstate.g = alt.g; hstate.name = alt.name;
+    hVerbinden();
+  } else {
+    if(alt) hstate.name = alt.name || "";
+    hFormular();
+  }
+}
+
+function hFormular(){
+  hTrennen();
+  hKopfSetzen("Live-Quiz", "");
+  el("hBody").innerHTML =
+    '<div class="hform">' +
+      '<div class="hgross" style="text-align:center">Mitspielen</div>' +
+      '<label class="feld"><span class="label">Raumcode</span>' +
+        '<input type="text" id="hCodeIn" maxlength="5" autocomplete="off" autocapitalize="characters" spellcheck="false"></label>' +
+      '<label class="feld"><span class="label">Dein Spitzname</span>' +
+        '<input type="text" id="hNameIn" maxlength="16" autocomplete="off" spellcheck="false"></label>' +
+      '<p class="note" style="margin:0">Nimm einen Spitznamen, keinen vollen Namen. Er steht nur am Beamer.</p>' +
+      (hstate.fehler ? '<div class="hfehler"></div>' : '') +
+      '<button class="btn btn-primary" id="hJoinBtn">' + ic("play") + 'Los geht’s</button>' +
+      '<button class="btn btn-quiet" id="hAuswahlBtn">' + ic("left") + 'Zur Spielauswahl</button>' +
+    '</div>';
+  el("hCodeIn").value = hstate.code;
+  el("hNameIn").value = hstate.name;
+  if(hstate.fehler) el("hBody").querySelector(".hfehler").textContent = hstate.fehler;
+  hstate.fehler = "";
+  (hstate.code ? el("hNameIn") : el("hCodeIn")).focus();
+}
+
+function hBeitreten(){
+  var code = el("hCodeIn").value.toUpperCase().replace(/[^A-Z0-9]/g, "");
+  var name = qNameSauber(el("hNameIn").value);
+  hstate.code = code; hstate.name = name;
+  if(code.length !== 5){ hstate.fehler = "Der Raumcode hat fünf Zeichen, er steht groß am Beamer."; hFormular(); return; }
+  if(!name){ hstate.fehler = "Bitte gib einen Spitznamen ein."; hFormular(); return; }
+  /* Gleicher Code und gleicher Name: dieselbe Kennung, damit die Punkte
+     nach einem Verbindungsabbruch erhalten bleiben. */
+  var alt = hLaden();
+  if(alt && alt.id && alt.code === code && alt.name === name){
+    hstate.id = alt.id; hstate.g = alt.g;
+  } else {
+    hstate.id = qZufall(10); hstate.g = qZufall(12);
+  }
+  hstate.raum = ""; hstate.seq = -1; hstate.z = null; hstate.antwort = null;
+  hSpeichern();
+  try{
+    history.replaceState(null, "", "#quiz=" + code +
+      (hstate.server >= 0 ? "&s=" + hstate.server : "") +
+      (hstate.eigen ? "&u=" + encodeURIComponent(hstate.eigen) : ""));
+  }catch(err){}
+  hVerbinden();
+}
+
+function hTrennen(){
+  hstate.lauf++;
+  clearInterval(hstate.nachhaken);
+  if(hstate.mqtt){ hstate.mqtt.schliessen(); hstate.mqtt = null; }
+}
+
+function hMeldung(gross, klein){
+  el("hBody").innerHTML = '<div class="hmitte"><div class="hgross"></div><div class="hklein"></div></div>';
+  el("hBody").querySelector(".hgross").textContent = gross;
+  el("hBody").querySelector(".hklein").textContent = klein || "";
+}
+
+function hVerbinden(){
+  hTrennen();
+  hKopfSetzen(hstate.name, "");
+  hMeldung("Verbinde …", "Raum " + hstate.code);
+  var lauf = hstate.lauf;
+  qRaumSchluessel(hstate.code).then(function(r){
+    if(lauf !== hstate.lauf) return;
+    hstate.thema = r.thema; hstate.key = r.key;
+    var liste;
+    if(hstate.eigen) liste = [hstate.eigen];
+    else {
+      liste = Q_SERVER.map(function(s){ return s.url; });
+      if(hstate.server >= 0) liste.unshift(liste.splice(hstate.server, 1)[0]);
+    }
+    hVersuch(liste, 0, lauf);
+  }, function(){
+    hstate.fehler = "Dieser Browser kann keine verschlüsselte Verbindung aufbauen. Bitte Safari oder Chrome in einer aktuellen Version nehmen.";
+    hFormular();
+  });
+}
+
+/* Ohne Serverangabe im Link (Code von Hand eingetippt) werden die Server
+   der Reihe nach abgefragt. Gefunden ist der Raum, sobald dort ein
+   Zustand liegt, der sich mit dem Code entschluesseln laesst. */
+function hVersuch(liste, i, lauf){
+  if(lauf !== hstate.lauf) return;
+  if(i >= liste.length){
+    hstate.fehler = "Kein offener Raum mit dem Code " + hstate.code + " gefunden. Stimmt der Code? Ist der Raum am Beamer schon geöffnet?";
+    hFormular();
+    return;
+  }
+  var gefunden = false, m;
+  var frist = setTimeout(function(){
+    if(!gefunden){ m.schliessen(); hVersuch(liste, i + 1, lauf); }
+  }, 7000);
+  m = mqttNeu(liste[i], {
+    status:function(ok){
+      if(lauf !== hstate.lauf) return;
+      if(ok) m.abo(hstate.thema + "/b");
+      if(gefunden){ hstate.verbunden = ok; hKopfPunkte(); }
+    },
+    nachricht:function(t, b){
+      if(t !== hstate.thema + "/b" || lauf !== hstate.lauf) return;
+      qAuspacken(hstate.key, b).then(function(z){
+        if(lauf !== hstate.lauf) return;
+        if(!gefunden){
+          gefunden = true;
+          clearTimeout(frist);
+          hstate.mqtt = m; hstate.verbunden = true;
+          clearInterval(hstate.nachhaken);
+          hstate.nachhaken = setInterval(hNachhaken, 2500);
+        }
+        hZustand(z);
+        hNachhaken();
+      }, function(){});
+    }
+  });
+}
+
+function hSenden(obj){
+  if(!hstate.key) return;
+  qVerpacken(hstate.key, obj).then(function(b){
+    if(hstate.mqtt) hstate.mqtt.senden(hstate.thema + "/t", b, false);
+  });
+}
+
+/* Beitritt und Antwort gehen ohne Bestaetigung verloren, wenn die
+   Leitung gerade wackelt. Deshalb wird wiederholt, bis der Zustand vom
+   Beamer sie enthaelt. */
+function hNachhaken(){
+  var z = hstate.z;
+  if(!hstate.mqtt || !z) return;
+  if(z.kick.indexOf(hstate.id) >= 0) return;
+  if(z.sp.indexOf(hstate.id) < 0){
+    if(z.ph !== "ende") hSenden({t:"j", id:hstate.id, g:hstate.g, n:hstate.name});
+    return;
+  }
+  if(z.ph === "frage" && hstate.antwort && hstate.antwort.f === z.f && z.hat.indexOf(hstate.id) < 0){
+    hSenden({t:"a", id:hstate.id, g:hstate.g, f:z.f, w:hstate.antwort.w});
+  }
+}
+
+function hZustand(z){
+  if(!z || z.v !== 1 || !z.sp) return;
+  if(z.raum === hstate.raum && z.seq <= hstate.seq) return;
+  var vorher = hstate.z;
+  hstate.raum = z.raum; hstate.seq = z.seq; hstate.z = z;
+  var frist = Date.now() + (z.rest || 0);
+  /* Waehrend einer offenen Frage kommen mit jeder fremden Antwort neue
+     Zustaende. Die Knoepfe bleiben dann stehen, sonst geht ein Tipp, der
+     genau in den Neuaufbau faellt, ins Leere. Nur ein "+10 s" vom Beamer
+     stellt den Zeitbalken neu. */
+  if(vorher && z.ph === "frage" && vorher.ph === "frage" && vorher.f === z.f &&
+     !(hstate.antwort && hstate.antwort.f === z.f) && z.sp.indexOf(hstate.id) >= 0 &&
+     vorher.sp.indexOf(hstate.id) >= 0){
+    if(Math.abs(frist - hstate.fristEnde) > 1500){ hstate.fristEnde = frist; hZeitbalken(z); }
+    return;
+  }
+  if(z.ph === "frage") hstate.fristEnde = frist;
+  hRender();
+}
+
+function hZeitbalken(z){
+  var bar = el("hBody").querySelector(".hzeit span");
+  if(!bar) return;
+  var rest = Math.max(0, hstate.fristEnde - Date.now()), dauer = Math.max(z.dauer || rest, rest, 1);
+  bar.style.transition = "none";
+  bar.style.width = (100 * rest / dauer) + "%";
+  void bar.offsetWidth;
+  bar.style.transition = "width " + rest + "ms linear";
+  bar.style.width = "0";
+}
+
+function hKopfSetzen(links, rechts){
+  el("hName").textContent = links;
+  el("hPunkte").textContent = rechts;
+}
+function hKopfPunkte(){
+  var z = hstate.z, e = z && z.erg && z.erg[hstate.id];
+  el("hPunkte").textContent = (hstate.verbunden ? "" : "offline · ") + (e ? e[0] + " Punkte" : "");
+}
+
+function hRender(){
+  var z = hstate.z, body = el("hBody");
+  hKopfSetzen(hstate.name, "");
+  hKopfPunkte();
+
+  if(z.kick.indexOf(hstate.id) >= 0){
+    hVergessen();
+    hTrennen();
+    body.innerHTML = '<div class="hmitte"><div class="hgross">Du wurdest aus dem Raum genommen.</div>' +
+      '<div class="hklein">Mit einem anderen Spitznamen kannst du neu beitreten.</div>' +
+      '<button class="btn btn-primary" id="hNeuBtn">Neu beitreten</button></div>';
+    hstate.name = "";
+    return;
+  }
+  if(z.sp.indexOf(hstate.id) < 0){
+    if(z.ph === "ende") hMeldung("Das Quiz ist schon vorbei.", "Beim nächsten Mal bist du dabei.");
+    else hMeldung("Du wirst angemeldet …", "Raum " + hstate.code);
+    return;
+  }
+
+  if(z.ph === "lobby"){
+    body.innerHTML = '<div class="hmitte">' + ic("check", 64) +
+      '<div class="hgross">Du bist dabei!</div>' +
+      '<div class="hklein">Schau nach vorn, gleich geht es los.</div></div>';
+    return;
+  }
+
+  if(z.ph === "frage"){
+    var hat = hstate.antwort && hstate.antwort.f === z.f;
+    if(hat){
+      var da = z.hat.indexOf(hstate.id) >= 0;
+      var w = hstate.antwort.w;
+      body.innerHTML = '<div class="hmitte"><div class="hgewaehlt qa' + w + '">' + qForm(w, 72) + '</div>' +
+        '<div class="hgross">' + (da ? "Antwort ist angekommen." : "Antwort wird gesendet …") + '</div>' +
+        '<div class="hklein">Warte auf die anderen.</div></div>';
+      return;
+    }
+    var s = '<div class="hfrage"><span class="label">Frage ' + z.nr + ' von ' + z.von + '</span>' +
+      '<div class="hzeit"><span></span></div></div>' +
+      '<div class="hknoepfe' + (z.a.length === 2 ? " zwei" : "") + '">';
+    z.a.forEach(function(txt, i){
+      s += '<button class="hknopf qa' + i + '" data-w="' + i + '">' + qForm(i, 56) +
+        '<span class="hknopf-text">' + qSauber(txt) + '</span></button>';
+    });
+    body.innerHTML = s + '</div>';
+    hZeitbalken(z);
+    return;
+  }
+
+  var e = z.erg && z.erg[hstate.id];
+  if(!e){ hMeldung("Schau nach vorn.", ""); return; }
+  var platzText = "Platz " + e[3] + " von " + z.anz;
+
+  if(z.ph === "aufl"){
+    var klasse = e[2] === 1 ? "gut" : (e[2] === 0 ? "schlecht" : "leer");
+    var titel = e[2] === 1 ? "Richtig!" : (e[2] === 0 ? "Leider falsch." : "Keine Antwort.");
+    var zeile = e[2] === 1 ? "+" + e[1] + " Punkte" + (e[4] >= 3 ? " · " + e[4] + " richtig in Folge" : "") : "";
+    var loesung = "";
+    if(e[2] !== 1 && z.r >= 0){
+      loesung = '<div class="hloesung">' + qForm(z.r, 32) + '<span>' + qSauber(z.a[z.r]) + '</span></div>';
+    }
+    body.innerHTML = '<div class="hergebnis ' + klasse + '">' + ic(e[2] === 1 ? "check" : "cross", 72) +
+      '<div class="hgross">' + titel + '</div>' +
+      (zeile ? '<div class="hklein-hell">' + zeile + '</div>' : '') + loesung +
+      '<div class="hklein-hell">' + platzText + '</div></div>';
+    return;
+  }
+
+  if(z.ph === "rang"){
+    hMeldung(platzText, e[0] + " Punkte. Schau nach vorn auf den Zwischenstand.");
+    return;
+  }
+
+  if(z.ph === "ende"){
+    body.innerHTML = '<div class="hmitte">' + (e[3] <= 3 ? '<div class="hpokal">' + ic("trophy", 80) + '</div>' : '') +
+      '<div class="hgross">' + platzText + '</div>' +
+      '<div class="hklein">' + e[0] + ' Punkte. Danke fürs Mitspielen!</div></div>';
+    return;
+  }
+  hMeldung("Schau nach vorn.", "");
+}
+
+el("hBody").addEventListener("click", function(ev){
+  if(ev.target.closest("#hJoinBtn")){ hBeitreten(); return; }
+  if(ev.target.closest("#hNeuBtn")){ hFormular(); return; }
+  if(ev.target.closest("#hAuswahlBtn")){
+    hTrennen();
+    try{ history.replaceState(null, "", location.pathname + location.search); }catch(err){}
+    zeigeSeite("startseite");
+    return;
+  }
+  var k = ev.target.closest(".hknopf");
+  if(!k || !hstate.z || hstate.z.ph !== "frage") return;
+  hstate.antwort = {f:hstate.z.f, w:+k.getAttribute("data-w")};
+  hRender();
+  hNachhaken();
+});
+el("hBody").addEventListener("keydown", function(ev){
+  if(ev.key === "Enter" && (ev.target.id === "hCodeIn" || ev.target.id === "hNameIn")) hBeitreten();
+});
+
+el("hStartBtn").innerHTML = ic("tablet") + "Am Tablet mitspielen";
+el("hStartBtn").addEventListener("click", function(){ hStart({}); });
+
+/* Tablets schlafen gern ein, der WebSocket stirbt dabei still. */
+document.addEventListener("visibilitychange", function(){
+  if(document.hidden) return;
+  if(hstate.mqtt) hstate.mqtt.wecken();
+  if(qnetz.mqtt) qnetz.mqtt.wecken();
+});
+
+
 /* -----------------------------------------------------------------------
    STARTSEITE
    Die Spiele stehen in SPIELE. Ein weiteres Spiel braucht dort einen
@@ -8641,6 +10945,19 @@ function thumbFehler(){
     s + '</svg>';
 }
 
+function thumbQuiz(){
+  /* Frage oben, darunter die vier Antwortkacheln mit ihren Formen. */
+  var s = '<rect x="30" y="8" width="100" height="17" rx="3" fill="var(--surface-page)" stroke="var(--line-2)" stroke-width="1.5"/>' +
+          '<rect x="46" y="14.5" width="68" height="4" rx="2" fill="var(--line-2)"/>';
+  for(var i = 0; i < 4; i++){
+    var x = 30 + (i % 2) * 51, y = 31 + Math.floor(i / 2) * 32;
+    s += '<rect x="' + x + '" y="' + y + '" width="49" height="29" rx="3" fill="var(--qa' + i + ')"/>';
+    s += '<g transform="translate(' + (x + 6) + ' ' + (y + 5.5) + ') scale(.75)" fill="var(--surface-page)">' + Q_FORMEN[i] + '</g>';
+    s += '<rect x="' + (x + 28) + '" y="' + (y + 12.5) + '" width="14" height="4" rx="2" fill="var(--surface-page)"/>';
+  }
+  return '<svg viewBox="0 0 160 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">' + s + '</svg>';
+}
+
 var SPIELE = [
   {
     id:"jeopardy", name:"Jeopardy", icon:"layers", bild:thumbJeopardy,
@@ -8659,6 +10976,12 @@ var SPIELE = [
     text:"Ein Lösungsweg mit genau einem Fehler. Die Gruppen suchen die Zeile und sagen, was dort schiefgelaufen ist. Punkte für die Zeile und für die Begründung.",
     badge:function(){ return fLoad() ? "Angefangene Runde" : ""; },
     start:function(){ fSetupFuellen(); fKopf(); zeigeSeite("fehlerSetup"); }
+  },
+  {
+    id:"quiz", name:"Live-Quiz", icon:"tablet", bild:thumbQuiz,
+    text:"Frage am Beamer, alle tippen ihre Antwort auf dem Tablet. Schnelle richtige Antworten bringen mehr Punkte, am Ende gibt es ein Podest. Braucht Internet.",
+    badge:function(){ return qLoad() ? "Offener Raum" : ""; },
+    start:function(){ qSetupFuellen(); qKopf(); zeigeSeite("quizSetup"); }
   }
 ];
 
@@ -8686,12 +11009,14 @@ function renderKacheln(){
    ----------------------------------------------------------------------- */
 
 var SEITEN = ["startseite", "setup", "bingoSetup", "game", "bingoGame",
-              "fehlerSetup", "fehlerGame"];
+              "fehlerSetup", "fehlerGame", "quizSetup", "quizGame", "quizHandy"];
 
 function zeigeSeite(name){
   SEITEN.forEach(function(id){
     el(id).style.display = (id === name) ? "block" : "none";
   });
+  document.body.classList.toggle("handy", name === "quizHandy");
+  el("hStartBtn").style.display = (name === "startseite") ? "inline-flex" : "none";
   if(name === "startseite"){
     el("kopfTitel").textContent = "Spielesammlung";
     el("kopfUnter").textContent = "Mathematik und Physik am Beamer";
@@ -8707,6 +11032,10 @@ function zeigeSeite(name){
     el("kopfTitel").textContent = "Bingo";
   } else if(name === "fehlerSetup" || name === "fehlerGame"){
     el("kopfTitel").textContent = "Fehlerjagd";
+  } else if(name === "quizSetup" || name === "quizGame"){
+    el("kopfTitel").textContent = "Live-Quiz";
+  } else if(name === "quizHandy"){
+    document.title = "Live-Quiz";
   }
   window.scrollTo(0, 0);
 }
@@ -8714,7 +11043,9 @@ function zeigeSeite(name){
 el("jZurueckBtn").innerHTML = ic("left") + "Spielauswahl";
 el("jZurueckBtn").addEventListener("click", function(){ zeigeSeite("startseite"); });
 
-zeigeSeite("startseite");
+/* Ein Link mit #quiz=CODE kommt vom QR-Code am Beamer: direkt zum Tablet. */
+var qStartParam = qHashLesen();
+if(qStartParam) hStart(qStartParam); else zeigeSeite("startseite");
 
 })();
 </script>

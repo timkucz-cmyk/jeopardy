@@ -16,6 +16,10 @@ also nicht vom Namen „Jeopardy" im Repo oder in alten Links irreleiten lassen.
   Das ist Absicht: fremder Rechner, kein Netz, kein Build.
 - **Keine externen Libraries.** Einzige Ausnahme sind die Google Fonts im `<head>`.
   Ohne Netz greifen die Fallbacks, das Spiel funktioniert trotzdem.
+- **Ausnahme Live-Quiz:** Es ist das einzige Spiel, das Internet braucht (Tablets
+  ↔ Beamer über einen öffentlichen MQTT-Server). MQTT, Verschlüsselung und
+  QR-Code sind trotzdem von Hand im Skript geschrieben, ohne Bibliothek. Alle
+  anderen Spiele bleiben offline.
 - **ES5-Stil**, wie im Bestand: `var`, `function(){}`, kein `const`/Arrow/Template-String.
   Alles steckt in einer IIFE mit `"use strict"`.
 - **Deutsche Bezeichner** für Fachliches (`bsatz`, `zeigeSeite`, `aufgaben`, `ziel`),
@@ -51,12 +55,18 @@ BINGO: Laengenschaetzung B_PK, Binomialverteilung
 BINGO: Zustand …         bstate, Timer, Anzeige, Ablauf, Auswertung, Vorbereitung
 FEHLERJAGD               Kopfkommentar mit Satz-Aufbau, dann die Aufgabensaetze
 FEHLERJAGD: Zustand …    fstate, Anzeige, Ablauf, Speichern, Vorbereitung
+LIVE-QUIZ                Kopfkommentar mit Protokoll und Satz-Aufbau, Q_SAETZE
+LIVE-QUIZ: QR-Code …     qrSvg(), Verbindung (mqttNeu), Verschluesselung,
+                         Zustand am Beamer (qstate), Ablauf, Anzeige, Speichern,
+                         Vorbereitung, Bedienung, Tablet (hstate)
 STARTSEITE               Registry SPIELE, Kacheln, Thumbnails
 SEITENWECHSEL            SEITEN, zeigeSeite()
 ```
 
-Im `<body>` gibt es sieben `<section>`: `startseite`, `setup`, `bingoSetup`,
-`game`, `bingoGame`, `fehlerSetup`, `fehlerGame`. Dazu Overlays (`qOverlay`,
+Im `<body>` gibt es zehn `<section>`: `startseite`, `setup`, `bingoSetup`,
+`game`, `bingoGame`, `fehlerSetup`, `fehlerGame`, `quizSetup`, `quizGame`,
+`quizHandy`. `quizHandy` ist die Tablet-Ansicht: `zeigeSeite()` setzt dafür
+`body.handy`, das blendet die Kopfzeile aus. Dazu Overlays (`qOverlay`,
 `podestOverlay`, `bCheckOverlay`, `confirmOverlay`) außerhalb von `.app`.
 
 ## Geteilte Infrastruktur
@@ -83,6 +93,8 @@ Jedes Spiel hat seinen **eigenen** Zustand und localStorage-Key:
 | Jeopardy | `state` | `jeopardy_q1_wdh_e_v1` |
 | Bingo | `bstate` | `bingo_klasse7_v2` |
 | Fehlerjagd | `fstate` | `fehlerjagd_v1` |
+| Live-Quiz (Beamer) | `qstate` | `quiz_v1` |
+| Live-Quiz (Tablet) | `hstate` | `quiz_tablet_v1` |
 
 Die Uhr ist die Ausnahme: `bTimerStart(sek, label, prefix)` steuert seine
 Timerbox über das ID-Präfix und ist damit ohnehin allgemein. Die Fehlerjagd
@@ -139,6 +151,16 @@ der Fehlerzeile muss aus der falschen Zeile sauber weitergerechnet sein**, sonst
 ist „die erste falsche Zeile“ nicht mehr eindeutig — das ist die eigentliche
 Sorgfaltsstelle beim Schreiben neuer Sätze.
 
+**Live-Quiz-Fragensatz.** Objekt mit `fach`, `stufe`, `titel`, `unter`,
+`sekunden` (Standardzeit) und `fragen`, **hinten** an `Q_SAETZE` anhängen. Jede
+Frage: `q` (HTML), `a` (zwei bis vier Antworten), `r` (Index der richtigen),
+`s` (Erklärung), optional `zeit` und `fest` (Antworten nicht mischen). Antworten
+kurz halten, sie stehen auch auf dem Tablet; dort filtert `qSauber()` alles
+außer `span`, `i`, `b`, `sub`, `sup` heraus, `M()` und `f()` passen also.
+Falsche Antworten aus typischen Fehlern bauen, die Auswertung nach der Runde
+nennt den häufigsten. `qSatzInfo` warnt bei ungültigem `r` oder fehlender
+Erklärung.
+
 **Jeopardy-Katalog.** Kategorien-Array anlegen, dann Eintrag in `KATALOGE` mit
 `id`, `titel`, `fach`, `stufe`, `inhalt`, `unter`, `hinweis`, `bezug`,
 optional `farben`. Die Kaskade Fach → Stufe → Inhalt entsteht daraus von selbst.
@@ -177,6 +199,19 @@ Korrektur oder Erläuterung fehlen.
 Bei neuen Rechenaufgaben zusätzlich die Terme maschinell nachrechnen, statt sie
 nur zu überfliegen — die Terme sind gültiges JS, wenn man `·`→`*`, `:`→`/`
 und `−`→`-` ersetzt.
+
+### Live-Quiz
+
+Der Browser-Durchlauf zeigt nur die Beamer-Seite. Das Tablet ist dieselbe
+Datei mit `#quiz=CODE&s=0` in der Adresse, also in einem zweiten Tab öffnen.
+Die Tablets holen die Seite immer von GitHub Pages (`Q_ONLINE`), auch wenn der
+Beamer lokal läuft. Neue Fragensätze wirken deshalb auf den Tablets erst nach
+dem Push; die Antworttexte kommen aber ohnehin vom Beamer.
+
+Welcher MQTT-Server im Schulnetz durchkommt, zeigt „Verbindung testen“ in
+Schritt 3. Kommt keiner durch (gesperrte Ports 8084/8884/8081), lässt sich
+unter „Eigener Server …“ eine `wss://`-Adresse eintragen; sie wandert im
+QR-Link mit.
 
 ## Veröffentlichung
 
