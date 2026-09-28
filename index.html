@@ -9363,11 +9363,14 @@ function qrSvg(text){
 
 /* Oeffentliche Server mit WebSocket ueber TLS. Welcher im Schulnetz
    durchkommt, zeigt der Verbindungstest in Schritt 3. Neue Server hinten
-   anhaengen, der Index steht im Beitrittslink. */
+   anhaengen, der Index steht im Beitrittslink.
+   Der Server muss behaltene Nachrichten ausliefern, sonst finden die
+   Tablets den Raum nicht. HiveMQ (broker.hivemq.com) nimmt Verbindungen an,
+   liefert sie aber nicht aus und ist deshalb nicht in der Liste. */
 var Q_SERVER = [
-  {name:"HiveMQ",    url:"wss://broker.hivemq.com:8884/mqtt"},
   {name:"EMQX",      url:"wss://broker.emqx.io:8084/mqtt"},
-  {name:"Mosquitto", url:"wss://test.mosquitto.org:8081"}
+  {name:"Mosquitto", url:"wss://test.mosquitto.org:8081"},
+  {name:"Eclipse (Port 443)", url:"wss://mqtt.eclipseprojects.io:443/mqtt"}
 ];
 
 /* Liegt die Sammlung lokal (file://), zeigt der QR-Code trotzdem auf die
@@ -10307,12 +10310,45 @@ function qSetupFehler(txt){
   el("qSetupFehler").style.display = "block";
 }
 
+/* Vor dem Oeffnen denselben Test wie "Verbindung testen" fahren: erst den
+   gewaehlten Server, dann die uebrigen der Reihe nach. Nur verbunden zu
+   sein reicht nicht, der Server muss den Raum auch ausliefern. */
+function qServerWaehlen(){
+  var liste = [{i:qstate.server, url:qServerUrl()}];
+  if(qstate.server >= 0){
+    Q_SERVER.forEach(function(sv, i){ if(i !== qstate.server) liste.push({i:i, url:sv.url}); });
+  }
+  return new Promise(function(ok, nein){
+    (function weiter(k){
+      if(k >= liste.length){ nein(); return; }
+      qEinzeltest(liste[k].url).then(function(){ ok(liste[k].i); }, function(){ weiter(k + 1); });
+    })(0);
+  });
+}
+
 function qStart(){
   qEinstellungenLesen();
   if(qstate.server < 0 && !/^wss?:\/\/\S+$/.test(qstate.eigen)){
     qSetupFehler("Der eigene Server braucht eine Adresse der Form wss://server:port/pfad.");
     return;
   }
+  el("qSetupFehler").style.display = "none";
+  el("qStartBtn").disabled = true;
+  el("qStartBtn").textContent = "Prüfe Server …";
+  qServerWaehlen().then(function(i){
+    el("qStartBtn").disabled = false;
+    el("qStartBtn").innerHTML = ic("tablet") + "Raum öffnen";
+    qstate.server = i;
+    el("qServerSel").value = i;
+    qRaumAnlegen();
+  }, function(){
+    el("qStartBtn").disabled = false;
+    el("qStartBtn").innerHTML = ic("tablet") + "Raum öffnen";
+    qSetupFehler("Kein Server nimmt den Raum an. Entweder fehlt das Internet, oder das Netz sperrt die Verbindung. Details zeigt „Verbindung testen“.");
+  });
+}
+
+function qRaumAnlegen(){
   if(qnetz.mqtt){ qnetz.mqtt.schliessen(); qnetz.mqtt = null; }
   qstate.code = ""; qstate.seq = 0; qstate.runde = 1;
   qstate.spieler = {}; qstate.reihe = []; qstate.kick = [];
@@ -10350,31 +10386,38 @@ function qFortsetzen(){
   });
 }
 
-/* Prueft jeden Server einzeln: verbinden, behaltene Nachricht ablegen,
-   abonnieren, zurueckbekommen, wieder loeschen. Genau das braucht das
-   Spiel; ein Server, der hier besteht, traegt auch das Quiz. */
+/* Prueft jeden Server so, wie das Spiel ihn braucht: eine Verbindung legt
+   eine behaltene Nachricht ab (wie der Beamer), eine zweite, spaeter
+   geoeffnete holt sie ab (wie ein Tablet), danach wird sie geloescht. Nur
+   verbunden zu sein reicht nicht; HiveMQ etwa verbindet, liefert aber nichts. */
 function qEinzeltest(url){
   return new Promise(function(ok, nein){
-    var t0 = Date.now(), thema = "lmgquiz/test/" + qZufall(12), fertig = false, m = null;
-    var frist = setTimeout(function(){ ende(false, "keine Antwort in 8 Sekunden"); }, 8000);
+    var t0 = Date.now(), thema = "lmgquiz/test/" + qZufall(12), fertig = false, gesendet = false;
+    var m = null, m2 = null;
+    var frist = setTimeout(function(){
+      ende(false, gesendet ? "verbindet, liefert den Raum aber nicht aus" : "keine Antwort in 10 Sekunden");
+    }, 10000);
     function ende(gut, info){
       if(fertig) return;
       fertig = true;
       clearTimeout(frist);
-      var mm = m;
-      setTimeout(function(){ if(mm) mm.schliessen(); }, 300);
+      var a = m, b = m2;
+      setTimeout(function(){ if(a) a.schliessen(); if(b) b.schliessen(); }, 300);
       if(gut) ok(info); else nein(info);
     }
     m = mqttNeu(url, {
       status:function(bereit){
-        if(!bereit || fertig) return;
-        m.senden(thema, qBytes("test"), true);
-        m.abo(thema);
-      },
-      nachricht:function(t, b){
-        if(t !== thema || !b.length) return;
-        m.senden(thema, new Uint8Array(0), true);
-        ende(true, Date.now() - t0);
+        if(!bereit || fertig || gesendet) return;
+        gesendet = m.senden(thema, qBytes("test"), true);
+        if(!gesendet) return;
+        m2 = mqttNeu(url, {
+          status:function(b2){ if(b2 && !fertig) m2.abo(thema); },
+          nachricht:function(t, b){
+            if(t !== thema || !b.length || fertig) return;
+            m.senden(thema, new Uint8Array(0), true);
+            ende(true, Date.now() - t0);
+          }
+        });
       }
     });
   });
@@ -10667,18 +10710,22 @@ function hVerbinden(){
    Zustand liegt, der sich mit dem Code entschluesseln laesst. */
 function hVersuch(liste, i, lauf){
   if(lauf !== hstate.lauf) return;
+  if(i === 0) hstate.erreicht = 0;
   if(i >= liste.length){
-    hstate.fehler = "Kein offener Raum mit dem Code " + hstate.code + " gefunden. Stimmt der Code? Ist der Raum am Beamer schon geöffnet?";
+    hstate.fehler = hstate.erreicht
+      ? "Kein offener Raum mit dem Code " + hstate.code + " gefunden. Stimmt der Code? Ist der Raum am Beamer schon geöffnet?"
+      : "Dieses Gerät erreicht keinen Quiz-Server. Ist Internet da? Manche Netze sperren solche Verbindungen.";
     hFormular();
     return;
   }
-  var gefunden = false, m;
+  var gefunden = false, gezaehlt = false, m;
   var frist = setTimeout(function(){
     if(!gefunden){ m.schliessen(); hVersuch(liste, i + 1, lauf); }
   }, 7000);
   m = mqttNeu(liste[i], {
     status:function(ok){
       if(lauf !== hstate.lauf) return;
+      if(ok && !gezaehlt){ gezaehlt = true; hstate.erreicht++; }
       if(ok) m.abo(hstate.thema + "/b");
       if(gefunden){ hstate.verbunden = ok; hKopfPunkte(); }
     },

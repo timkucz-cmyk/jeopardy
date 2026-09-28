@@ -209,9 +209,12 @@ Beamer lokal läuft. Neue Fragensätze wirken deshalb auf den Tablets erst nach
 dem Push; die Antworttexte kommen aber ohnehin vom Beamer.
 
 Welcher MQTT-Server im Schulnetz durchkommt, zeigt „Verbindung testen“ in
-Schritt 3. Kommt keiner durch (gesperrte Ports 8084/8884/8081), lässt sich
-unter „Eigener Server …“ eine `wss://`-Adresse eintragen; sie wandert im
-QR-Link mit.
+Schritt 3; „Raum öffnen“ fährt denselben Test und weicht selbst auf einen
+funktionierenden Server aus. Der Test prüft nicht nur die Verbindung, sondern
+dass der Server behaltene Nachrichten ausliefert. Daran scheitert HiveMQ:
+verbindet, liefert den Raum aber nicht aus. Neue Server in `Q_SERVER` also
+immer erst mit dem Test prüfen. Kommt keiner durch, lässt sich unter „Eigener
+Server …“ eine `wss://`-Adresse eintragen; sie wandert im QR-Link mit.
 
 ## Veröffentlichung
 
