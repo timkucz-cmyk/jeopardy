@@ -62,13 +62,25 @@ LIVE-QUIZ: QR-Code …     qrGeruest(), qrSvg(), QR-Leser (qrLesen),
                          Vorbereitung, Bedienung, Offline-Runde (sstate),
                          Tablet (hstate)
 STARTSEITE               Registry SPIELE, Kacheln, Thumbnails
+STARTSEITE: Stufe > Fach > Spiel   ST_STUFEN, stSaetze(), stRender(), stStarte()
 SEITENWECHSEL            SEITEN, zeigeSeite()
 ```
 
 Im `<body>` gibt es zehn `<section>`: `startseite`, `setup`, `bingoSetup`,
 `game`, `bingoGame`, `fehlerSetup`, `fehlerGame`, `quizSetup`, `quizGame`,
 `quizHandy`. `quizHandy` ist die Tablet-Ansicht: `zeigeSeite()` setzt dafür
-`body.handy`, das blendet die Kopfzeile aus. Dazu Overlays (`qOverlay`,
+`body.handy`, das blendet die Kopfzeile aus. Für die Startseite setzt es
+`body.start`: Kopfzeile aus, volle Breite, eigener dunkler Kopf.
+
+**Startseite** im gemeinsamen Design der LMG-Plattformen (Vorgabe:
+`Simulationen/AUSWAHLSEITE.md`, CSS-Klassen `st-*` 1:1 aus
+`Simulationen/assets/lmg.css`): Schritt 1 Klassenstufe, Schritt 2 Fach,
+Schritt 3 die Spielkacheln mit der Anzahl passender Sätze. Alle Zahlen
+entstehen aus `KATALOGE`, `B_SAETZE`, `F_SAETZE`, `Q_SAETZE` (`stSaetze`,
+Jeopardy-Stufe „E-Phase“ zählt als „E“). Ein Klick auf ein Spiel wählt in
+dessen Einstellungen den ersten passenden Satz vor (`stStarte`); beim Jeopardy
+nur, wenn kein Spielstand gespeichert ist. Die Wahl steht in `?stufe=…&fach=…`
+und im localStorage (`spiele_start_v1`). Dazu Overlays (`qOverlay`,
 `podestOverlay`, `bCheckOverlay`, `confirmOverlay`) außerhalb von `.app`.
 
 ## Geteilte Infrastruktur
@@ -120,8 +132,11 @@ hängt sich als dritte Box mit `"fTimer"` daran, statt eine eigene Uhr zu bauen.
 7. Eintrag in `SPIELE` anhängen: `id`, `name`, `icon`, `bild`, `text`,
    `badge` (zeigt „Angefangene Runde", wenn gespeicherter Stand existiert),
    `start`.
+8. In `stSaetze()` die Satzliste des Spiels ergänzen, in `stStarte()` die
+   Vorauswahl und in `ST_EINHEIT` das Zählwort — sonst steht die Kachel auf
+   der Startseite immer auf „noch nichts da“.
 
-Fehlt Schritt 4 oder 7, ist das Spiel unerreichbar, ohne dass ein Fehler auftritt.
+Fehlt Schritt 4, 7 oder 8, ist das Spiel unerreichbar, ohne dass ein Fehler auftritt.
 
 ## Rezept: Inhalte ergänzen
 

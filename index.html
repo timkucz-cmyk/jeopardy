@@ -401,6 +401,145 @@
   .fr .fz{padding:0 .3em;}
   .fr .fn{padding:0 .3em; border-top:1.5px solid currentColor; margin-top:2px;}
 
+
+  /* ---------- Startseite im gemeinsamen Design der LMG-Plattformen ----------
+     Die Klassen st-* sind 1:1 aus Simulationen/assets/lmg.css uebernommen.
+     Hier nur die dort benutzten Tokens, die in dieser Datei noch fehlen. */
+  .st-seite{
+    --physik:#2C5282; --physik-soft:#e8eef5; --physik-line:#b9c8da; --physik-ink:#1d3a5c;
+    --surface-ink:#1a1c1f;
+    --accent:#3d4147; --accent-soft:#ececea; --accent-ink:#17181a;
+    --radius-md:6px; --radius-pill:999px;
+    --dur-normal:180ms; --ease-out:var(--ease); --font-math:var(--math);
+  }
+  .st-seite .fach-mathe {--accent:var(--mathe); --accent-soft:var(--mathe-soft); --accent-ink:var(--mathe-ink);}
+  .st-seite .fach-physik{--accent:var(--physik);--accent-soft:var(--physik-soft);--accent-ink:var(--physik-ink);}
+  body.start{padding:0;}
+  body.start .topbar{display:none;}
+  body.start .app{max-width:none;}
+  .st-seite :focus-visible{outline:2px solid var(--accent); outline-offset:3px;}
+  .st-leiste .btn{margin-left:auto; padding:6px 14px; font-size:15px; color:#fff; background:transparent; border-color:rgba(255,255,255,.3);}
+  .st-leiste .btn:hover{background:rgba(255,255,255,.1); border-color:rgba(255,255,255,.55);}
+  .st-seite .kachelgrid{margin-top:0; grid-template-columns:repeat(auto-fill, minmax(220px, 1fr)); gap:16px;}
+  .st-seite .kachel-name{font-size:20px;}
+  .st-seite .kachel-sub{font-size:15px;}
+  .kachel-anz{display:block; margin-top:10px; font-size:15px; font-weight:600; color:var(--accent);}
+  .kachel.bald .kachel-anz{color:var(--fg-4); font-weight:400;}
+  .st-seite .kachel:hover{border-color:var(--accent);}
+  .st-seite .kachel.bald:hover{border-color:var(--line-2);}
+
+  /* ---------- Startseite: Stufe > Fach > Spiel (aus Simulationen/assets/lmg.css) ----------
+     Dunkler Kopf mit Verlauf Mathe-Rot > Tinte > Physik-Blau, darunter die
+     Schritte als Zeitleiste. Gleiche Klassen (st-*) in allen LMG-Plattformen. */
+  .st-seite{min-height:100vh;display:flex;flex-direction:column;background:var(--surface-page)}
+  .st-kopf{background-image:linear-gradient(115deg,var(--mathe-ink) 0%,var(--surface-ink) 50%,var(--physik-ink) 100%);color:#fff}
+  .st-marke{display:flex;height:3px}
+  .st-marke i{flex:1;background:var(--mathe)}
+  .st-marke i+i{background:var(--physik)}
+  .st-leiste{padding:0 24px;border-bottom:1px solid rgba(255,255,255,.14)}
+  .st-leiste-innen{max-width:1040px;margin:0 auto;min-height:56px;display:flex;align-items:center;gap:12px}
+  .st-wortmarke{font-size:18px;font-weight:700;letter-spacing:-.01em}
+  .st-trenner{width:1px;height:20px;background:#4a4e55}
+  .st-schule{font-size:14px;color:var(--fg-5)}
+  .st-held{padding:56px 24px 40px}
+  .st-held-innen{max-width:1040px;margin:0 auto}
+  .st-kicker{margin:0 0 12px;font-size:14px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--fg-5)}
+  .st-titel{margin:0 0 16px;font-size:clamp(38px,7vw,56px);line-height:1.1;font-weight:700;letter-spacing:-.02em;color:#fff}
+  .st-lead{margin:0;font-size:19px;line-height:1.5;color:var(--fg-5);max-width:60ch;text-wrap:pretty}
+
+  .st-main{flex:1;width:100%;max-width:1088px;margin:0 auto;padding:40px 24px 64px}
+  .st-schritt{display:grid;grid-template-columns:28px minmax(0,1fr);gap:20px}
+  .st-schritt[hidden]{display:none}
+  .st-leitung{display:flex;flex-direction:column;align-items:center}
+  .st-nr{
+    flex:none;width:28px;height:28px;border-radius:var(--radius-pill);
+    display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;
+    background:var(--surface-page);color:var(--fg-3);border:1.5px solid var(--line-3);
+  }
+  .st-schritt.aktiv .st-nr{background:var(--surface-ink);color:var(--surface-page);border-color:var(--surface-ink)}
+  .st-linie{flex:1;width:1.5px;background:var(--line-2);margin-top:8px}
+  .st-inhalt{min-width:0;padding-bottom:40px}
+  .st-schritt:last-child .st-inhalt{padding-bottom:0}
+  .st-frage{display:flex;align-items:center;min-height:28px;margin:0 0 20px;font-size:24px;font-weight:600;line-height:1.25;letter-spacing:-.01em;color:var(--fg-4)}
+  .st-schritt.aktiv .st-frage{color:var(--fg-1)}
+  .st-platzhalter{border:1px dashed var(--line-2);border-radius:var(--radius-md);padding:28px 24px;color:var(--fg-4);font-size:16px}
+
+  .st-gruppen{display:flex;flex-direction:column;gap:20px}
+  .st-gruppe{display:flex;align-items:center;gap:12px;margin:0 0 10px;font-size:12px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--fg-3);white-space:nowrap}
+  .st-gruppe::after{content:"";flex:1;height:1px;background:var(--line-1)}
+
+  .st-stufen{display:grid;grid-template-columns:repeat(auto-fill,minmax(128px,1fr));gap:12px}
+  .st-stufe{
+    display:flex;flex-direction:column;align-items:flex-start;gap:2px;min-width:0;min-height:116px;padding:12px 14px;
+    text-align:left;color:var(--fg-1);background:var(--surface-page);
+    border:1px solid var(--line-1);border-radius:var(--radius-md);box-shadow:var(--shadow-1);cursor:pointer;
+    transition:background var(--dur-normal) var(--ease-out),border-color var(--dur-normal) var(--ease-out),box-shadow var(--dur-normal) var(--ease-out);
+  }
+  .st-stufe .name{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--fg-3)}
+  .st-stufe .zahl{font-size:38px;font-weight:700;line-height:1.1;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+  .st-stufe .anz{margin-top:auto;display:flex;align-items:center;gap:6px;font-size:13px;color:var(--fg-3);white-space:nowrap}
+  .st-stufe .punkte{display:flex;gap:4px}
+  .st-stufe .punkte i{display:block;width:7px;height:7px;border-radius:50%}
+  .st-stufe:hover:not([aria-disabled="true"]){background:var(--surface-soft);border-color:var(--line-3)}
+  .st-stufe[aria-pressed="true"],.st-stufe[aria-pressed="true"]:hover{background:var(--surface-ink);border-color:var(--surface-ink);color:var(--surface-page)}
+  .st-stufe[aria-pressed="true"] .name,.st-stufe[aria-pressed="true"] .anz{color:var(--fg-5)}
+  .st-stufe[aria-disabled="true"]{cursor:default;background:transparent;border:1px dashed var(--line-2);box-shadow:none;color:var(--fg-4)}
+  .st-stufe[aria-disabled="true"] .name,.st-stufe[aria-disabled="true"] .anz{color:var(--fg-4)}
+
+  .st-faecher{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
+  .st-fach{
+    display:grid;grid-template-columns:64px minmax(0,1fr) 24px;align-items:center;gap:18px;padding:20px;
+    text-align:left;text-decoration:none;color:var(--fg-1);background:var(--surface-page);
+    border:1px solid var(--line-1);border-radius:var(--radius-md);box-shadow:var(--shadow-2);cursor:pointer;
+    transition:border-color var(--dur-normal) var(--ease-out),box-shadow var(--dur-normal) var(--ease-out);
+  }
+  .st-fach .symbol{width:64px;height:64px;border-radius:var(--radius-md);display:flex;align-items:center;justify-content:center;background:var(--accent-soft);color:var(--accent-ink);font-family:var(--font-math);font-size:34px;line-height:1}
+  .st-fach .text{display:flex;flex-direction:column;gap:2px;min-width:0}
+  .st-fach .titel{font-size:22px;font-weight:600;color:var(--fg-1)}
+  .st-fach .anz{font-size:14px;color:var(--fg-3)}
+  .st-fach .pfeil{display:flex;color:var(--accent);transition:transform var(--dur-normal) var(--ease-out)}
+  .st-fach:hover:not([aria-disabled="true"]),.st-fach[aria-pressed="true"]{border-color:var(--accent);box-shadow:var(--shadow-3)}
+  .st-fach:hover:not([aria-disabled="true"]) .pfeil{transform:translateX(4px)}
+  .st-fach[aria-pressed="true"] .pfeil{transform:rotate(90deg)}
+  .st-fach[aria-disabled="true"]{opacity:.5;cursor:default;box-shadow:var(--shadow-1)}
+
+  /* Dritter Schritt, wo eine Plattform ihn braucht (Themen, Spiele): schlichte Eintraege */
+  .st-liste{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
+  .st-eintrag{
+    display:grid;grid-template-columns:minmax(0,1fr) 24px;align-items:center;gap:14px;padding:16px 20px;
+    text-align:left;text-decoration:none;color:var(--fg-1);background:var(--surface-page);
+    border:1px solid var(--line-1);border-left:3px solid var(--accent);border-radius:var(--radius-md);box-shadow:var(--shadow-1);
+    transition:border-color var(--dur-normal) var(--ease-out),box-shadow var(--dur-normal) var(--ease-out);
+  }
+  .st-eintrag .titel{display:block;font-size:19px;font-weight:600;line-height:1.3}
+  .st-eintrag .anz{display:block;margin-top:2px;font-size:14px;color:var(--fg-3)}
+  .st-eintrag .pfeil{display:flex;color:var(--accent);transition:transform var(--dur-normal) var(--ease-out)}
+  .st-eintrag:hover{border-color:var(--accent);box-shadow:var(--shadow-3)}
+  .st-eintrag:hover .pfeil{transform:translateX(4px)}
+
+  .st-fuss{border-top:1px solid var(--line-1);padding:20px 24px 28px}
+  .st-fuss-innen{max-width:1040px;margin:0 auto;display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;font-size:13px;color:var(--fg-4)}
+  .st-fuss a{color:var(--fg-3);text-decoration:none;font-weight:600}
+  .st-fuss a:hover{color:var(--fg-1)}
+
+  @media (max-width:560px){
+    .st-leiste{padding:0 16px}
+    .st-held{padding:36px 16px 28px}
+    .st-lead{font-size:17px}
+    .st-main{padding:28px 16px 48px}
+    .st-schritt{gap:12px}
+    .st-frage{font-size:21px}
+    .st-stufen{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+    .st-stufe{min-height:96px;padding:10px}
+    .st-stufe .zahl{font-size:30px}
+    .st-stufe .name{font-size:10px;letter-spacing:.04em}
+    .st-stufe .punkte{display:none}
+    .st-faecher{grid-template-columns:minmax(0,1fr)}
+    .st-fach{grid-template-columns:52px minmax(0,1fr) 24px;gap:14px;padding:16px}
+    .st-fach .symbol{width:52px;height:52px;font-size:28px}
+    .st-fach .titel{font-size:20px}
+  }
+
   /* ---------- Startseite mit Spielkacheln ---------- */
   .kachelgrid{display:grid; grid-template-columns:repeat(auto-fill, minmax(300px, 1fr)); gap:20px; margin-top:20px;}
   .kachel{
@@ -786,7 +925,6 @@
       <p class="sub" id="kopfUnter">Wiederholung der Grundlagen aus der E-Phase</p>
     </div>
     <div class="row">
-      <button class="btn" id="hStartBtn" style="display:none"></button>
       <button class="btn btn-quiet" id="backToSetupBtn" style="display:none">Gruppen und Setup</button>
       <button class="btn" id="resetBtn" style="display:none">Spiel zurücksetzen</button>
       <button class="btn" id="endBtn" style="display:none"></button>
@@ -796,11 +934,55 @@
 
   <!-- ============ STARTSEITE ============ -->
   <section id="startseite">
-    <div class="card">
-      <span class="label">Spielauswahl</span>
-      <h2 style="margin-top:8px">Welches Spiel soll es sein?</h2>
-      <p class="sub">Alle Spiele laufen über den Beamer. Die Klasse braucht nur Heft und Stift, beim Live-Quiz dazu Tablets.</p>
-      <div class="kachelgrid" id="spielGrid"></div>
+    <div class="st-seite">
+      <div class="st-kopf">
+        <div class="st-marke" aria-hidden="true"><i></i><i></i></div>
+        <div class="st-leiste">
+          <div class="st-leiste-innen">
+            <span class="st-wortmarke">LMG</span>
+            <span class="st-trenner" aria-hidden="true"></span>
+            <span class="st-schule">Ludwig-Meyn-Gymnasium Uetersen</span>
+            <button class="btn" id="hStartBtn" style="display:none"></button>
+          </div>
+        </div>
+        <header class="st-held">
+          <div class="st-held-innen">
+            <p class="st-kicker">Fachschaft Mathematik und Physik</p>
+            <h1 class="st-titel">Spielesammlung</h1>
+            <p class="st-lead">Lernspiele für Mathematik und Physik am Beamer: Jeopardy, Bingo, Fehlerjagd und Live-Quiz. Die Klasse braucht nur Heft und Stift, beim Live-Quiz dazu Tablets. Wähle Klassenstufe und Fach, um passende Spiele zu finden.</p>
+          </div>
+        </header>
+      </div>
+
+      <main class="st-main">
+        <section class="st-schritt aktiv" id="stSchritt1" aria-labelledby="stFrage1">
+          <div class="st-leitung" aria-hidden="true"><span class="st-nr">1</span><span class="st-linie"></span></div>
+          <div class="st-inhalt">
+            <h2 class="st-frage" id="stFrage1">Für welche Klassenstufe?</h2>
+            <div class="st-gruppen" id="stStufen"></div>
+          </div>
+        </section>
+        <section class="st-schritt" id="stSchritt2" aria-labelledby="stFrage2">
+          <div class="st-leitung" aria-hidden="true"><span class="st-nr">2</span><span class="st-linie"></span></div>
+          <div class="st-inhalt">
+            <h2 class="st-frage" id="stFrage2">Welches Fach?</h2>
+            <div class="st-platzhalter" id="stFachLeer">Wähle zuerst die Klassenstufe.</div>
+            <div class="st-faecher" id="stFaecher"></div>
+          </div>
+        </section>
+        <section class="st-schritt" id="stSchritt3" aria-labelledby="stFrage3">
+          <div class="st-leitung" aria-hidden="true"><span class="st-nr">3</span></div>
+          <div class="st-inhalt">
+            <h2 class="st-frage" id="stFrage3">Welches Spiel?</h2>
+            <div class="st-platzhalter" id="stSpielLeer"></div>
+            <div class="kachelgrid" id="spielGrid"></div>
+          </div>
+        </section>
+      </main>
+
+      <footer class="st-fuss">
+        <div class="st-fuss-innen"><span>Ludwig-Meyn-Gymnasium Uetersen</span><span>Läuft offline am Beamer, nur das Live-Quiz braucht Internet.</span></div>
+      </footer>
     </div>
   </section>
 
@@ -8491,8 +8673,131 @@ var FM10_POTENZEN = {
   ]
 };
 
+/* Terme mit mehreren Variablen, Klasse 8. Jede zweite Aufgabe folgt einer
+   Trainingsaufgabe aus dem Schulbuch (Kapitel II, Nr. 10 bis 18), die
+   anderen sind eigene. Die Buchnummer steht jeweils als Kommentar dabei. */
+var FM8_MEHRVAR = {
+  fach:"Mathematik",
+  stufe:"8",
+  titel:"Terme mit mehreren Variablen",
+  unter:"Klasse 8, zusammenfassen, Klammern, ausklammern, einsetzen, Terme aufstellen",
+  aufgaben:[
+    {
+      auftrag:"Fasse so weit wie möglich zusammen.",
+      start:M("4xy + 3x²y − 2yx − x²y + 5xy²"),
+      zeilen:[M("= 4xy − 2xy + 3x²y − x²y + 5xy²"), M("= 2xy + 2x²y + 5xy²"), M("= 2xy + 7x²y")],
+      fehler:3,
+      art:"Ungleichartige Glieder zusammengefasst",
+      richtig:M("= 2xy + 2x²y + 5xy²")+", weiter geht es nicht",
+      s:M("x²y = x · x · y")+", aber "+M("xy² = x · y · y")+". Die Variablenteile sind verschieden, also darf man nicht addieren. Probe mit "+M("x = 1")+", "+M("y = 2")+": "+M("2x²y + 5xy² = 4 + 20 = 24")+", aber "+M("7x²y = 14")+"."
+    },
+    { /* Buch Nr. 10 c */
+      auftrag:"Vereinfache den Term und berechne seinen Wert für "+M("a = 2")+" und "+M("b = 1,5")+".",
+      start:M("a² + b · b − b² + 2a · a"),
+      zeilen:[M("= a² + 2b − b² + 2a²"), M("= 3a² + 2b − b²"), M("= 3 · 2² + 2 · 1,5 − 1,5²"), M("= 12 + 3 − 2,25 = 12,75")],
+      fehler:1,
+      art:M("b · b")+" als "+M("2b")+" statt als "+M("b²")+" gerechnet",
+      richtig:M("= a² + b² − b² + 2a²"),
+      s:M("b · b = b²")+". "+M("2b")+" wäre "+M("b + b")+". Richtig heben sich "+M("b²")+" und "+M("−b²")+" auf, es bleibt "+M("3a²")+" mit dem Wert "+M("3 · 4 = 12")+"."
+    },
+    {
+      auftrag:"Vereinfache das Produkt.",
+      start:M("3ab · (−2a²b) · 4b"),
+      zeilen:[M("= 3 · (−2) · 4 · a · a² · b · b · b"), M("= −24 · a² · b³"), M("= −24a²b³")],
+      fehler:2,
+      art:M("a · a²")+" als "+M("a²")+" gerechnet",
+      richtig:M("= −24 · a³ · b³"),
+      s:M("a · a² = a · a · a = a³")+". Bei "+M("b")+" wurde richtig gezählt, drei Faktoren "+M("b")+" ergeben "+M("b³")+". Richtig ist "+M("−24a³b³")+"."
+    },
+    { /* Buch Nr. 12 i */
+      auftrag:"Löse die Klammer auf und fasse zusammen.",
+      start:M("5ab − a · (−a + b) − 3a²"),
+      zeilen:[M("= 5ab + a² − ab − 3a²"), M("= 4ab + 2a²")],
+      fehler:2,
+      art:"Vorzeichenfehler beim Zusammenfassen",
+      richtig:M("= 4ab − 2a²"),
+      s:"Zeile 1 stimmt. Dann "+M("a² − 3a² = −2a²")+", das Minus gehört zum Ergebnis. Probe mit "+M("a = 1")+", "+M("b = 1")+": Der Ausgangsterm ergibt "+M("5 − 0 − 3 = 2")+", "+M("4 − 2 = 2")+" passt, "+M("4 + 2 = 6")+" nicht."
+    },
+    {
+      auftrag:"Multipliziere aus und fasse zusammen.",
+      start:M("(2a − b)(a + 3b)"),
+      zeilen:[M("= 2a · a + 2a · 3b − b · a − b · 3b"), M("= 2a² + 6ab − ab + 3b²"), M("= 2a² + 5ab + 3b²")],
+      fehler:2,
+      art:"Minus mal plus als plus gerechnet",
+      richtig:M("= 2a² + 6ab − ab − 3b²"),
+      s:M("−b · 3b = −3b²")+". Richtig ist "+M("2a² + 5ab − 3b²")+". Probe mit "+M("a = 1")+", "+M("b = 1")+": "+M("(2 − 1)(1 + 3) = 4")+" und "+M("2 + 5 − 3 = 4")+"."
+    },
+    { /* Buch Nr. 13 */
+      auftrag:"Klammere den größtmöglichen gemeinsamen Faktor aus.",
+      start:M("3ab + 6a²b − 9ab²"),
+      zeilen:[M("= 3ab · 1 + 3ab · 2a − 3ab · 3b"), M("= 3ab(2a − 3b)")],
+      fehler:2,
+      art:"Den Faktor 1 in der Klammer weggelassen",
+      richtig:M("= 3ab(1 + 2a − 3b)"),
+      s:"Vom ersten Summanden bleibt nach dem Ausklammern "+M("1")+" übrig, nicht nichts. Die Probe durch Ausmultiplizieren zeigt es: "+M("3ab(2a − 3b) = 6a²b − 9ab²")+", der Summand "+M("3ab")+" fehlt."
+    },
+    {
+      auftrag:"Berechne den Wert des Terms für "+M("x = −2")+" und "+M("y = 3")+".",
+      start:M("x² − 3xy + y²"),
+      zeilen:[M("= (−2)² − 3 · (−2) · 3 + 3²"), M("= −4 + 18 + 9"), M("= 23")],
+      fehler:2,
+      art:"Quadrat einer negativen Zahl negativ gerechnet",
+      richtig:M("= 4 + 18 + 9"),
+      s:M("(−2)² = (−2) · (−2) = 4")+", minus mal minus ergibt plus. Richtig ist der Wert "+M("31")+". Zeile 1 ist mit den Klammern um "+M("−2")+" genau richtig eingesetzt."
+    },
+    { /* Buch Nr. 15 a */
+      auftrag:"Tim fasst den Term zusammen und macht die Probe mit "+M("x = 1")+" und "+M("y = 1")+".",
+      start:M("−y + 3x² − 2x² + 2y"),
+      zeilen:[M("= 3x² − 2x² − y + 2y"), M("= 5x² − 3y"),
+              "Probe Ausgangsterm: "+M("−1 + 3 − 2 + 2 = 2"),
+              "Probe Ergebnis: "+M("5 − 3 = 2")+", also stimmt es."],
+      fehler:2,
+      art:"Beträge addiert statt Vorzeichen beachtet",
+      richtig:M("= x² + y"),
+      s:M("3x² − 2x² = x²")+" und "+M("−y + 2y = y")+". Die Probe ist richtig gerechnet, beweist aber nichts: Mit "+M("x = 1")+", "+M("y = 1")+" liefern hier zufällig beide Terme "+M("2")+". Mit "+M("x = 2")+", "+M("y = 1")+" fällt es auf: Ausgangsterm "+M("5")+", "+M("5x² − 3y = 17")+". Für Proben lieber verschiedene Zahlen ungleich 1 wählen."
+    },
+    {
+      auftrag:"Vereinfache den Term.",
+      start:M("(a + 2b)² − (a − 2b)²"),
+      zeilen:[M("= a² + 4ab + 4b² − (a² − 4ab + 4b²)"), M("= a² + 4ab + 4b² − a² − 4ab − 4b²"), M("= 0")],
+      fehler:2,
+      art:"Das Minus vor der Klammer nicht auf jeden Summanden angewendet",
+      richtig:M("= a² + 4ab + 4b² − a² + 4ab − 4b²"),
+      s:"Das Minus vor der Klammer dreht jedes Vorzeichen um, aus "+M("− 4ab")+" wird "+M("+ 4ab")+". Richtig ist "+M("8ab")+". Probe mit "+M("a = 1")+", "+M("b = 1")+": "+M("3² − (−1)² = 9 − 1 = 8")+"."
+    },
+    { /* Buch Nr. 17 a (III) */
+      auftrag:"Stelle einen Term für den Oberflächeninhalt "+M("O")+" des Quaders auf und vereinfache ihn.",
+      start:"Der Quader ist "+M("3a")+" lang, "+M("b")+" breit und "+M("a")+" hoch.",
+      zeilen:[M("O = 2 · 3a · b + 2 · 3a · a + 2 · a · b"), M("O = 6ab + 6a + 2ab"), M("O = 8ab + 6a")],
+      fehler:2,
+      art:M("a · a")+" als "+M("a")+" statt als "+M("a²")+" gerechnet",
+      richtig:M("O = 6ab + 6a² + 2ab"),
+      s:M("2 · 3a · a = 6a²")+". Richtig ist "+M("O = 8ab + 6a²")+". Ein Einheitencheck hätte geholfen: Jeder Summand einer Fläche muss aus zwei Längen bestehen, "+M("6a")+" ist aber nur eine Länge."
+    },
+    {
+      auftrag:"Stelle einen Term für den Umfang "+M("U")+" des Rechtecks auf und vereinfache ihn.",
+      start:"Das Rechteck hat die Seitenlängen "+M("2a + b")+" und "+M("a − b")+".",
+      zeilen:[M("U = 2 · (2a + b) + 2 · (a − b)"), M("U = 4a + b + 2a − 2b"), M("U = 6a − b")],
+      fehler:2,
+      art:"Nur den ersten Summanden der Klammer mit 2 multipliziert",
+      richtig:M("U = 4a + 2b + 2a − 2b"),
+      s:"Die 2 vor der Klammer gilt für beide Summanden: "+M("2 · (2a + b) = 4a + 2b")+". Dann heben sich "+M("2b")+" und "+M("−2b")+" auf, richtig ist "+M("U = 6a")+". Probe mit "+M("a = 3")+", "+M("b = 1")+": Seiten "+M("7")+" und "+M("2")+", Umfang "+M("18 = 6 · 3")+"."
+    },
+    { /* Buch Nr. 18 c */
+      auftrag:"Stelle einen Term für die Kosten "+M("K")+" in € auf, wenn "+M("x")+" Regale vom Typ A und "+M("y")+" Regale vom Typ B gebaut werden.",
+      start:"Typ A braucht 2 Seitenwände, 4 Regalbretter und 2 Schubladenelemente, Typ B 2 Seitenwände und 7 Regalbretter. Preise: Seitenwand 20 €, Regalbrett 10 €, Schubladenelement 35 €.",
+      zeilen:[M("K = 20 · (2x + 2y) + 10 · (4x + 7y) + 35 · 2x"), M("K = 40x + 40y + 40x + 7y + 70x"), M("K = 150x + 47y")],
+      fehler:2,
+      art:"Den zweiten Summanden der Klammer nicht mit 10 multipliziert",
+      richtig:M("K = 40x + 40y + 40x + 70y + 70x"),
+      s:M("10 · 7y = 70y")+". Richtig ist "+M("K = 150x + 110y")+". Probe mit einem einzigen Regal vom Typ B: "+M("2 · 20 + 7 · 10 = 110")+" €, der falsche Term liefert nur "+M("47")+" €."
+    }
+  ]
+};
+
 var F_SAETZE = [F8_TERME, F8_GLEICHUNGEN, FM7_RATIONAL,
-                FM8_DIST_LEICHT, FM8_DIST_MITTEL, FM8_DIST_SCHWER, FM10_POTENZEN];
+                FM8_DIST_LEICHT, FM8_DIST_MITTEL, FM8_DIST_SCHWER, FM10_POTENZEN,
+                FM8_MEHRVAR];
 
 
 /* -----------------------------------------------------------------------
@@ -12337,21 +12642,219 @@ var SPIELE = [
   }
 ];
 
-function renderKacheln(){
+/* -----------------------------------------------------------------------
+   STARTSEITE: Stufe > Fach > Spiel
+   Gleicher Aufbau wie die Startseiten von Simulationen und Lerntheke.
+   Die Anzahlen entstehen aus KATALOGE, B_SAETZE, F_SAETZE und Q_SAETZE;
+   ein Klick auf ein Spiel waehlt dort den ersten passenden Satz vor.
+   Das Jeopardy bleibt unberuehrt, solange ein Spielstand gespeichert ist,
+   sonst wuerde der Katalogwechsel ihn ueberschreiben.
+   ----------------------------------------------------------------------- */
+
+var ST_KEY = "spiele_start_v1";
+var ST_STUFEN = [
+  { id:"5",  zahl:"5",  name:"Klasse 5",  gruppe:"Sekundarstufe I" },
+  { id:"6",  zahl:"6",  name:"Klasse 6",  gruppe:"Sekundarstufe I" },
+  { id:"7",  zahl:"7",  name:"Klasse 7",  gruppe:"Sekundarstufe I" },
+  { id:"8",  zahl:"8",  name:"Klasse 8",  gruppe:"Sekundarstufe I" },
+  { id:"9",  zahl:"9",  name:"Klasse 9",  gruppe:"Sekundarstufe I" },
+  { id:"10", zahl:"10", name:"Klasse 10", gruppe:"Sekundarstufe I" },
+  { id:"E",  zahl:"E",  kurz:"Einführung",    name:"Einführungs­phase",      gruppe:"Sekundarstufe II" },
+  { id:"Q1", zahl:"Q1", kurz:"Qualifikation", name:"Qualifikations­phase 1", gruppe:"Sekundarstufe II" },
+  { id:"Q2", zahl:"Q2", kurz:"Qualifikation", name:"Qualifikations­phase 2", gruppe:"Sekundarstufe II" }
+];
+var ST_FAECHER = [
+  { id:"mathe",  name:"Mathematik", zeichen:"∫" },
+  { id:"physik", name:"Physik",     zeichen:"λ" }
+];
+var ST_EINHEIT = {
+  jeopardy:["Fragenkatalog", "Fragenkataloge"], bingo:["Aufgabensatz", "Aufgabensätze"],
+  fehlerjagd:["Aufgabensatz", "Aufgabensätze"], quiz:["Fragensatz", "Fragensätze"]
+};
+var ST_PFEIL = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
+var stWahl = null;
+
+function stStufeId(s){ return s === "E-Phase" ? "E" : String(s); }
+function stOhneTrenner(t){ return String(t).replace(/­/g, ""); }
+
+/* Indizes der Saetze eines Spiels fuer Stufe und (optional) Fach. */
+function stSaetze(spiel, stufe, fach){
+  var liste = spiel === "jeopardy" ? KATALOGE : spiel === "bingo" ? B_SAETZE :
+              spiel === "fehlerjagd" ? F_SAETZE : Q_SAETZE;
+  var fachName = fach === "physik" ? "Physik" : "Mathematik";
+  var idx = [];
+  liste.forEach(function(s, i){
+    if(stStufeId(s.stufe) === stufe && (!fach || fFach(s) === fachName)) idx.push(i);
+  });
+  return idx;
+}
+function stSpieleMit(stufe, fach){
+  return SPIELE.filter(function(sp){ return stSaetze(sp.id, stufe, fach).length > 0; });
+}
+function stAnzahl(n){ return n === 0 ? "noch leer" : n === 1 ? "1 Spiel" : n + " Spiele"; }
+
+function stNeu(tag, cls, text){
+  var e = document.createElement(tag);
+  if(cls) e.className = cls;
+  if(text != null) e.textContent = text;
+  return e;
+}
+
+function stWahlLesen(){
+  var q = new URLSearchParams(location.search);
+  if(q.get("stufe")) return { stufe:q.get("stufe"), fach:q.get("fach") };
+  try { return JSON.parse(localStorage.getItem(ST_KEY)) || {}; } catch(err){ return {}; }
+}
+function stWahlMerken(){
+  try { localStorage.setItem(ST_KEY, JSON.stringify(stWahl)); } catch(err){}
+  try {
+    var q = stWahl.stufe ? "?stufe=" + encodeURIComponent(stWahl.stufe) +
+            (stWahl.fach ? "&fach=" + encodeURIComponent(stWahl.fach) : "") : location.pathname;
+    history.replaceState(null, "", q);
+  } catch(err){}
+}
+
+function stSchritt(nr, aktiv, frage){
+  var s = el("stSchritt" + nr);
+  s.classList.toggle("aktiv", aktiv);
+  el("stFrage" + nr).textContent = frage;
+}
+
+function stRender(fokus){
+  if(stWahl === null) stWahl = stWahlLesen();
+  var stufe = null, fach = null;
+  ST_STUFEN.forEach(function(st){ if(st.id === stWahl.stufe && stSpieleMit(st.id).length) stufe = st; });
+  if(stufe) ST_FAECHER.forEach(function(f){ if(f.id === stWahl.fach && stSpieleMit(stufe.id, f.id).length) fach = f; });
+  stWahl = stufe ? (fach ? { stufe:stufe.id, fach:fach.id } : { stufe:stufe.id }) : {};
+
+  /* Schritt 1: Stufen */
+  var box = el("stStufen"), gruppe = null, raster = null;
+  box.innerHTML = "";
+  ST_STUFEN.forEach(function(st){
+    if(st.gruppe !== gruppe){
+      gruppe = st.gruppe;
+      var g = stNeu("div");
+      g.appendChild(stNeu("p", "st-gruppe", gruppe));
+      raster = stNeu("div", "st-stufen");
+      g.appendChild(raster);
+      box.appendChild(g);
+    }
+    var n = stSpieleMit(st.id).length;
+    var b = stNeu("button", "st-stufe");
+    b.type = "button";
+    b.setAttribute("aria-pressed", String(!!stufe && stufe.id === st.id));
+    b.setAttribute("aria-label", stOhneTrenner(st.name) + ", " + stAnzahl(n));
+    b.appendChild(stNeu("span", "name", st.kurz || "Klasse"));
+    b.appendChild(stNeu("span", "zahl", st.zahl));
+    var anz = stNeu("span", "anz");
+    if(n){
+      var punkte = stNeu("span", "punkte");
+      ST_FAECHER.forEach(function(f){
+        if(stSpieleMit(st.id, f.id).length){ var i = stNeu("i"); i.style.background = "var(--" + f.id + ")"; punkte.appendChild(i); }
+      });
+      anz.appendChild(punkte);
+    }
+    anz.appendChild(stNeu("span", null, stAnzahl(n)));
+    b.appendChild(anz);
+    if(!n) b.setAttribute("aria-disabled", "true");
+    else b.addEventListener("click", function(){
+      stWahl = (stWahl.stufe === st.id) ? {} : { stufe:st.id };
+      stWahlMerken();
+      stRender({ sel:'.st-stufe[data-stufe="' + st.id + '"]', weiter:stWahl.stufe ? "stSchritt2" : null });
+    });
+    b.setAttribute("data-stufe", st.id);
+    raster.appendChild(b);
+  });
+
+  /* Schritt 2: Fach */
+  stSchritt(2, !!stufe, stufe ? stOhneTrenner(stufe.name) + ": Welches Fach?" : "Welches Fach?");
+  var faecher = el("stFaecher");
+  faecher.innerHTML = "";
+  el("stFachLeer").style.display = stufe ? "none" : "block";
+  faecher.style.display = stufe ? "grid" : "none";
+  if(stufe) ST_FAECHER.forEach(function(f){
+    var spiele = stSpieleMit(stufe.id, f.id);
+    var k = stNeu("button", "st-fach fach-" + f.id);
+    k.type = "button";
+    k.setAttribute("data-fach", f.id);
+    k.setAttribute("aria-pressed", String(!!fach && fach.id === f.id));
+    var sym = stNeu("span", "symbol", f.zeichen);
+    sym.setAttribute("aria-hidden", "true");
+    var txt = stNeu("span", "text");
+    txt.appendChild(stNeu("span", "titel", f.name));
+    txt.appendChild(stNeu("span", "anz", spiele.length ?
+      spiele.map(function(sp){ return sp.name; }).join(", ") : "noch leer"));
+    var pfeil = stNeu("span", "pfeil");
+    pfeil.innerHTML = ST_PFEIL;
+    k.appendChild(sym); k.appendChild(txt); k.appendChild(pfeil);
+    if(!spiele.length) k.setAttribute("aria-disabled", "true");
+    else k.addEventListener("click", function(){
+      stWahl = { stufe:stufe.id, fach:f.id };
+      stWahlMerken();
+      stRender({ sel:'.st-fach[data-fach="' + f.id + '"]', weiter:"stSchritt3" });
+    });
+    faecher.appendChild(k);
+  });
+
+  /* Schritt 3: Spiel */
+  stSchritt(3, !!fach, fach ? fach.name + " · " + stOhneTrenner(stufe.name) + ": Welches Spiel?" : "Welches Spiel?");
+  el("stSpielLeer").textContent = stufe ? "Wähle das Fach." : "Danach erscheinen hier die passenden Spiele.";
+  el("stSpielLeer").style.display = fach ? "none" : "block";
+  el("spielGrid").style.display = fach ? "grid" : "none";
+  if(fach) renderKacheln(stufe.id, fach.id);
+
+  if(fokus){
+    var knopf = fokus.sel && document.querySelector(fokus.sel);
+    if(knopf) knopf.focus({ preventScroll:true });
+    var ziel = fokus.weiter && el(fokus.weiter);
+    if(ziel && ziel.getBoundingClientRect().top > window.innerHeight - 160){
+      var ruhig = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      ziel.scrollIntoView({ behavior:ruhig ? "auto" : "smooth", block:"start" });
+    }
+  }
+}
+
+/* Waehlt im Spiel den ersten Satz der Stufe und des Fachs vor, falls der
+   eingestellte nicht ohnehin passt, und oeffnet dann die Einstellungen. */
+function stStarte(sp, stufe, fach){
+  var idx = stSaetze(sp.id, stufe, fach);
+  if(!idx.length) return;
+  if(sp.id === "jeopardy"){
+    if(!loadSaved() && idx.indexOf(state.katalog) < 0){
+      var k = KATALOGE[idx[0]];
+      waehleKatalog(k.fach, k.stufe, k.inhalt);
+    }
+  } else if(sp.id === "bingo"){
+    if(idx.indexOf(bstate.satz) < 0) bstate.satz = idx[0];
+  } else if(sp.id === "fehlerjagd"){
+    if(idx.indexOf(fstate.satz) < 0) fstate.satz = idx[0];
+  } else if(sp.id === "quiz"){
+    if(idx.indexOf(qstate.satz) < 0) qstate.satz = idx[0];
+  }
+  sp.start();
+}
+
+function renderKacheln(stufe, fach){
   var grid = el("spielGrid");
   grid.innerHTML = "";
+  grid.className = "kachelgrid fach-" + fach;
   SPIELE.forEach(function(sp){
+    var n = stSaetze(sp.id, stufe, fach).length;
+    var einheit = ST_EINHEIT[sp.id] || ["Satz", "Sätze"];
     var k = document.createElement("button");
-    k.className = "kachel";
+    k.type = "button";
+    k.className = "kachel" + (n ? "" : " bald");
     var abzeichen = sp.badge ? sp.badge() : "";
     k.innerHTML =
       '<span class="kachel-bild">' + sp.bild() + '</span>' +
       '<span class="kachel-text">' +
         '<span class="kachel-name">' + ic(sp.icon, 22) + sp.name + '</span>' +
         '<span class="kachel-sub">' + sp.text + '</span>' +
+        '<span class="kachel-anz">' + (n ? n + " " + einheit[n === 1 ? 0 : 1] : "Für diese Auswahl noch nichts da") + '</span>' +
         (abzeichen ? '<span class="kachel-badge">' + abzeichen + '</span>' : '') +
       '</span>';
-    k.addEventListener("click", sp.start);
+    if(n) k.addEventListener("click", function(){ stStarte(sp, stufe, fach); });
+    else k.setAttribute("aria-disabled", "true");
     grid.appendChild(k);
   });
 }
@@ -12368,6 +12871,7 @@ function zeigeSeite(name){
     el(id).style.display = (id === name) ? "block" : "none";
   });
   document.body.classList.toggle("handy", name === "quizHandy");
+  document.body.classList.toggle("start", name === "startseite");
   el("hStartBtn").style.display = (name === "startseite") ? "inline-flex" : "none";
   if(name === "startseite"){
     el("kopfTitel").textContent = "Spielesammlung";
@@ -12376,7 +12880,7 @@ function zeigeSeite(name){
     el("backToSetupBtn").style.display = "none";
     el("resetBtn").style.display = "none";
     el("endBtn").style.display = "none";
-    renderKacheln();
+    stRender();
   } else if(name === "setup"){
     el("kopfTitel").textContent = "Jeopardy";
     applyKatalog();
