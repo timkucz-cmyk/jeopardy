@@ -58,7 +58,8 @@ FEHLERJAGD: Zustand …    fstate, Anzeige, Ablauf, Speichern, Vorbereitung
 LIVE-QUIZ                Kopfkommentar mit Protokoll und Satz-Aufbau, Q_SAETZE
 LIVE-QUIZ: QR-Code …     qrSvg(), Verbindung (mqttNeu), Verschluesselung,
                          Zustand am Beamer (qstate), Ablauf, Anzeige, Speichern,
-                         Vorbereitung, Bedienung, Tablet (hstate)
+                         Vorbereitung, Bedienung, Offline-Runde (sstate),
+                         Tablet (hstate)
 STARTSEITE               Registry SPIELE, Kacheln, Thumbnails
 SEITENWECHSEL            SEITEN, zeigeSeite()
 ```
@@ -95,6 +96,7 @@ Jedes Spiel hat seinen **eigenen** Zustand und localStorage-Key:
 | Fehlerjagd | `fstate` | `fehlerjagd_v1` |
 | Live-Quiz (Beamer) | `qstate` | `quiz_v1` |
 | Live-Quiz (Tablet) | `hstate` | `quiz_tablet_v1` |
+| Live-Quiz (offline) | `sstate` | `quiz_solo_v1` |
 
 Die Uhr ist die Ausnahme: `bTimerStart(sek, label, prefix)` steuert seine
 Timerbox über das ID-Präfix und ist damit ohnehin allgemein. Die Fehlerjagd
@@ -207,6 +209,14 @@ Datei mit `#quiz=CODE&s=0` in der Adresse, also in einem zweiten Tab öffnen.
 Die Tablets holen die Seite immer von GitHub Pages (`Q_ONLINE`), auch wenn der
 Beamer lokal läuft. Neue Fragensätze wirken deshalb auf den Tablets erst nach
 dem Push; die Antworttexte kommen aber ohnehin vom Beamer.
+
+**Offline-Runde.** Der Knopf neben „Raum öffnen“ braucht keinen Server: Der
+Beamer zeigt nur einen sechsstelligen Code (`#solo=CODE`), jedes Tablet spielt
+die Fragen allein und endet mit einer Endkarte (Name, Punkte, Code). Der Code
+trägt Satzindex, Anzahl, Zeit, Mischen und einen Zufallskeim — deshalb müssen
+die Optionen in `qAnzahl`/`qZeit` zu `Q_OFF_ANZAHL`/`Q_OFF_ZEIT` passen, und
+mehr als 128 Sätze passen nicht hinein. Live-Codes haben fünf Zeichen, daran
+unterscheidet das Tablet-Formular. Zum Testen reicht ein Tab mit `#solo=CODE`.
 
 Welcher MQTT-Server im Schulnetz durchkommt, zeigt „Verbindung testen“ in
 Schritt 3; „Raum öffnen“ fährt denselben Test und weicht selbst auf einen

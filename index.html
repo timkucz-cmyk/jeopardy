@@ -724,6 +724,30 @@
     padding:10px 18px; font-size:24px; font-weight:600;
   }
   .hpokal{color:var(--mathe);}
+
+  /* ---------- Live-Quiz offline am Tablet ---------- */
+  .hinfo{font-size:17px; color:var(--fg-2); background:var(--surface-page); border:1px solid var(--line-1); border-radius:4px; padding:12px 14px; text-align:center;}
+  .sfragetext{font-size:clamp(22px, 3.8vw, 34px); font-weight:600; line-height:1.3; color:var(--fg-1); text-align:center; padding:8px 4px;}
+  .sfrage-kopf{display:flex; justify-content:space-between; align-items:baseline;}
+  .suhr{font-family:var(--mono); font-size:22px; font-weight:700; color:var(--fg-2); font-variant-numeric:tabular-nums;}
+  .suhr.knapp{color:var(--mathe);}
+  .hergebnis.klein{flex:none; padding:22px;}
+  .serkl{margin-top:0; font-size:clamp(18px, 2.6vw, 22px);}
+  .hbody > .btn{justify-content:center; font-size:22px; padding:15px;}
+  .sendcard{
+    width:100%; max-width:520px; margin:auto; background:var(--surface-page); border:1px solid var(--line-1);
+    border-top:6px solid var(--mathe); border-radius:8px; box-shadow:var(--shadow-3);
+    padding:28px 24px; display:flex; flex-direction:column; align-items:center; gap:10px; text-align:center;
+  }
+  .sendcard .hpokal{margin-bottom:4px;}
+  .sendcard .hgross{overflow-wrap:anywhere;}
+  .spunkte{font-family:var(--mono); font-size:clamp(64px, 14vw, 104px); font-weight:700; line-height:1; color:var(--mathe);}
+  .spunkte-label{font-size:18px; font-weight:600; color:var(--fg-3); text-transform:uppercase; letter-spacing:.08em;}
+  .spunkte-zeile{display:flex; flex-wrap:wrap; justify-content:center; gap:6px; margin:8px 0 4px;}
+  .spunkte-zeile span{width:18px; height:18px; border-radius:50%; background:var(--line-2);}
+  .spunkte-zeile span.gut{background:var(--ok);}
+  .spunkte-zeile span.schlecht{background:var(--mathe);}
+  .sfuss{font-family:var(--mono); font-size:16px; color:var(--fg-3);}
 </style>
 </head>
 <body>
@@ -1326,8 +1350,12 @@
       <p class="note">Im Schulnetz vorher testen: erst „Verbindung testen“, dann mit einem Tablet im Schul-WLAN einen Probe-Raum betreten.</p>
 
       <hr class="sep">
-      <button class="btn btn-primary" id="qStartBtn"></button>
+      <div class="row">
+        <button class="btn btn-primary" id="qStartBtn"></button>
+        <button class="btn" id="qOfflineBtn"></button>
+      </div>
       <div class="qfehler" id="qSetupFehler" style="display:none"></div>
+      <p class="note">Offline-Runde: kein Quiz-Server, kein Raum. Jedes Tablet spielt die Fragen für sich, mit eigener Uhr und eigenen Punkten, und zeigt am Ende eine Karte mit dem Punktestand. Die Tablets müssen dafür nur einmal die Seite laden können.</p>
     </div>
 
   </section>
@@ -1363,6 +1391,30 @@
         <p class="note">Unpassender Name? Anklicken, dann fliegt das Tablet aus dem Raum.</p>
         <hr class="sep">
         <button class="btn btn-primary" id="qLosBtn"></button>
+      </div>
+    </div>
+
+    <div id="qOffline" class="qlobby" style="display:none">
+      <div class="card">
+        <span class="label">Offline mitspielen</span>
+        <div class="qqr" id="qOffQr"></div>
+        <div class="qcode" id="qOffCode"></div>
+        <p class="sub" style="text-align:center">QR-Code mit der Kamera scannen – oder <span class="qurl" id="qOffUrl"></span> öffnen, „Am Tablet mitspielen“ tippen und den Code eingeben.</p>
+      </div>
+      <div class="card">
+        <span class="label">So läuft die Offline-Runde</span>
+        <h2 style="margin-top:8px" id="qOffTitel"></h2>
+        <ol class="ablauf">
+          <li><b>Starten.</b> Code scannen, Spitznamen eingeben, los. Jedes Tablet spielt für sich, ohne Verbindung zum Beamer.</li>
+          <li><b>Antworten.</b> Frage und Antworten stehen auf dem Tablet. Alle bekommen dieselben Fragen, aber jedes Tablet in eigener Reihenfolge – abgucken lohnt nicht.</li>
+          <li><b>Punkte.</b> Wie im Live-Quiz: richtig 500 bis 1000, je schneller desto mehr. Nach jeder Frage zeigt das Tablet Lösung und Erklärung.</li>
+          <li><b>Endkarte.</b> Nach der letzten Frage stehen Name, Punkte und Trefferzahl auf dem Tablet. Die Karte bleibt auch nach dem Neuladen stehen, eine zweite Runde mit demselben Code gibt es nicht.</li>
+        </ol>
+        <p class="note">Sieger ist, wer auf der Endkarte die meisten Punkte hat. Auf jeder Karte steht der Code dieser Runde – er muss zu dem hier passen.</p>
+        <hr class="sep">
+        <div class="row">
+          <button class="btn" id="qOffNeuBtn"></button>
+        </div>
       </div>
     </div>
 
@@ -9635,7 +9687,7 @@ var qstate = {
   reihenfolge:[], pos:0, perm:[], vert:[],
   spieler:{}, reihe:[], kick:[],
   antworten:{}, t0:0, dauerMs:0,
-  statistik:[]
+  statistik:[], solo:""
 };
 
 /* Was nicht in den Speicher gehoert: Verbindung, Schluessel, Uhren. */
@@ -9999,6 +10051,8 @@ function qKachelnHtml(a, aufl){
 
 function qRender(){
   var ph = qstate.phase;
+  el("qOffline").style.display = "none";
+  el("qBackBtn").innerHTML = ic("cross") + "Raum schließen";
   el("qLobby").style.display = ph === "lobby" ? "grid" : "none";
   el("qFrage").style.display = (ph === "frage" || ph === "aufl") ? "block" : "none";
   el("qRang").style.display  = ph === "rang" ? "block" : "none";
@@ -10344,7 +10398,7 @@ function qStart(){
   }, function(){
     el("qStartBtn").disabled = false;
     el("qStartBtn").innerHTML = ic("tablet") + "Raum öffnen";
-    qSetupFehler("Kein Server nimmt den Raum an. Entweder fehlt das Internet, oder das Netz sperrt die Verbindung. Details zeigt „Verbindung testen“.");
+    qSetupFehler("Kein Server nimmt den Raum an. Entweder fehlt das Internet, oder das Netz sperrt die Verbindung. Details zeigt „Verbindung testen“. Ohne Server geht die „Offline-Runde“.");
   });
 }
 
@@ -10484,6 +10538,8 @@ el("qBeendenBtn").innerHTML   = ic("trophy") + "Quiz beenden";
 el("qBackBtn").innerHTML      = ic("cross") + "Raum schließen";
 el("qNochmalBtn").innerHTML   = ic("rotate") + "Noch eine Runde im selben Raum";
 el("qEndeBackBtn").innerHTML  = ic("cross") + "Raum schließen";
+el("qOfflineBtn").innerHTML   = ic("play") + "Offline-Runde (ohne Server)";
+el("qOffNeuBtn").innerHTML    = ic("rotate") + "Neue Runde mit neuem Code";
 
 el("qFachSel").addEventListener("change", function(){
   var fach = el("qFachSel").value;
@@ -10509,6 +10565,10 @@ el("qServerSel").addEventListener("change", function(){
 
 el("qZurueckBtn").addEventListener("click", function(){ zeigeSeite("startseite"); });
 el("qStartBtn").addEventListener("click", qStart);
+el("qOfflineBtn").addEventListener("click", qOfflineStarten);
+el("qOffNeuBtn").addEventListener("click", function(){
+  askConfirm("Neuer Code", "Wer schon spielt, spielt mit dem alten Code weiter. Neue Tablets bekommen neue Fragen, der alte Code steht dann nicht mehr am Beamer.", qOfflineStarten);
+});
 el("qTestBtn").addEventListener("click", qServerTest);
 el("qResumeBtn").addEventListener("click", qFortsetzen);
 el("qVerwerfenBtn").addEventListener("click", function(){
@@ -10556,6 +10616,7 @@ el("qBeendenBtn").addEventListener("click", function(){
 el("qNochmalBtn").addEventListener("click", qNochmal);
 
 function qSchliessenFragen(){
+  if(qstate.phase === "offline"){ qOfflineSchliessen(); return; }
   askConfirm("Raum schließen",
     "Die Tablets verlieren die Verbindung, Punkte und Namen werden gelöscht. Für ein neues Quiz gibt es einen neuen Code.",
     function(){
@@ -10567,6 +10628,289 @@ function qSchliessenFragen(){
 }
 el("qBackBtn").addEventListener("click", qSchliessenFragen);
 el("qEndeBackBtn").addEventListener("click", qSchliessenFragen);
+
+
+/* -----------------------------------------------------------------------
+   LIVE-QUIZ: Offline-Runde
+   Fuer Netze, die den Quiz-Server sperren. Kein Raum, keine Verbindung:
+   Der Beamer zeigt nur einen Code, jedes Tablet spielt die Fragen selbst
+   und rechnet die Punkte wie im Live-Quiz. Am Ende steht eine Endkarte
+   mit Name und Punkten, die die Klasse vorzeigt.
+
+   Der Code traegt alles, was das Tablet braucht: 6 Zeichen aus
+   Q_CODEZEICHEN sind 30 Bit, davon Satz 7, Anzahl 2, Zeit 3, Mischen 1
+   und ein Zufallskeim 17. Live-Codes haben 5 Zeichen, daran erkennt das
+   Formular am Tablet den Unterschied. Mehr als 128 Saetze passen nicht.
+
+   Der Keim legt fest, welche Fragen drankommen; alle Tablets bekommen
+   also dieselben. Reihenfolge und Antworten mischt jedes Tablet selbst,
+   damit Abgucken nichts bringt.
+   ----------------------------------------------------------------------- */
+
+var Q_OFF_ANZAHL = [10, 15, 20, 0];
+var Q_OFF_ZEIT = [0, 10, 20, 30, 45, 60];
+
+function qOffCode(satz, anzahl, sek, mischen){
+  var ai = Math.max(0, Q_OFF_ANZAHL.indexOf(anzahl)), zi = Math.max(0, Q_OFF_ZEIT.indexOf(sek));
+  var keim = crypto.getRandomValues(new Uint32Array(1))[0] % 131072;
+  var v = (((satz * 4 + ai) * 8 + zi) * 2 + (mischen ? 1 : 0)) * 131072 + keim;
+  var s = "";
+  for(var i = 0; i < 6; i++){
+    s = Q_CODEZEICHEN.charAt(v % 32) + s;
+    v = Math.floor(v / 32);
+  }
+  return s;
+}
+
+function qOffLesen(code){
+  code = String(code || "").toUpperCase();
+  if(code.length !== 6) return null;
+  var v = 0;
+  for(var i = 0; i < 6; i++){
+    var k = Q_CODEZEICHEN.indexOf(code.charAt(i));
+    if(k < 0) return null;
+    v = v * 32 + k;
+  }
+  var keim = v % 131072; v = (v - keim) / 131072;
+  var m = v % 2;         v = (v - m) / 2;
+  var zi = v % 8;        v = (v - zi) / 8;
+  var ai = v % 4;        v = (v - ai) / 4;
+  if(!Q_SAETZE[v] || zi >= Q_OFF_ZEIT.length) return null;
+  return {code:code, satz:v, anzahl:Q_OFF_ANZAHL[ai], sekunden:Q_OFF_ZEIT[zi], mischen:m === 1, keim:keim};
+}
+
+/* Kleiner Zufallsgenerator mit Keim (mulberry32), damit alle Tablets aus
+   demselben Code dieselbe Auswahl ziehen. */
+function qOffZufall(keim){
+  var t = keim >>> 0;
+  return function(){
+    t = (t + 0x6D2B79F5) >>> 0;
+    var r = Math.imul(t ^ (t >>> 15), 1 | t);
+    r = (r + Math.imul(r ^ (r >>> 7), 61 | r)) ^ r;
+    return ((r ^ (r >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+function qOffAnzahl(p){
+  var alle = Q_SAETZE[p.satz].fragen.length;
+  return p.anzahl ? Math.min(p.anzahl, alle) : alle;
+}
+
+function qOffAuswahl(p){
+  var rnd = qOffZufall(p.keim);
+  var idx = Q_SAETZE[p.satz].fragen.map(function(x, i){ return i; });
+  for(var i = idx.length - 1; i > 0; i--){
+    var j = Math.floor(rnd() * (i + 1)), t = idx[i];
+    idx[i] = idx[j]; idx[j] = t;
+  }
+  idx = idx.slice(0, qOffAnzahl(p));
+  if(p.mischen) qMischen(idx);
+  else idx.sort(function(a, b){ return a - b; });
+  return idx;
+}
+
+/* Am Beamer */
+
+function qOfflineStarten(){
+  qEinstellungenLesen();
+  qstate.solo = qOffCode(qstate.satz, qstate.anzahl, qstate.sekunden, qstate.mischen);
+  qstate.phase = "offline";
+  el("qSetupFehler").style.display = "none";
+  qKopf();
+  zeigeSeite("quizGame");
+  qOfflineZeigen();
+}
+
+function qOfflineZeigen(){
+  var p = qOffLesen(qstate.solo), n = qOffAnzahl(p);
+  ["qLobby", "qFrage", "qRang", "qEnde"].forEach(function(id){ el(id).style.display = "none"; });
+  el("qOffline").style.display = "grid";
+  el("qBeendenBtn").style.display = "none";
+  el("qBackBtn").innerHTML = ic("left") + "Zur Vorbereitung";
+  el("qPhaseLabel").textContent = "Offline-Runde";
+  el("qPhaseInfo").textContent = "Code " + p.code + " · " + n + " Fragen";
+  el("qNetz").innerHTML = '<span class="qpunkt"></span>';
+  el("qNetz").appendChild(document.createTextNode("ohne Server"));
+  el("qOffQr").innerHTML = qrSvg(qBasisUrl() + "#solo=" + p.code);
+  el("qOffCode").textContent = p.code;
+  el("qOffUrl").textContent = qBasisUrl().replace(/^https?:\/\//, "").replace(/\/$/, "");
+  el("qOffTitel").textContent = fTitelLang(Q_SAETZE[p.satz]) + " · " + n + " Fragen, " +
+    (p.sekunden ? p.sekunden + " Sekunden je Frage" : "Zeit wie im Fragensatz");
+}
+
+function qOfflineSchliessen(){
+  askConfirm("Offline-Runde verlassen",
+    "Die Tablets spielen unabhängig weiter, nur QR-Code und Code verschwinden vom Beamer. Wer noch nicht angefangen hat, braucht dann einen neuen Code.",
+    function(){
+      qstate.phase = "aus";
+      qstate.solo = "";
+      qSetupFuellen();
+      qKopf();
+      zeigeSeite("quizSetup");
+    });
+}
+
+/* Am Tablet. Der Stand liegt im localStorage, damit ein Neuladen weder
+   Punkte kostet noch eine zweite Runde mit demselben Code erlaubt. Die Uhr
+   einer offenen Frage laeuft ueber das Neuladen hinweg weiter. */
+
+var S_KEY = "quiz_solo_v1";
+
+var sstate = {code:"", name:"", satz:0, sekunden:0, reihe:[], perms:[], pos:0,
+              phase:"", t0:0, dauer:0, log:[], punkte:0, ende:0, uhr:null};
+
+var S_FELDER = ["code", "name", "satz", "sekunden", "reihe", "perms", "pos",
+                "phase", "t0", "dauer", "log", "punkte", "ende"];
+
+function sSpeichern(){
+  var o = {};
+  S_FELDER.forEach(function(k){ o[k] = sstate[k]; });
+  try{ localStorage.setItem(S_KEY, JSON.stringify(o)); }catch(err){}
+}
+function sLaden(){
+  try{
+    var s = JSON.parse(localStorage.getItem(S_KEY) || "null");
+    return (s && s.code && s.reihe && s.reihe.length && Q_SAETZE[s.satz]) ? s : null;
+  }catch(err){ return null; }
+}
+
+function sSatz(){ return Q_SAETZE[sstate.satz]; }
+function sAufgabe(){ return sSatz().fragen[sstate.reihe[sstate.pos]]; }
+
+function sBeginnen(p, name){
+  clearInterval(sstate.uhr);
+  sstate.code = p.code; sstate.name = name;
+  sstate.satz = p.satz; sstate.sekunden = p.sekunden;
+  sstate.reihe = qOffAuswahl(p);
+  sstate.perms = sstate.reihe.map(function(i){
+    var a = Q_SAETZE[p.satz].fragen[i];
+    var perm = a.a.map(function(x, k){ return k; });
+    return a.fest ? perm : qMischen(perm);
+  });
+  sstate.pos = 0; sstate.log = []; sstate.punkte = 0; sstate.ende = 0;
+  try{ history.replaceState(null, "", "#solo=" + p.code); }catch(err){}
+  sFrageStarten();
+}
+
+function sFortsetzen(alt){
+  S_FELDER.forEach(function(k){ if(alt[k] !== undefined) sstate[k] = alt[k]; });
+  zeigeSeite("quizHandy");
+  sRender();
+}
+
+function sFrageStarten(){
+  var a = sAufgabe();
+  sstate.phase = "frage";
+  sstate.t0 = Date.now();
+  sstate.dauer = (sstate.sekunden || a.zeit || sSatz().sekunden || 20) * 1000;
+  sSpeichern();
+  sRender();
+}
+
+/* Gleiche Wertung wie am Beamer: 1000 sofort, 500 in der letzten Sekunde.
+   w ist die Stelle auf dem Tablet, -1 heisst: Zeit abgelaufen. */
+function sAntwort(w){
+  if(sstate.phase !== "frage" || sstate.log.length > sstate.pos) return;
+  clearInterval(sstate.uhr);
+  var a = sAufgabe(), T = sstate.dauer, ms = Date.now() - sstate.t0;
+  if(ms > T + 500) w = -1;
+  var ok = w >= 0 && sstate.perms[sstate.pos][w] === a.r;
+  var d = ok ? Math.round(1000 * (1 - Math.min(ms, T) / T / 2)) : 0;
+  sstate.log.push({w:w, st:w < 0 ? -1 : (ok ? 1 : 0), d:d});
+  sstate.punkte += d;
+  sstate.phase = "aufl";
+  sSpeichern();
+  sRender();
+}
+
+function sWeiter(){
+  if(sstate.phase !== "aufl") return;
+  if(sstate.pos + 1 < sstate.reihe.length){
+    sstate.pos++;
+    sFrageStarten();
+    return;
+  }
+  sstate.phase = "ende";
+  sstate.ende = Date.now();
+  sSpeichern();
+  sRender();
+}
+
+function sUhrTick(){
+  var rest = sstate.t0 + sstate.dauer - Date.now();
+  var u = el("sUhr");
+  if(u){
+    u.textContent = Math.max(0, Math.ceil(rest / 1000)) + " s";
+    u.className = "suhr" + (rest < 5500 ? " knapp" : "");
+  }
+  if(rest <= 0) sAntwort(-1);
+}
+
+function sRender(){
+  clearInterval(sstate.uhr);
+  var body = el("hBody"), n = sstate.reihe.length;
+  hKopfSetzen(sstate.name, sstate.punkte + " Punkte");
+
+  if(sstate.phase === "frage"){
+    var a = sAufgabe(), perm = sstate.perms[sstate.pos];
+    var s = '<div class="hfrage"><div class="sfrage-kopf"><span class="label">Frage ' + (sstate.pos + 1) + ' von ' + n + '</span>' +
+      '<span class="suhr" id="sUhr"></span></div><div class="hzeit"><span></span></div></div>' +
+      '<div class="sfragetext">' + a.q + '</div>' +
+      '<div class="hknoepfe' + (perm.length === 2 ? " zwei" : "") + '">';
+    perm.forEach(function(orig, i){
+      s += '<button class="hknopf qa' + i + '" data-sw="' + i + '">' + qForm(i, 40) +
+        '<span class="hknopf-text">' + a.a[orig] + '</span></button>';
+    });
+    body.innerHTML = s + '</div>';
+    var rest = Math.max(0, sstate.t0 + sstate.dauer - Date.now());
+    var bar = body.querySelector(".hzeit span");
+    bar.style.transition = "none";
+    bar.style.width = (100 * rest / sstate.dauer) + "%";
+    void bar.offsetWidth;
+    bar.style.transition = "width " + rest + "ms linear";
+    bar.style.width = "0";
+    sstate.uhr = setInterval(sUhrTick, 200);
+    sUhrTick();
+    return;
+  }
+
+  if(sstate.phase === "aufl"){
+    var af = sAufgabe(), e = sstate.log[sstate.pos], rIdx = sstate.perms[sstate.pos].indexOf(af.r);
+    var klasse = e.st === 1 ? "gut" : (e.st === 0 ? "schlecht" : "leer");
+    var titel = e.st === 1 ? "Richtig!" : (e.st === 0 ? "Leider falsch." : "Zeit abgelaufen.");
+    var letzte = sstate.pos + 1 >= n;
+    body.innerHTML = '<div class="hergebnis klein ' + klasse + '">' + ic(e.st === 1 ? "check" : "cross", 56) +
+      '<div class="hgross">' + titel + '</div>' +
+      (e.st === 1 ? '<div class="hklein-hell">+' + e.d + ' Punkte</div>'
+                  : '<div class="hloesung">' + qForm(rIdx, 32) + '<span>' + af.a[af.r] + '</span></div>') +
+      '</div>' +
+      '<div class="sbox serkl"><span class="label">Erklärung</span>' + af.s + '</div>' +
+      '<button class="btn btn-primary" id="sWeiterBtn">' +
+      (letzte ? ic("trophy") + "Zur Endkarte" : ic("right") + "Nächste Frage") + '</button>';
+    return;
+  }
+
+  if(sstate.phase === "ende"){
+    var richtig = sstate.log.filter(function(x){ return x.st === 1; }).length;
+    var punkte = sstate.log.map(function(x){
+      return '<span class="' + (x.st === 1 ? "gut" : (x.st === 0 ? "schlecht" : "")) + '"></span>';
+    }).join("");
+    var uhrzeit = new Date(sstate.ende).toLocaleTimeString("de-DE", {hour:"2-digit", minute:"2-digit"});
+    body.innerHTML = '<div class="sendcard">' +
+      '<div class="hpokal">' + ic("trophy", 64) + '</div>' +
+      '<span class="label">Offline-Quiz · ' + qEsc(sSatz().titel) + '</span>' +
+      '<div class="hgross" id="sEndName"></div>' +
+      '<div class="spunkte">' + sstate.punkte + '</div>' +
+      '<div class="spunkte-label">Punkte</div>' +
+      '<div class="spunkte-zeile">' + punkte + '</div>' +
+      '<div class="hklein">' + richtig + ' von ' + n + ' Fragen richtig</div>' +
+      '<div class="sfuss">Code ' + sstate.code + ' · fertig um ' + uhrzeit + '</div>' +
+      '<hr class="sep" style="width:100%; margin:10px 0 4px">' +
+      '<div class="hklein">Zeig diese Karte deiner Lehrkraft.</div>' +
+      '</div>';
+    el("sEndName").textContent = sstate.name;
+  }
+}
 
 
 /* -----------------------------------------------------------------------
@@ -10597,6 +10941,7 @@ function hVergessen(){
 function qHashLesen(){
   var h = location.hash.replace(/^#/, "");
   if(h === "mitspielen") return {};
+  if(h.indexOf("solo=") === 0) return {solo:h.slice(5).toUpperCase()};
   if(h.indexOf("quiz=") !== 0) return null;
   var p = {};
   h.split("&").forEach(function(teil){
@@ -10610,6 +10955,19 @@ function qHashLesen(){
 
 function hStart(param){
   param = param || {};
+  /* Offline-Runde: angefangene oder fertige Runde mit demselben Code
+     wieder aufnehmen, sonst Formular mit vorbelegtem Code. */
+  if(param.solo){
+    var alt6 = sLaden();
+    if(alt6 && alt6.code === param.solo){ sFortsetzen(alt6); return; }
+    zeigeSeite("quizHandy");
+    hstate.code = qOffLesen(param.solo) ? param.solo : "";
+    if(!hstate.code) hstate.fehler = "Diesen Code kennt die Seite nicht. Bitte den Code vom Beamer abtippen.";
+    var h6 = hLaden() || alt6;
+    if(h6) hstate.name = h6.name || "";
+    hFormular();
+    return;
+  }
   hstate.code = param.code || "";
   hstate.server = (param.s >= 0 && param.s < Q_SERVER.length) ? param.s : -1;
   hstate.eigen = /^wss?:\/\//.test(param.u || "") ? param.u : "";
@@ -10628,15 +10986,20 @@ function hStart(param){
 
 function hFormular(){
   hTrennen();
+  clearInterval(sstate.uhr);
+  var off = qOffLesen(hstate.code);
   hKopfSetzen("Live-Quiz", "");
   el("hBody").innerHTML =
     '<div class="hform">' +
       '<div class="hgross" style="text-align:center">Mitspielen</div>' +
       '<label class="feld"><span class="label">Raumcode</span>' +
-        '<input type="text" id="hCodeIn" maxlength="5" autocomplete="off" autocapitalize="characters" spellcheck="false"></label>' +
+        '<input type="text" id="hCodeIn" maxlength="6" autocomplete="off" autocapitalize="characters" spellcheck="false"></label>' +
       '<label class="feld"><span class="label">Dein Spitzname</span>' +
         '<input type="text" id="hNameIn" maxlength="16" autocomplete="off" spellcheck="false"></label>' +
-      '<p class="note" style="margin:0">Nimm einen Spitznamen, keinen vollen Namen. Er steht nur am Beamer.</p>' +
+      (off ? '<div class="hinfo" id="hOffInfo"></div>' : '') +
+      '<p class="note" style="margin:0">' + (off
+        ? 'Nimm einen Spitznamen, keinen vollen Namen. Er steht auf deiner Endkarte.'
+        : 'Nimm einen Spitznamen, keinen vollen Namen. Er steht nur am Beamer.') + '</p>' +
       (hstate.fehler ? '<div class="hfehler"></div>' : '') +
       '<button class="btn btn-primary" id="hJoinBtn">' + ic("play") + 'Los geht’s</button>' +
       '<button class="btn btn-quiet" id="hAuswahlBtn">' + ic("left") + 'Zur Spielauswahl</button>' +
@@ -10644,6 +11007,9 @@ function hFormular(){
   el("hCodeIn").value = hstate.code;
   el("hNameIn").value = hstate.name;
   if(hstate.fehler) el("hBody").querySelector(".hfehler").textContent = hstate.fehler;
+  if(off){
+    el("hOffInfo").textContent = "Offline-Runde: " + fTitelLang(Q_SAETZE[off.satz]) + " · " + qOffAnzahl(off) + " Fragen";
+  }
   hstate.fehler = "";
   (hstate.code ? el("hNameIn") : el("hCodeIn")).focus();
 }
@@ -10652,8 +11018,17 @@ function hBeitreten(){
   var code = el("hCodeIn").value.toUpperCase().replace(/[^A-Z0-9]/g, "");
   var name = qNameSauber(el("hNameIn").value);
   hstate.code = code; hstate.name = name;
-  if(code.length !== 5){ hstate.fehler = "Der Raumcode hat fünf Zeichen, er steht groß am Beamer."; hFormular(); return; }
+  if(code.length !== 5 && code.length !== 6){ hstate.fehler = "Der Raumcode hat fünf Zeichen, bei einer Offline-Runde sechs. Er steht groß am Beamer."; hFormular(); return; }
   if(!name){ hstate.fehler = "Bitte gib einen Spitznamen ein."; hFormular(); return; }
+  if(code.length === 6){
+    var off = qOffLesen(code);
+    if(!off){ hstate.fehler = "Diesen Code kennt die Seite nicht. Stimmt er?"; hFormular(); return; }
+    /* Derselbe Code ein zweites Mal: keine neue Runde, sondern die alte. */
+    var alt6 = sLaden();
+    if(alt6 && alt6.code === code){ sFortsetzen(alt6); return; }
+    sBeginnen(off, name);
+    return;
+  }
   /* Gleicher Code und gleicher Name: dieselbe Kennung, damit die Punkte
      nach einem Verbindungsabbruch erhalten bleiben. */
   var alt = hLaden();
@@ -10895,6 +11270,9 @@ function hRender(){
 el("hBody").addEventListener("click", function(ev){
   if(ev.target.closest("#hJoinBtn")){ hBeitreten(); return; }
   if(ev.target.closest("#hNeuBtn")){ hFormular(); return; }
+  if(ev.target.closest("#sWeiterBtn")){ sWeiter(); return; }
+  var sk = ev.target.closest("[data-sw]");
+  if(sk){ sAntwort(+sk.getAttribute("data-sw")); return; }
   if(ev.target.closest("#hAuswahlBtn")){
     hTrennen();
     try{ history.replaceState(null, "", location.pathname + location.search); }catch(err){}
@@ -11090,7 +11468,8 @@ function zeigeSeite(name){
 el("jZurueckBtn").innerHTML = ic("left") + "Spielauswahl";
 el("jZurueckBtn").addEventListener("click", function(){ zeigeSeite("startseite"); });
 
-/* Ein Link mit #quiz=CODE kommt vom QR-Code am Beamer: direkt zum Tablet. */
+/* Ein Link mit #quiz=CODE oder #solo=CODE kommt vom QR-Code am Beamer:
+   direkt zum Tablet. */
 var qStartParam = qHashLesen();
 if(qStartParam) hStart(qStartParam); else zeigeSeite("startseite");
 
