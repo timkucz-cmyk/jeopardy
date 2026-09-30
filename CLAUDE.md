@@ -253,6 +253,17 @@ Dieser Ordner **ist** das Repository, es gibt also bewusst keine zweite Kopie.
 Eine Änderung hier ist nach dem Push zugleich die Version, die die Kolleg:innen
 sehen. Beides soll denselben Stand haben.
 
+Seit 30.09.2026 liegt der Ordner unter `Schule\Vorlagen\KI_Tools\Spielesammlung`
+(vorher direkt unter `Vorlagen`). Neben ihm liegt die Lerntheke — ein eigenes
+Repository (`timkucz-cmyk/lerntheke`), das mit diesem hier nichts zu tun hat.
+`KI_Tools` selbst ist kein Repository. Das GitHub-Repo heißt weiter `jeopardy`:
+Ein Umbenennen würde die Pages-Adresse ändern, und die steckt in `Q_ONLINE`,
+in den QR-Codes am Beamer und in den Links der Kolleg:innen.
+
+Der Stop-Hook in `.claude/settings.local.json` pusht nach jeder Sitzung offene
+Commits. Er nimmt den Pfad aus `CLAUDE_PROJECT_DIR`, funktioniert also auf
+beiden Rechnern und nach einem Umzug ohne Anpassung.
+
 Deshalb: **nach einer abgeschlossenen Änderung committen und pushen**, nicht nach
 jedem einzelnen Edit — ein halbfertiger Zwischenstand wäre sonst sofort online.
 Vorher immer die Testrunde aus dem Abschnitt oben durchspielen.
