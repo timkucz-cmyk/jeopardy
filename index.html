@@ -405,7 +405,7 @@
   /* ---------- Startseite im gemeinsamen Design der LMG-Plattformen ----------
      Die Klassen st-* sind 1:1 aus Simulationen/assets/lmg.css uebernommen.
      Hier nur die dort benutzten Tokens, die in dieser Datei noch fehlen. */
-  .st-seite{
+  .st-seite, body.einstellung{
     --physik:#2C5282; --physik-soft:#e8eef5; --physik-line:#b9c8da; --physik-ink:#1d3a5c;
     --surface-ink:#1a1c1f;
     --accent:#3d4147; --accent-soft:#ececea; --accent-ink:#17181a;
@@ -417,6 +417,47 @@
   body.start{padding:0;}
   body.start .topbar{display:none;}
   body.start .app{max-width:none;}
+  /* ---------- Einstellungsseiten der Spiele im Stil der Startseite ----------
+     body.einstellung: dunkler Kopf (Leiste + Topbar im Verlauf), darunter
+     die Schritte als Zeitleiste (st-schritt), Start-Knopf eingerueckt. */
+  .ek-nur{display:none;}
+  body.einstellung{padding:0;}
+  body.einstellung .app{max-width:none;}
+  body.einstellung .ek-kopf{
+    background-image:linear-gradient(115deg, var(--mathe-ink) 0%, var(--surface-ink) 50%, var(--physik-ink) 100%);
+    color:#fff;
+  }
+  body.einstellung .st-marke{display:flex;}
+  body.einstellung .st-leiste{display:block;}
+  body.einstellung .st-kicker{display:block;}
+  body.einstellung .topbar{display:block; max-width:1088px; margin:0 auto; padding:40px 24px 36px;}
+  body.einstellung .topbar .row{display:none;}
+  body.einstellung #kopfTitel{font-size:clamp(34px, 6vw, 48px); font-weight:700; line-height:1.1; letter-spacing:-.02em; color:#fff; margin:0 0 10px;}
+  body.einstellung #kopfUnter{margin:0; font-size:18px; color:var(--fg-5);}
+  body.einstellung .zurueckzeile{display:none;}
+  body.einstellung .app > section{max-width:1088px; margin:0 auto; padding:40px 24px 64px;}
+  body.einstellung .st-frage{color:var(--fg-1);}
+  body.einstellung .st-inhalt > .note:last-child{margin-bottom:0;}
+  .ek-hinweis{
+    margin:0 0 32px 48px; padding:16px 20px; background:var(--surface-soft);
+    border:1px solid var(--line-1); border-left:3px solid var(--mathe); border-radius:6px;
+  }
+  .ek-hinweis-titel{font-size:13px; font-weight:600; letter-spacing:.12em; text-transform:uppercase; color:var(--fg-3); margin:0 0 4px;}
+  .ek-hinweis .row{margin-top:12px;}
+  .ek-unter{display:block; margin:20px 0 4px;}
+  .ek-start{margin-left:48px; border-top:1px solid var(--line-1); padding-top:24px;}
+  .ek-regeln{margin-top:16px; color:var(--fg-2); font-size:16px;}
+  .ek-regeln summary{cursor:pointer; font-weight:600; color:var(--fg-3); width:max-content;}
+  .ek-regeln summary:hover{color:var(--fg-1);}
+  .ek-regeln ol{margin:8px 0 0; padding-left:22px; line-height:1.6;}
+  @media (max-width:560px){
+    body.einstellung .topbar{padding:28px 16px 24px;}
+    body.einstellung .app > section{padding:28px 16px 48px;}
+    .ek-hinweis, .ek-start{margin-left:40px;}
+    body.einstellung select{min-width:0; width:100%;}
+    body.einstellung .feld{flex:1 1 100%;}
+  }
+
   .st-seite :focus-visible{outline:2px solid var(--accent); outline-offset:3px;}
   .st-leiste .btn{margin-left:auto; padding:6px 14px; font-size:15px; color:#fff; background:transparent; border-color:rgba(255,255,255,.3);}
   .st-leiste .btn:hover{background:rgba(255,255,255,.1); border-color:rgba(255,255,255,.55);}
@@ -919,8 +960,19 @@
 <body>
 <div class="app">
 
+  <div class="ek-kopf">
+    <div class="st-marke ek-nur" aria-hidden="true"><i></i><i></i></div>
+    <div class="st-leiste ek-nur">
+      <div class="st-leiste-innen">
+        <span class="st-wortmarke">LMG</span>
+        <span class="st-trenner" aria-hidden="true"></span>
+        <span class="st-schule">Spielesammlung</span>
+        <button class="btn" id="kopfZurueck"></button>
+      </div>
+    </div>
   <div class="topbar">
     <div>
+      <p class="st-kicker ek-nur">Einstellungen</p>
       <h1 id="kopfTitel">Jeopardy</h1>
       <p class="sub" id="kopfUnter">Wiederholung der Grundlagen aus der E-Phase</p>
     </div>
@@ -929,6 +981,7 @@
       <button class="btn" id="resetBtn" style="display:none">Spiel zurücksetzen</button>
       <button class="btn" id="endBtn" style="display:none"></button>
     </div>
+  </div>
   </div>
 
 
@@ -993,94 +1046,104 @@
       <button class="btn btn-quiet" id="jZurueckBtn"></button>
     </div>
 
-    <div class="card" id="resumeCard" style="display:none">
-      <span class="label">Gespeichertes Spiel</span>
-      <p class="sub" id="resumeInfo" style="margin-top:8px"></p>
-      <div class="row" style="margin-top:16px">
+    <div class="ek-hinweis" id="resumeCard" style="display:none">
+      <p class="ek-hinweis-titel">Gespeichertes Spiel</p>
+      <p class="sub" id="resumeInfo"></p>
+      <div class="row">
         <button class="btn btn-primary" id="resumeBtn">Spiel fortsetzen</button>
         <button class="btn btn-quiet" id="discardBtn">Verwerfen und neu starten</button>
       </div>
-      <p class="note" id="resumeFotoNote">Die Fotos erscheinen wieder, sobald du unten den Ordner classes auswählst.</p>
+      <p class="note" id="resumeFotoNote">Die Fotos erscheinen, sobald unten der Ordner <code>classes</code> gewählt ist.</p>
     </div>
 
-    <div class="card">
-      <span class="label">Schritt 1</span>
-      <h2 style="margin-top:8px">Fragenkatalog auswählen</h2>
-      <div class="katalogwahl">
-        <label class="feld"><span class="label">Fach</span>
-          <select id="katFach"></select></label>
-        <label class="feld"><span class="label">Klassenstufe</span>
-          <select id="katStufe"></select></label>
-        <label class="feld"><span class="label">Inhalt</span>
-          <select id="katInhalt"></select></label>
-      </div>
-      <p class="note" id="katalogInfo"></p>
-    </div>
-
-    <div class="card">
-      <span class="label">Schritt 2</span>
-      <h2 style="margin-top:8px">Wie werden die Gruppen gebildet?</h2>
-      <p class="sub">Ohne Klassenordner heißen die Gruppen einfach Gruppe 1, Gruppe 2 und so weiter — nichts weiter ist nötig. Mit Klassenordner werden echte Namen und Fotos ausgelost.</p>
-      <div class="chips" id="modusGrid" style="margin-top:16px">
-        <button class="chip-class selected" id="modusOhne">Ohne Klassenordner</button>
-        <button class="chip-class" id="modusMit">Klassenordner verbinden</button>
-      </div>
-      <div id="ordnerBox" style="display:none">
-        <hr class="sep">
-        <p class="sub">Wähle den Ordner <code>classes</code> aus dem Projekt Namenstrainer. Alles läuft lokal, es werden keine Daten übertragen.</p>
-        <div class="row" style="margin-top:16px">
-          <button class="btn btn-primary" id="pickFolderBtn"></button>
+    <div class="st-schritt aktiv">
+      <div class="st-leitung" aria-hidden="true"><span class="st-nr">1</span><span class="st-linie"></span></div>
+      <div class="st-inhalt">
+        <h2 class="st-frage">Fragenkatalog</h2>
+        <div class="katalogwahl">
+          <label class="feld"><span class="label">Fach</span>
+            <select id="katFach"></select></label>
+          <label class="feld"><span class="label">Klassenstufe</span>
+            <select id="katStufe"></select></label>
+          <label class="feld"><span class="label">Inhalt</span>
+            <select id="katInhalt"></select></label>
         </div>
-        <p class="note" id="folderStatus">Das ist nach jedem Öffnen der Seite einmal nötig.</p>
-      </div>
-      <input type="file" id="folderInput" webkitdirectory style="display:none">
-    </div>
-
-    <div class="card" id="classesCard" style="display:none">
-      <span class="label">Schritt 3</span>
-      <h2 style="margin-top:8px">Klasse auswählen</h2>
-      <div class="chips" id="classGrid"></div>
-      <p class="note" id="rosterStatus"></p>
-
-      <div id="anwesenheitBox" style="display:none">
-        <hr class="sep">
-        <span class="label">Anwesenheit</span>
-        <p class="note">Wer fehlt, wird angetippt und beim Auslosen übersprungen. Sind die Gruppen schon ausgelost, wirkt ein Klick sofort auf sie.</p>
-        <div class="anwesend" id="anwesenheitListe"></div>
-        <div class="row" style="margin-top:12px">
-          <span class="note" id="anwesenheitHinweis" style="margin:0"></span>
-          <button class="btn btn-quiet" id="anwesenheitReset" style="display:none">Alle wieder anwesend</button>
-        </div>
-      </div>
-
-      <div id="extraBox" style="display:none">
-        <hr class="sep">
-        <span class="label">Ohne Foto ergänzen</span>
-        <p class="note">Für Austauschschüler oder Neuzugänge, die noch nicht im Klassenordner stehen. Sie werden ganz normal mit ausgelost und erscheinen mit Platzhalter statt Foto.</p>
-        <div class="row" style="margin-top:12px">
-          <input type="text" id="extraVorname" placeholder="Vorname" autocomplete="off">
-          <input type="text" id="extraNachname" placeholder="Nachname" autocomplete="off">
-          <button class="btn" id="extraAddBtn"></button>
-        </div>
-        <div class="extras" id="extraListe"></div>
-        <p class="note" id="extraHinweis"></p>
+        <p class="note" id="katalogInfo"></p>
       </div>
     </div>
 
-    <div class="card" id="groupCard">
-      <span class="label" id="groupStep">Schritt 3</span>
-      <h2 style="margin-top:8px" id="groupTitel">Anzahl der Gruppen</h2>
-      <div class="row">
-        <label class="sub" for="groupCount">Anzahl Gruppen</label>
-        <input type="number" id="groupCount" min="2" max="8" value="4">
-        <button class="btn btn-primary" id="groupBtn"></button>
+    <div class="st-schritt aktiv">
+      <div class="st-leitung" aria-hidden="true"><span class="st-nr">2</span><span class="st-linie"></span></div>
+      <div class="st-inhalt">
+        <h2 class="st-frage">Gruppen</h2>
+        <div class="chips" id="modusGrid">
+          <button class="chip-class selected" id="modusOhne">Ohne Klassenordner</button>
+          <button class="chip-class" id="modusMit">Klassenordner verbinden</button>
+        </div>
+        <p class="note">Ohne Ordner heißen die Gruppen „Gruppe 1, 2, …“, mit Ordner werden Namen und Fotos ausgelost.</p>
+        <div id="ordnerBox" style="display:none">
+          <div class="row" style="margin-top:16px">
+            <button class="btn btn-primary" id="pickFolderBtn"></button>
+          </div>
+          <p class="note" id="folderStatus">Ordner <code>classes</code> aus dem Namenstrainer, nach jedem Öffnen einmal. Es wird nichts übertragen.</p>
+        </div>
+        <input type="file" id="folderInput" webkitdirectory style="display:none">
       </div>
-      <p class="note" id="groupHint"></p>
-      <div id="auslosenBox" style="display:none">
-        <p class="note">Zum Tauschen eine Person antippen und auf eine andere ziehen.</p>
-        <div class="groups-grid" id="groupsGrid"></div>
+    </div>
+
+    <div id="classesCard" style="display:none">
+      <div class="st-schritt aktiv">
+        <div class="st-leitung" aria-hidden="true"><span class="st-nr">3</span><span class="st-linie"></span></div>
+        <div class="st-inhalt">
+          <h2 class="st-frage">Klasse</h2>
+          <div class="chips" id="classGrid"></div>
+          <p class="note" id="rosterStatus"></p>
+
+          <div id="anwesenheitBox" style="display:none">
+            <p class="label ek-unter">Anwesenheit</p>
+            <p class="note">Fehlende antippen, sie werden beim Auslosen übersprungen.</p>
+            <div class="anwesend" id="anwesenheitListe"></div>
+            <div class="row" style="margin-top:12px">
+              <span class="note" id="anwesenheitHinweis" style="margin:0"></span>
+              <button class="btn btn-quiet" id="anwesenheitReset" style="display:none">Alle wieder anwesend</button>
+            </div>
+          </div>
+
+          <div id="extraBox" style="display:none">
+            <p class="label ek-unter">Ohne Foto ergänzen</p>
+            <p class="note">Für Neuzugänge, die noch nicht im Klassenordner stehen.</p>
+            <div class="row" style="margin-top:12px">
+              <input type="text" id="extraVorname" placeholder="Vorname" autocomplete="off">
+              <input type="text" id="extraNachname" placeholder="Nachname" autocomplete="off">
+              <button class="btn" id="extraAddBtn"></button>
+            </div>
+            <div class="extras" id="extraListe"></div>
+            <p class="note" id="extraHinweis"></p>
+          </div>
+        </div>
       </div>
-      <hr class="sep">
+    </div>
+
+    <div id="groupCard">
+      <div class="st-schritt aktiv">
+        <div class="st-leitung" aria-hidden="true"><span class="st-nr" id="groupStep">3</span></div>
+        <div class="st-inhalt">
+          <h2 class="st-frage" id="groupTitel">Anzahl der Gruppen</h2>
+          <div class="row">
+            <label class="sub" for="groupCount">Gruppen</label>
+            <input type="number" id="groupCount" min="2" max="8" value="4">
+            <button class="btn btn-primary" id="groupBtn"></button>
+          </div>
+          <p class="note" id="groupHint"></p>
+          <div id="auslosenBox" style="display:none">
+            <p class="note">Zum Tauschen eine Person auf eine andere ziehen.</p>
+            <div class="groups-grid" id="groupsGrid"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ek-start">
       <button class="btn btn-primary" id="startBtn"></button>
     </div>
 
@@ -1093,63 +1156,65 @@
       <button class="btn btn-quiet" id="bZurueckBtn"></button>
     </div>
 
-    <div class="card" id="bResumeCard" style="display:none">
-      <span class="label">Bingo</span>
-      <h2 style="margin-top:8px">Angefangene Runde</h2>
-      <div class="bhinweis" id="bResumeBox">
-        <p class="sub" id="bResumeInfo" style="margin:0"></p>
-        <div class="row" style="margin-top:14px">
+    <div class="ek-hinweis" id="bResumeCard" style="display:none">
+      <p class="ek-hinweis-titel">Angefangene Runde</p>
+      <div id="bResumeBox">
+        <p class="sub" id="bResumeInfo"></p>
+        <div class="row">
           <button class="btn btn-primary" id="bResumeBtn">Runde fortsetzen</button>
           <button class="btn btn-quiet" id="bVerwerfenBtn">Verwerfen</button>
         </div>
       </div>
     </div>
 
-    <div class="card">
-      <span class="label">Schritt 1</span>
-      <h2 style="margin-top:8px">Klasse und Aufgabensatz wählen</h2>
-      <p class="sub">Zuerst die Klassenstufe, danach steht nur noch drin, was zu dieser Stufe passt.</p>
-      <div class="katalogwahl" style="margin-top:16px">
-        <label class="feld"><span class="label">Klassenstufe</span>
-          <select id="bStufeSel"></select></label>
-        <label class="feld"><span class="label">Aufgabensatz</span>
-          <select id="bSatzSel"></select></label>
+    <div class="st-schritt aktiv">
+      <div class="st-leitung" aria-hidden="true"><span class="st-nr">1</span><span class="st-linie"></span></div>
+      <div class="st-inhalt">
+        <h2 class="st-frage">Aufgabensatz</h2>
+        <div class="katalogwahl">
+          <label class="feld"><span class="label">Klassenstufe</span>
+            <select id="bStufeSel"></select></label>
+          <label class="feld"><span class="label">Aufgabensatz</span>
+            <select id="bSatzSel"></select></label>
+        </div>
+        <p class="note" id="bSatzInfo"></p>
       </div>
-      <p class="note" id="bSatzInfo"></p>
     </div>
 
-    <div class="card">
-      <span class="label">Schritt 2</span>
-      <h2 style="margin-top:8px">Runde einstellen</h2>
-      <div class="katalogwahl" style="margin-top:16px">
-        <label class="feld"><span class="label">Sekunden je Aufgabe</span>
-          <input type="number" id="bZeit" min="1" step="1" value="90"></label>
-        <label class="feld"><span class="label">Runde endet nach</span>
-          <select id="bZiel">
-            <option value="1">1 Bingo</option>
-            <option value="2">2 Bingos</option>
-            <option value="3" selected>3 Bingos</option>
-            <option value="4">4 Bingos</option>
-            <option value="5">5 Bingos</option>
-            <option value="6">6 Bingos</option>
-            <option value="8">8 Bingos</option>
-          </select></label>
-        <label class="feld"><span class="label">Personen in der Klasse</span>
-          <input type="number" id="bKlasse" min="5" max="40" value="28"></label>
+    <div class="st-schritt aktiv">
+      <div class="st-leitung" aria-hidden="true"><span class="st-nr">2</span></div>
+      <div class="st-inhalt">
+        <h2 class="st-frage">Runde einstellen</h2>
+        <div class="katalogwahl">
+          <label class="feld"><span class="label">Sekunden je Aufgabe</span>
+            <input type="number" id="bZeit" min="1" step="1" value="90"></label>
+          <label class="feld"><span class="label">Ende nach</span>
+            <select id="bZiel">
+              <option value="1">1 Bingo</option>
+              <option value="2">2 Bingos</option>
+              <option value="3" selected>3 Bingos</option>
+              <option value="4">4 Bingos</option>
+              <option value="5">5 Bingos</option>
+              <option value="6">6 Bingos</option>
+              <option value="8">8 Bingos</option>
+            </select></label>
+          <label class="feld"><span class="label">Personen</span>
+            <input type="number" id="bKlasse" min="5" max="40" value="28"></label>
+        </div>
+        <p class="note" id="bSchaetzung"></p>
+        <details class="ek-regeln">
+          <summary>So läuft die Runde</summary>
+          <ol>
+            <li>Alle zeichnen ein 3×3-Feld und tragen 9 der 16 Zahlen vom Beamer ein.</li>
+            <li>Term rechnen, eigenes Ergebnis durchstreichen. Die Lösung bleibt verdeckt.</li>
+            <li>Volle Reihe, Spalte oder Diagonale ist ein Bingo, danach geht es weiter.</li>
+            <li>Die meisten Bingos gewinnen, zum Schluss kommen alle Lösungen.</li>
+          </ol>
+        </details>
       </div>
-      <p class="note" id="bSchaetzung"></p>
+    </div>
 
-      <hr class="sep">
-      <span class="label">So läuft die Runde</span>
-      <ol class="ablauf">
-        <li><b>Karten ausfüllen.</b> Alle malen ein Feld mit drei mal drei Kästchen ins Heft und tragen neun der sechzehn Zahlen vom Beamer ein, in beliebiger Anordnung.</li>
-        <li><b>Rechnen.</b> Der Beamer zeigt einen Term, der Timer läuft, alle rechnen im Heft. Wer sein Ergebnis auf der Karte hat, streicht es durch. <b>Die Lösung wird währenddessen nicht gezeigt</b>, sonst wartet man nur darauf und kreuzt mit.</li>
-        <li><b>Bingo sammeln.</b> Eine volle Reihe, Spalte oder Diagonale ist ein Bingo und wird gerufen. Es geht danach weiter, denn jede weitere Reihe zählt.</li>
-        <li><b>Ende und Auswertung.</b> Sind genug Bingos gefallen, endet die Runde. Es gewinnt, wer die meisten vollen Reihen hat. Bei Gleichstand entscheidet die Gesamtzahl der durchgestrichenen Zahlen. Zum Schluss erscheinen alle Aufgaben mit Lösung und Erläuterung.</li>
-      </ol>
-      <p class="note">Die Karte hat neun Felder, der Pool sechzehn Zahlen. Damit hat niemand dieselbe Karte, und Raten hilft nicht.</p>
-
-      <hr class="sep">
+    <div class="ek-start">
       <button class="btn btn-primary" id="bStartBtn"></button>
     </div>
 
@@ -1317,74 +1382,74 @@
       <button class="btn btn-quiet" id="fZurueckBtn"></button>
     </div>
 
-    <div class="card" id="fResumeCard" style="display:none">
-      <span class="label">Fehlerjagd</span>
-      <h2 style="margin-top:8px">Angefangene Runde</h2>
-      <div class="bhinweis">
-        <p class="sub" id="fResumeInfo" style="margin:0"></p>
-        <div class="row" style="margin-top:14px">
-          <button class="btn btn-primary" id="fResumeBtn">Runde fortsetzen</button>
-          <button class="btn btn-quiet" id="fVerwerfenBtn">Verwerfen</button>
+    <div class="ek-hinweis" id="fResumeCard" style="display:none">
+      <p class="ek-hinweis-titel">Angefangene Runde</p>
+      <p class="sub" id="fResumeInfo"></p>
+      <div class="row">
+        <button class="btn btn-primary" id="fResumeBtn">Runde fortsetzen</button>
+        <button class="btn btn-quiet" id="fVerwerfenBtn">Verwerfen</button>
+      </div>
+    </div>
+
+    <div class="st-schritt aktiv">
+      <div class="st-leitung" aria-hidden="true"><span class="st-nr">1</span><span class="st-linie"></span></div>
+      <div class="st-inhalt">
+        <h2 class="st-frage">Aufgabensatz</h2>
+        <div class="katalogwahl">
+          <label class="feld"><span class="label">Fach</span>
+            <select id="fFachSel"></select></label>
+          <label class="feld"><span class="label">Klassenstufe</span>
+            <select id="fStufeSel"></select></label>
+          <label class="feld"><span class="label">Aufgabensatz</span>
+            <select id="fSatzSel"></select></label>
         </div>
+        <p class="note" id="fSatzInfo"></p>
       </div>
     </div>
 
-    <div class="card">
-      <span class="label">Schritt 1</span>
-      <h2 style="margin-top:8px">Fach, Klasse und Aufgabensatz wählen</h2>
-      <p class="sub">Zuerst Fach und Klassenstufe, danach steht nur noch drin, was dazu passt.</p>
-      <div class="katalogwahl" style="margin-top:16px">
-        <label class="feld"><span class="label">Fach</span>
-          <select id="fFachSel"></select></label>
-        <label class="feld"><span class="label">Klassenstufe</span>
-          <select id="fStufeSel"></select></label>
-        <label class="feld"><span class="label">Aufgabensatz</span>
-          <select id="fSatzSel"></select></label>
+    <div class="st-schritt aktiv">
+      <div class="st-leitung" aria-hidden="true"><span class="st-nr">2</span></div>
+      <div class="st-inhalt">
+        <h2 class="st-frage">Runde einstellen</h2>
+        <div class="katalogwahl">
+          <label class="feld"><span class="label">Zeit je Aufgabe</span>
+            <select id="fZeit">
+              <option value="60">1 Minute</option>
+              <option value="90">1:30 Minuten</option>
+              <option value="120" selected>2 Minuten</option>
+              <option value="180">3 Minuten</option>
+            </select></label>
+          <label class="feld"><span class="label">Gruppen</span>
+            <select id="fGruppen">
+              <option value="2">2 Gruppen</option>
+              <option value="3">3 Gruppen</option>
+              <option value="4" selected>4 Gruppen</option>
+              <option value="5">5 Gruppen</option>
+              <option value="6">6 Gruppen</option>
+              <option value="8">8 Gruppen</option>
+            </select></label>
+          <label class="feld"><span class="label">Aufgaben</span>
+            <select id="fAnzahl">
+              <option value="4">4 Aufgaben</option>
+              <option value="6" selected>6 Aufgaben</option>
+              <option value="8">8 Aufgaben</option>
+              <option value="0">alle des Satzes</option>
+            </select></label>
+        </div>
+        <p class="note" id="fSchaetzung"></p>
+        <details class="ek-regeln">
+          <summary>So läuft die Runde</summary>
+          <ol>
+            <li>Ein Lösungsweg mit nummerierten Zeilen, genau eine ist falsch.</li>
+            <li>Jede Gruppe notiert die erste falsche Zeile und warum.</li>
+            <li>Auflösen zeigt Fehler, Fehlerart und richtige Fassung.</li>
+            <li>Je ein Punkt für die Zeile und für die Begründung.</li>
+          </ol>
+        </details>
       </div>
-      <p class="note" id="fSatzInfo"></p>
     </div>
 
-    <div class="card">
-      <span class="label">Schritt 2</span>
-      <h2 style="margin-top:8px">Runde einstellen</h2>
-      <div class="katalogwahl" style="margin-top:16px">
-        <label class="feld"><span class="label">Zeit je Aufgabe</span>
-          <select id="fZeit">
-            <option value="60">1 Minute</option>
-            <option value="90">1:30 Minuten</option>
-            <option value="120" selected>2 Minuten</option>
-            <option value="180">3 Minuten</option>
-          </select></label>
-        <label class="feld"><span class="label">Gruppen</span>
-          <select id="fGruppen">
-            <option value="2">2 Gruppen</option>
-            <option value="3">3 Gruppen</option>
-            <option value="4" selected>4 Gruppen</option>
-            <option value="5">5 Gruppen</option>
-            <option value="6">6 Gruppen</option>
-            <option value="8">8 Gruppen</option>
-          </select></label>
-        <label class="feld"><span class="label">Aufgaben in der Runde</span>
-          <select id="fAnzahl">
-            <option value="4">4 Aufgaben</option>
-            <option value="6" selected>6 Aufgaben</option>
-            <option value="8">8 Aufgaben</option>
-            <option value="0">alle des Satzes</option>
-          </select></label>
-      </div>
-      <p class="note" id="fSchaetzung"></p>
-
-      <hr class="sep">
-      <span class="label">So läuft die Runde</span>
-      <ol class="ablauf">
-        <li><b>Lesen.</b> Auf der Leinwand steht ein vollständiger Lösungsweg mit nummerierten Zeilen. <b>Genau eine Zeile ist falsch</b>, alles darunter ist aus dieser Zeile sauber weitergerechnet.</li>
-        <li><b>Suchen.</b> Der Timer läuft, jede Gruppe notiert die Zeilennummer <b>und</b> in einem Satz, was dort schiefgelaufen ist. Gesucht ist die erste Zeile, in der falsch gerechnet wird.</li>
-        <li><b>Auflösen.</b> Erst danach werden die falsche Zeile, die Fehlerart und die richtige Fassung eingeblendet. Vorher bleiben die Punkteknöpfe gesperrt.</li>
-        <li><b>Punkte.</b> Ein Punkt für die richtige Zeile, ein zweiter für die Begründung. Ohne den zweiten Punkt wäre Raten zu billig.</li>
-      </ol>
-      <p class="note">Nicht das falsche Endergebnis zählt, sondern der Schritt, an dem die Rechnung gekippt ist. Genau das ist der Unterschied zwischen Rechnen und Prüfen.</p>
-
-      <hr class="sep">
+    <div class="ek-start">
       <button class="btn btn-primary" id="fStartBtn"></button>
     </div>
 
@@ -1478,105 +1543,105 @@
       <button class="btn btn-quiet" id="qZurueckBtn"></button>
     </div>
 
-    <div class="card" id="qResumeCard" style="display:none">
-      <span class="label">Live-Quiz</span>
-      <h2 style="margin-top:8px">Offener Raum</h2>
-      <div class="bhinweis">
-        <p class="sub" id="qResumeInfo" style="margin:0"></p>
-        <div class="row" style="margin-top:14px">
-          <button class="btn btn-primary" id="qResumeBtn">Raum wieder öffnen</button>
-          <button class="btn btn-quiet" id="qVerwerfenBtn">Verwerfen</button>
+    <div class="ek-hinweis" id="qResumeCard" style="display:none">
+      <p class="ek-hinweis-titel">Offener Raum</p>
+      <p class="sub" id="qResumeInfo"></p>
+      <div class="row">
+        <button class="btn btn-primary" id="qResumeBtn">Raum wieder öffnen</button>
+        <button class="btn btn-quiet" id="qVerwerfenBtn">Verwerfen</button>
+      </div>
+      <p class="note">Die Tablets verbinden sich von selbst wieder und behalten ihre Punkte.</p>
+    </div>
+
+    <div class="ek-hinweis" id="qOffResumeCard" style="display:none">
+      <p class="ek-hinweis-titel">Offline-Runde</p>
+      <p class="sub" id="qOffResumeInfo"></p>
+      <div class="row">
+        <button class="btn btn-primary" id="qOffResumeBtn">Offline-Runde wieder anzeigen</button>
+        <button class="btn btn-quiet" id="qOffVerwerfenBtn">Verwerfen</button>
+      </div>
+    </div>
+
+    <div class="st-schritt aktiv">
+      <div class="st-leitung" aria-hidden="true"><span class="st-nr">1</span><span class="st-linie"></span></div>
+      <div class="st-inhalt">
+        <h2 class="st-frage">Fragensatz</h2>
+        <div class="katalogwahl">
+          <label class="feld"><span class="label">Fach</span>
+            <select id="qFachSel"></select></label>
+          <label class="feld"><span class="label">Klassenstufe</span>
+            <select id="qStufeSel"></select></label>
+          <label class="feld"><span class="label">Fragensatz</span>
+            <select id="qSatzSel"></select></label>
         </div>
-        <p class="note">Die Tablets verbinden sich von selbst wieder und behalten ihre Punkte.</p>
+        <p class="note" id="qSatzInfo"></p>
       </div>
     </div>
 
-    <div class="card" id="qOffResumeCard" style="display:none">
-      <span class="label">Live-Quiz</span>
-      <h2 style="margin-top:8px">Offline-Runde</h2>
-      <div class="bhinweis">
-        <p class="sub" id="qOffResumeInfo" style="margin:0"></p>
-        <div class="row" style="margin-top:14px">
-          <button class="btn btn-primary" id="qOffResumeBtn">Offline-Runde wieder anzeigen</button>
-          <button class="btn btn-quiet" id="qOffVerwerfenBtn">Verwerfen</button>
+    <div class="st-schritt aktiv">
+      <div class="st-leitung" aria-hidden="true"><span class="st-nr">2</span><span class="st-linie"></span></div>
+      <div class="st-inhalt">
+        <h2 class="st-frage">Runde einstellen</h2>
+        <div class="katalogwahl">
+          <label class="feld"><span class="label">Zeit je Frage</span>
+            <select id="qZeit">
+              <option value="0" selected>wie im Fragensatz</option>
+              <option value="10">10 Sekunden</option>
+              <option value="20">20 Sekunden</option>
+              <option value="30">30 Sekunden</option>
+              <option value="45">45 Sekunden</option>
+              <option value="60">1 Minute</option>
+            </select></label>
+          <label class="feld"><span class="label">Fragen</span>
+            <select id="qAnzahl">
+              <option value="10">10 Fragen</option>
+              <option value="15">15 Fragen</option>
+              <option value="20" selected>20 Fragen</option>
+              <option value="0">alle des Satzes</option>
+            </select></label>
+          <label class="feld"><span class="label">Reihenfolge</span>
+            <select id="qReihenfolge">
+              <option value="1" selected>gemischt</option>
+              <option value="0">wie im Fragensatz</option>
+            </select></label>
         </div>
+        <p class="note" id="qSchaetzung"></p>
+        <details class="ek-regeln">
+          <summary>So läuft die Runde</summary>
+          <ol>
+            <li>Tablets scannen den QR-Code und wählen einen Spitznamen.</li>
+            <li>Alle tippen einmal auf eine Antwort, Farben und Formen wie am Beamer.</li>
+            <li>Richtig gibt 500 bis 1000 Punkte, je schneller desto mehr.</li>
+            <li>Danach Lösung, Verteilung und Erklärung, am Ende Podest und Auswertung.</li>
+          </ol>
+        </details>
       </div>
     </div>
 
-    <div class="card">
-      <span class="label">Schritt 1</span>
-      <h2 style="margin-top:8px">Fach, Klasse und Fragensatz wählen</h2>
-      <div class="katalogwahl" style="margin-top:16px">
-        <label class="feld"><span class="label">Fach</span>
-          <select id="qFachSel"></select></label>
-        <label class="feld"><span class="label">Klassenstufe</span>
-          <select id="qStufeSel"></select></label>
-        <label class="feld"><span class="label">Fragensatz</span>
-          <select id="qSatzSel"></select></label>
+    <div class="st-schritt aktiv">
+      <div class="st-leitung" aria-hidden="true"><span class="st-nr">3</span></div>
+      <div class="st-inhalt">
+        <h2 class="st-frage">Verbindung</h2>
+        <p class="note" style="margin-top:0">Beamer und Tablets brauchen Internet. Der Server sieht weder Namen noch Antworten, alles ist verschlüsselt.</p>
+        <div class="katalogwahl" style="margin-top:12px; align-items:flex-end">
+          <label class="feld"><span class="label">Server</span>
+            <select id="qServerSel"></select></label>
+          <label class="feld" id="qEigenFeld" style="display:none"><span class="label">Adresse</span>
+            <input type="text" id="qServerEigen" placeholder="wss://server:443/mqtt" style="min-width:320px"></label>
+          <button class="btn" id="qTestBtn"></button>
+        </div>
+        <div id="qTestErgebnis" style="margin-top:8px"></div>
+        <p class="note">Im Schulnetz vorher testen.</p>
       </div>
-      <p class="note" id="qSatzInfo"></p>
     </div>
 
-    <div class="card">
-      <span class="label">Schritt 2</span>
-      <h2 style="margin-top:8px">Runde einstellen</h2>
-      <div class="katalogwahl" style="margin-top:16px">
-        <label class="feld"><span class="label">Zeit je Frage</span>
-          <select id="qZeit">
-            <option value="0" selected>wie im Fragensatz</option>
-            <option value="10">10 Sekunden</option>
-            <option value="20">20 Sekunden</option>
-            <option value="30">30 Sekunden</option>
-            <option value="45">45 Sekunden</option>
-            <option value="60">1 Minute</option>
-          </select></label>
-        <label class="feld"><span class="label">Fragen in der Runde</span>
-          <select id="qAnzahl">
-            <option value="10">10 Fragen</option>
-            <option value="15">15 Fragen</option>
-            <option value="20" selected>20 Fragen</option>
-            <option value="0">alle des Satzes</option>
-          </select></label>
-        <label class="feld"><span class="label">Reihenfolge</span>
-          <select id="qReihenfolge">
-            <option value="1" selected>gemischt</option>
-            <option value="0">wie im Fragensatz</option>
-          </select></label>
-      </div>
-      <p class="note" id="qSchaetzung"></p>
-
-      <hr class="sep">
-      <span class="label">So läuft die Runde</span>
-      <ol class="ablauf">
-        <li><b>Beitreten.</b> Am Beamer stehen QR-Code und Raumcode. Die Tablets scannen den Code mit der Kamera und geben einen Spitznamen ein. Ein unpassender Name verschwindet per Klick.</li>
-        <li><b>Antworten.</b> Frage und Antworten stehen am Beamer, auf dem Tablet dieselben Farben und Formen. Jede und jeder tippt genau einmal, ändern geht nicht.</li>
-        <li><b>Punkte.</b> Richtig gibt 500 bis 1000 Punkte, je schneller desto mehr. Falsch oder gar nicht gibt null.</li>
-        <li><b>Auflösen.</b> Wenn die Zeit um ist oder alle geantwortet haben: richtige Antwort, Verteilung, Erklärung. Jedes Tablet zeigt das eigene Ergebnis und den eigenen Platz.</li>
-      </ol>
-      <p class="note">Nach der Siegerehrung steht unter „Auswertung für die Lehrkraft“, welche Fragen am schlechtesten liefen, mit dem häufigsten Fehler. Das ist der Stoff für die letzte Übung vor der Arbeit.</p>
-    </div>
-
-    <div class="card">
-      <span class="label">Schritt 3</span>
-      <h2 style="margin-top:8px">Verbindung</h2>
-      <p class="sub">Beamer und Tablets brauchen Internet. Sie treffen sich auf einem öffentlichen Vermittlungsserver (MQTT). Alles, was dort durchläuft, ist mit dem Raumcode verschlüsselt, der Server sieht weder Namen noch Antworten. Die Spitznamen stehen nur am Beamer und werden beim Schließen des Raums gelöscht.</p>
-      <div class="katalogwahl" style="margin-top:16px; align-items:flex-end">
-        <label class="feld"><span class="label">Server</span>
-          <select id="qServerSel"></select></label>
-        <label class="feld" id="qEigenFeld" style="display:none"><span class="label">Adresse</span>
-          <input type="text" id="qServerEigen" placeholder="wss://server:443/mqtt" style="min-width:320px"></label>
-        <button class="btn" id="qTestBtn"></button>
-      </div>
-      <div id="qTestErgebnis" style="margin-top:8px"></div>
-      <p class="note">Im Schulnetz vorher testen: erst „Verbindung testen“, dann mit einem Tablet im Schul-WLAN einen Probe-Raum betreten.</p>
-
-      <hr class="sep">
+    <div class="ek-start">
       <div class="row">
         <button class="btn btn-primary" id="qStartBtn"></button>
         <button class="btn" id="qOfflineBtn"></button>
       </div>
       <div class="qfehler" id="qSetupFehler" style="display:none"></div>
-      <p class="note">Offline-Runde: kein Quiz-Server, kein Raum. Jedes Tablet spielt die Fragen für sich, mit eigener Uhr und eigenen Punkten, und zeigt am Ende eine Karte mit dem Punktestand und einem QR-Code. Den sammelst du mit der Kamera dieses Geräts ein, danach gibt es Siegerehrung und Auswertung. Die Tablets müssen dafür nur einmal die Seite laden können.</p>
+      <p class="note">Offline-Runde: ohne Server, jedes Tablet spielt allein. Die Ergebnisse sammelst du am Ende per QR-Code ein.</p>
     </div>
 
   </section>
@@ -5777,8 +5842,8 @@ function updateGroupHint(){
   var n = Math.max(2, parseInt(el("groupCount").value,10) || 4);
   var sizes = computeSizes(total, n);
   var min = Math.min.apply(null, sizes), max = Math.max.apply(null, sizes);
-  el("groupHint").textContent = total + " Personen ergeben " + sizes.length + " Gruppen mit je " +
-    (min === max ? min : min + " bis " + max) + " Mitgliedern.";
+  el("groupHint").textContent = total + " Personen, " + sizes.length + " Gruppen zu je " +
+    (min === max ? min : min + " bis " + max) + ".";
 }
 el("groupCount").addEventListener("input", updateGroupHint);
 
@@ -6003,7 +6068,7 @@ function setzeModus(m){
   el("groupBtn").style.display    = ordner ? "inline-flex" : "none";
   el("auslosenBox").style.display = ordner ? "block" : "none";
 
-  el("groupStep").textContent  = ordner ? "Schritt 4" : "Schritt 3";
+  el("groupStep").textContent  = ordner ? "4" : "3";
   el("groupTitel").textContent = ordner ? "Gruppen auslosen" : "Anzahl der Gruppen";
 
   /* In der Ordner-Betriebsart erscheint Schritt 4 erst mit gewaehlter Klasse. */
@@ -6014,8 +6079,7 @@ function setzeModus(m){
     updateGroupHint();
   } else {
     el("startBtn").disabled = false;
-    el("groupHint").textContent = "Die Gruppen heißen Gruppe 1 bis Gruppe " + gruppenAnzahl() +
-      ". Die Namen lassen sich später im Punktestand überschreiben.";
+    el("groupHint").textContent = "Gruppe 1 bis " + gruppenAnzahl() + ", Namen im Punktestand änderbar.";
   }
 }
 
@@ -6040,6 +6104,7 @@ el("backToSetupBtn").addEventListener("click", function(){
   el("setup").style.display = "block";
   el("game").style.display = "none";
   el("backToSetupBtn").style.display = "none";
+  document.body.classList.add("einstellung");
   el("resetBtn").style.display = "none";
   el("endBtn").style.display = "none";
   setzeModus(state.modus);
@@ -6051,6 +6116,7 @@ function showGame(){
   el("resumeCard").style.display = "none";
   el("game").style.display = "block";
   el("backToSetupBtn").style.display = "inline-flex";
+  document.body.classList.remove("einstellung");
   el("resetBtn").style.display = "inline-flex";
   el("endBtn").style.display = "inline-flex";
   renderScoreboard();
@@ -7796,16 +7862,13 @@ function bSchaetzungText(){
   var sek = bZeitSek();
   var k = bMedianAufgaben(ziel, klasse);
   if(!k){
-    el("bSchaetzung").textContent =
-      "So viele Bingos fallen bei dieser Klassengröße meist nicht. Die Runde läuft dann, bis alle sechzehn Zahlen gezogen sind.";
+    el("bSchaetzung").textContent = "So viele Bingos sind bei dieser Klassengröße selten, die Runde läuft dann bis zur letzten Zahl.";
     return;
   }
   var gesamt = k * sek;
   var dauer = gesamt < 90 ? gesamt + " Sekunden" : Math.round(gesamt / 60) + " Minuten";
-  el("bSchaetzung").textContent =
-    "Schätzung: Bei " + klasse + " Personen sind " + ziel + " Bingos meist nach etwa " +
-    k + " Aufgaben gefallen, das sind rund " + dauer + ". Für eine längere Phase " +
-    "lieber zwei kürzere Runden mit verschiedenen Aufgabensätzen spielen als auf sehr viele Bingos zu warten.";
+  el("bSchaetzung").textContent = "Etwa " + k + " Aufgaben bis " + ziel + (ziel === 1 ? " Bingo" : " Bingos") +
+    ", rund " + dauer + ".";
 }
 
 /* Beide Dropdowns aus bstate.satz heraus neu aufbauen. */
@@ -9138,9 +9201,7 @@ function fSchaetzungText(){
   /* Neben der Suchzeit gehen erfahrungsgemaess noch einmal gut eine
      Minute fuer Aufloesung, Nachfragen und Punktevergabe drauf. */
   var min = Math.round(n * (sek + 75) / 60);
-  el("fSchaetzung").textContent =
-    "Schätzung: " + n + " Aufgaben zu je " + Math.round(sek / 15) * 15 + " Sekunden Suchzeit, dazu " +
-    "Auflösung und Punkte, macht rund " + min + " Minuten. Für einen Stundeneinstieg reichen vier Aufgaben.";
+  el("fSchaetzung").textContent = "Rund " + min + " Minuten mit Auflösung und Punkten.";
 }
 
 function fSetupFuellen(){
@@ -11194,7 +11255,7 @@ function qSchaetzungText(){
   /* Aufloesung, Erklaerung und Zwischenstand brauchen erfahrungsgemaess
      noch einmal eine halbe Minute je Frage. */
   var min = Math.round(n * (sek + 35) / 60);
-  el("qSchaetzung").textContent = "Schätzung: " + n + " Fragen, mit Auflösung und Zwischenstand rund " + min + " Minuten.";
+  el("qSchaetzung").textContent = "Rund " + min + " Minuten mit Auflösung.";
 }
 
 function qServerFuellen(){
@@ -12872,6 +12933,8 @@ function zeigeSeite(name){
   });
   document.body.classList.toggle("handy", name === "quizHandy");
   document.body.classList.toggle("start", name === "startseite");
+  document.body.classList.toggle("einstellung",
+    ["setup", "bingoSetup", "fehlerSetup", "quizSetup"].indexOf(name) >= 0);
   el("hStartBtn").style.display = (name === "startseite") ? "inline-flex" : "none";
   if(name === "startseite"){
     el("kopfTitel").textContent = "Spielesammlung";
@@ -12897,6 +12960,8 @@ function zeigeSeite(name){
 }
 
 el("jZurueckBtn").innerHTML = ic("left") + "Spielauswahl";
+el("kopfZurueck").innerHTML = ic("left") + "Spielauswahl";
+el("kopfZurueck").addEventListener("click", function(){ zeigeSeite("startseite"); });
 el("jZurueckBtn").addEventListener("click", function(){ zeigeSeite("startseite"); });
 
 /* Ein Link mit #quiz=CODE oder #solo=CODE kommt vom QR-Code am Beamer:

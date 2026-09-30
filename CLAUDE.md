@@ -80,7 +80,16 @@ entstehen aus `KATALOGE`, `B_SAETZE`, `F_SAETZE`, `Q_SAETZE` (`stSaetze`,
 Jeopardy-Stufe „E-Phase“ zählt als „E“). Ein Klick auf ein Spiel wählt in
 dessen Einstellungen den ersten passenden Satz vor (`stStarte`); beim Jeopardy
 nur, wenn kein Spielstand gespeichert ist. Die Wahl steht in `?stufe=…&fach=…`
-und im localStorage (`spiele_start_v1`). Dazu Overlays (`qOverlay`,
+und im localStorage (`spiele_start_v1`).
+
+**Einstellungsseiten** (`setup`, `bingoSetup`, `fehlerSetup`, `quizSetup`) im
+selben Stil: `zeigeSeite()` setzt `body.einstellung`, dann wird die Kopfzeile
+(`.ek-kopf` mit Leiste und `.topbar`) zum dunklen Verlaufskopf, die Schritte
+sind `st-schritt`-Zeitleisten, der Start-Knopf steht in `.ek-start`, Hinweise
+auf angefangene Runden in `.ek-hinweis`, die Spielregeln eingeklappt in
+`details.ek-regeln`. Das Jeopardy wechselt zwischen `setup` und `game` ohne
+`zeigeSeite()` (`showGame`, `backToSetupBtn`) und setzt die Klasse dort selbst.
+Texte auf diesen Seiten kurz halten. Dazu Overlays (`qOverlay`,
 `podestOverlay`, `bCheckOverlay`, `confirmOverlay`) außerhalb von `.app`.
 
 ## Geteilte Infrastruktur
