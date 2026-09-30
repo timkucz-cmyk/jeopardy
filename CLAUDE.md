@@ -56,7 +56,8 @@ BINGO: Zustand …         bstate, Timer, Anzeige, Ablauf, Auswertung, Vorbereit
 FEHLERJAGD               Kopfkommentar mit Satz-Aufbau, dann die Aufgabensaetze
 FEHLERJAGD: Zustand …    fstate, Anzeige, Ablauf, Speichern, Vorbereitung
 LIVE-QUIZ                Kopfkommentar mit Protokoll und Satz-Aufbau, Q_SAETZE
-LIVE-QUIZ: QR-Code …     qrSvg(), Verbindung (mqttNeu), Verschluesselung,
+LIVE-QUIZ: QR-Code …     qrGeruest(), qrSvg(), QR-Leser (qrLesen),
+                         Verbindung (mqttNeu), Verschluesselung,
                          Zustand am Beamer (qstate), Ablauf, Anzeige, Speichern,
                          Vorbereitung, Bedienung, Offline-Runde (sstate),
                          Tablet (hstate)
@@ -96,7 +97,8 @@ Jedes Spiel hat seinen **eigenen** Zustand und localStorage-Key:
 | Fehlerjagd | `fstate` | `fehlerjagd_v1` |
 | Live-Quiz (Beamer) | `qstate` | `quiz_v1` |
 | Live-Quiz (Tablet) | `hstate` | `quiz_tablet_v1` |
-| Live-Quiz (offline) | `sstate` | `quiz_solo_v1` |
+| Live-Quiz (offline, Tablet) | `sstate` | `quiz_solo_v1` |
+| Live-Quiz (offline, Beamer) | `qoff` | `quiz_offline_v1` |
 
 Die Uhr ist die Ausnahme: `bTimerStart(sek, label, prefix)` steuert seine
 Timerbox über das ID-Präfix und ist damit ohnehin allgemein. Die Fehlerjagd
@@ -217,6 +219,16 @@ trägt Satzindex, Anzahl, Zeit, Mischen und einen Zufallskeim — deshalb müsse
 die Optionen in `qAnzahl`/`qZeit` zu `Q_OFF_ANZAHL`/`Q_OFF_ZEIT` passen, und
 mehr als 128 Sätze passen nicht hinein. Live-Codes haben fünf Zeichen, daran
 unterscheidet das Tablet-Formular. Zum Testen reicht ein Tab mit `#solo=CODE`.
+
+Die Endkarte trägt einen QR-Code `Q1|CODE|KENNUNG|PUNKTE|ANTWORTEN|NAME`,
+den „Ergebnisse einsammeln“ am Beamer mit der Kamera liest und daraus Podest
+und Auswertung baut (`qOffAuswerten` füllt dafür `qstate` wie am Ende eines
+Live-Quiz). Gelesen wird mit `BarcodeDetector`, wo der Browser ihn hat, sonst
+mit dem eigenen Leser `qrLesen` — der kann nur, was der Encoder schreibt
+(Stufe M, Version 1–10, Byte-Modus). Wer am Encoder etwas ändert, muss den
+Leser mitziehen; beide teilen sich `qrGeruest()`. Testen ohne Kamera: im
+Beamer-Tab `navigator.mediaDevices.getUserMedia` durch einen Stream aus
+`canvas.captureStream()` ersetzen, auf den Canvas die Endkarten-QR-Codes malen.
 
 Welcher MQTT-Server im Schulnetz durchkommt, zeigt „Verbindung testen“ in
 Schritt 3; „Raum öffnen“ fährt denselben Test und weicht selbst auf einen
