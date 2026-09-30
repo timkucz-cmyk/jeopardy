@@ -673,6 +673,7 @@
   .qa-balken{height:8px; background:var(--surface-sunken); border-radius:4px; margin:8px 0 6px; overflow:hidden;}
   .qa-balken span{display:block; height:100%; background:var(--ok);}
   .qa-info{font-size:15px; color:var(--fg-3);}
+  .qa-knopf{margin-top:8px; padding:6px 12px; font-size:15px;}
   @media (prefers-reduced-motion: reduce){
     .qname, .qrangliste li{animation:none;}
   }
@@ -10351,7 +10352,7 @@ function qNachricht(m){
   var sp = qstate.spieler[m.id];
 
   if(m.t === "j"){
-    if(!sp && qstate.phase !== "ende" && qstate.phase !== "aus"){
+    if(!sp && qstate.phase !== "ende" && qstate.phase !== "bespr" && qstate.phase !== "aus"){
       var name = qNameSauber(m.n);
       if(!name) return;
       qstate.spieler[m.id] = {n:qNameFrei(name), g:m.g, p:0, d:0, st:-1, serie:0};
@@ -10399,7 +10400,7 @@ function qSenden(sofort){
 }
 
 function qZustandFuerTablets(){
-  var z = {v:1, raum:qstate.raum, seq:qstate.seq, ph:qstate.phase,
+  var z = {v:1, raum:qstate.raum, seq:qstate.seq, ph:qstate.phase === "bespr" ? "ende" : qstate.phase,
            nr:qstate.pos + 1, von:qstate.reihenfolge.length,
            sp:qstate.reihe.slice(), kick:qstate.kick.slice()};
   if(qstate.phase === "frage" || qstate.phase === "aufl"){
@@ -10597,7 +10598,7 @@ function qRender(){
   el("qEndeBackBtn").innerHTML = qstate.solo ? ic("left") + "Weiter einsammeln" : ic("cross") + "Raum schließen";
   el("qNochmalBtn").style.display = qstate.solo ? "none" : "";
   el("qLobby").style.display = ph === "lobby" ? "grid" : "none";
-  el("qFrage").style.display = (ph === "frage" || ph === "aufl") ? "block" : "none";
+  el("qFrage").style.display = (ph === "frage" || ph === "aufl" || ph === "bespr") ? "block" : "none";
   el("qRang").style.display  = ph === "rang" ? "block" : "none";
   el("qEnde").style.display  = ph === "ende" ? "block" : "none";
   el("qBeendenBtn").style.display = (ph === "frage" || ph === "aufl" || ph === "rang") ? "inline-flex" : "none";
@@ -10605,7 +10606,7 @@ function qRender(){
   var n = qstate.reihenfolge.length, letzte = qstate.pos + 1 >= n;
   var label = {lobby:"Raum offen", frage:"Frage " + (qstate.pos + 1) + " von " + n,
                aufl:"Frage " + (qstate.pos + 1) + " von " + n, rang:"Zwischenstand",
-               ende:"Siegerehrung"}[ph] || "";
+               ende:"Siegerehrung", bespr:"Besprechung"}[ph] || "";
   el("qPhaseLabel").textContent = label;
   el("qPhaseInfo").textContent = ph === "lobby"
     ? "Code " + qstate.code + " · " + n + " Fragen"
@@ -10631,6 +10632,7 @@ function qRender(){
       el("qUhr").innerHTML = ic("check", 40);
     }
     el("qAufloesenBtn").style.display = aufl ? "none" : "inline-flex";
+    el("qAufloesenBtn").innerHTML = ic("search") + "Jetzt auflösen";
     el("qPlusBtn").style.display      = aufl ? "none" : "inline-flex";
     el("qZwischenBtn").style.display  = aufl ? "inline-flex" : "none";
     el("qNaechsteBtn").style.display  = aufl ? "inline-flex" : "none";
@@ -10639,8 +10641,59 @@ function qRender(){
     el("qNaechsteBtn").style.display = (aufl && !letzte) ? "inline-flex" : "none";
   }
 
+  if(ph === "bespr") qBesprRender();
   if(ph === "rang") qRangRender(letzte);
   if(ph === "ende") qEndeRender();
+}
+
+/* Besprechung nach der Siegerehrung: eine Frage aus der Auswertung noch
+   einmal gross zeigen, erst ohne, dann mit Verteilung und Loesung.
+   qbespr.liste ist die Reihenfolge der Auswertung (schwaechste zuerst),
+   k die Stelle darin; die Eintraege zeigen in qstate.statistik. */
+var qbespr = {liste:[], k:0, offen:false};
+
+function qBesprechen(k){
+  if(qstate.phase !== "ende" && qstate.phase !== "bespr") return;
+  qbespr.k = k;
+  qbespr.offen = false;
+  var st = qstate.statistik[qbespr.liste[k]], a = qsatz().fragen[st.i];
+  qstate.perm = a.a.map(function(x, i){ return i; });
+  qstate.vert = st.v.slice();
+  qstate.phase = "bespr";
+  qRender();
+  window.scrollTo(0, 0);
+}
+
+function qBesprEnde(){
+  qstate.phase = "ende";
+  qRender();
+  var d = el("qAuswertung").parentNode;
+  d.open = true;
+  d.scrollIntoView({block:"start"});
+}
+
+function qBesprRender(){
+  var st = qstate.statistik[qbespr.liste[qbespr.k]], a = qsatz().fragen[st.i], offen = qbespr.offen;
+  var letzte = qbespr.k + 1 >= qbespr.liste.length;
+  var pct = st.teil ? Math.round(100 * st.richtig / st.teil) : 0;
+  el("qPhaseLabel").textContent = "Besprechung · " + (qbespr.k + 1) + " von " + qbespr.liste.length;
+  el("qBackBtn").innerHTML = ic("left") + "Zur Auswertung";
+  el("qFrageText").innerHTML = a.q;
+  el("qAntworten").innerHTML = qKachelnHtml(a, offen);
+  el("qAntworten").className = "qantworten" + (a.a.length === 2 ? " zwei" : "");
+  el("qErklaerung").style.display = offen ? "block" : "none";
+  el("qErklaerung").innerHTML = offen
+    ? '<span class="label">Erklärung · ' + st.richtig + ' von ' + st.teil + ' richtig (' + pct + ' %)</span>' + a.s : "";
+  el("qAntwortZahl").textContent = st.teil;
+  el("qUhr").className = "quhr aus";
+  el("qUhr").innerHTML = offen ? ic("check", 40) : "?";
+  el("qAufloesenBtn").style.display = offen ? "none" : "inline-flex";
+  el("qAufloesenBtn").innerHTML = ic("search") + "Verteilung und Lösung zeigen";
+  el("qPlusBtn").style.display = "none";
+  el("qZwischenBtn").style.display = "inline-flex";
+  el("qZwischenBtn").innerHTML = ic("left") + "Zurück zur Auswertung";
+  el("qNaechsteBtn").style.display = letzte ? "none" : "inline-flex";
+  el("qNaechsteBtn").innerHTML = ic("right") + "Nächste schwache Frage";
 }
 
 function qRangRender(letzte){
@@ -10726,7 +10779,8 @@ function qAuswertungRender(){
   });
   zeilen.sort(function(x, y){ return x.quote - y.quote; });
   if(!zeilen.length){ ol.innerHTML = '<li class="sub">Noch keine Frage gespielt.</li>'; return; }
-  zeilen.forEach(function(z){
+  qbespr.liste = zeilen.map(function(z){ return qstate.statistik.indexOf(z.st); });
+  zeilen.forEach(function(z, k){
     var a = qsatz().fragen[z.st.i];
     var fehler = -1, max = 0;
     z.st.v.forEach(function(anz, i){ if(i !== a.r && anz > max){ max = anz; fehler = i; } });
@@ -10738,7 +10792,8 @@ function qAuswertungRender(){
       '<div><div class="qa-frage">' + a.q + '</div>' +
       '<div class="qa-balken"><span style="width:' + pct + '%"></span></div>' +
       '<div class="qa-info">' + z.st.richtig + ' von ' + z.st.teil + ' richtig · richtig: ' + a.a[a.r] +
-      (fehler >= 0 ? ' · häufigster Fehler: ' + a.a[fehler] + ' (' + max + '×)' : '') + '</div></div>';
+      (fehler >= 0 ? ' · häufigster Fehler: ' + a.a[fehler] + ' (' + max + '×)' : '') + '</div>' +
+      '<button class="btn btn-quiet qa-knopf" data-k="' + k + '">' + ic("search") + 'Besprechen</button></div>';
     ol.appendChild(li);
   });
 }
@@ -11152,7 +11207,10 @@ el("qLosBtn").addEventListener("click", function(){
   qstate.pos = 0;
   qFrageStarten();
 });
-el("qAufloesenBtn").addEventListener("click", qAufloesen);
+el("qAufloesenBtn").addEventListener("click", function(){
+  if(qstate.phase === "bespr"){ qbespr.offen = true; qRender(); return; }
+  qAufloesen();
+});
 el("qPlusBtn").addEventListener("click", function(){
   if(qstate.phase !== "frage") return;
   qstate.dauerMs += 10000;
@@ -11160,9 +11218,17 @@ el("qPlusBtn").addEventListener("click", function(){
   qSenden(true);
 });
 el("qZwischenBtn").addEventListener("click", function(){
+  if(qstate.phase === "bespr"){ qBesprEnde(); return; }
   if(qstate.pos + 1 >= qstate.reihenfolge.length) qEnde(); else qZwischenstand();
 });
-el("qNaechsteBtn").addEventListener("click", qWeiter);
+el("qNaechsteBtn").addEventListener("click", function(){
+  if(qstate.phase === "bespr"){ qBesprechen(qbespr.k + 1); return; }
+  qWeiter();
+});
+el("qAuswertung").addEventListener("click", function(ev){
+  var b = ev.target.closest(".qa-knopf");
+  if(b) qBesprechen(+b.getAttribute("data-k"));
+});
 el("qRangWeiterBtn").addEventListener("click", qWeiter);
 el("qBeendenBtn").addEventListener("click", function(){
   askConfirm("Quiz beenden", "Die restlichen Fragen entfallen, es geht direkt zur Siegerehrung.", function(){
@@ -11173,6 +11239,7 @@ el("qBeendenBtn").addEventListener("click", function(){
 el("qNochmalBtn").addEventListener("click", qNochmal);
 
 function qSchliessenFragen(){
+  if(qstate.phase === "bespr"){ qBesprEnde(); return; }
   if(qstate.solo){
     if(qstate.phase === "ende") qScanStarten();
     else if(qstate.phase === "scan") qOfflineZeigen();

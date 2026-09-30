@@ -230,6 +230,11 @@ Leser mitziehen; beide teilen sich `qrGeruest()`. Testen ohne Kamera: im
 Beamer-Tab `navigator.mediaDevices.getUserMedia` durch einen Stream aus
 `canvas.captureStream()` ersetzen, auf den Canvas die Endkarten-QR-Codes malen.
 
+Nach der Siegerehrung hat jede Zeile der Auswertung „Besprechen“: Phase
+`bespr` zeigt die Frage in der Frage-Ansicht, erst ohne, dann mit Verteilung
+und Erklärung (`qbespr`, `qBesprRender`). Die Tablets sehen dabei weiter die
+Siegerehrung.
+
 Welcher MQTT-Server im Schulnetz durchkommt, zeigt „Verbindung testen“ in
 Schritt 3; „Raum öffnen“ fährt denselben Test und weicht selbst auf einen
 funktionierenden Server aus. Der Test prüft nicht nur die Verbindung, sondern
