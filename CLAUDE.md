@@ -120,6 +120,7 @@ Jedes Spiel hat seinen **eigenen** Zustand und localStorage-Key:
 | Live-Quiz (Tablet) | `hstate` | `quiz_tablet_v1` |
 | Live-Quiz (offline, Tablet) | `sstate` | `quiz_solo_v1` |
 | Live-Quiz (offline, Beamer) | `qoff` | `quiz_offline_v1` |
+| Live-Quiz (angehakte Bereiche je Satz) | – | `quiz_bereiche_v1` |
 
 Die Uhr ist die Ausnahme: `bTimerStart(sek, label, prefix)` steuert seine
 Timerbox über das ID-Präfix und ist damit ohnehin allgemein. Die Fehlerjagd
@@ -189,6 +190,28 @@ Falsche Antworten aus typischen Fehlern bauen, die Auswertung nach der Runde
 nennt den häufigsten. `qSatzInfo` warnt bei ungültigem `r` oder fehlender
 Erklärung.
 
+Optional teilt `bereiche` (Liste von Namen) einen Satz in Bereiche, jede Frage
+trägt dann `b` (Index). Am Beamer stehen die Bereiche als Häkchen unter der
+Satzwahl, gezogen wird nur aus den angehakten (`qIndizes(satz, maske)`, Maske
+als Bitfeld, 0 = alle). Mindestens ein Häkchen bleibt immer gesetzt; die Wahl
+merkt sich der Beamer je Satz in `quiz_bereiche_v1`. Höchstens 7 Bereiche, mehr
+passen nicht in den Offline-Code.
+
+**Basale Kompetenzen aus dem Mathe-Trainer.** `Q7_BASAL` ist kein
+handgeschriebener Satz, sondern ein Export aus dem Trainingsprogramm
+(`Schule\Claude_Code\trainer`, Skript `export_livequiz.py`): Bereich 0 sind die
+Grundlagen bis zum Vorjahr, danach die Einheiten der Klassenstufe wie im
+Trainer. Das Skript übersetzt das LaTeX in `M()`/`f()`-HTML, ersetzt die
+Buchstaben in den Distraktor-Erläuterungen durch die Antworttexte, lässt
+Fragen mit Antworten über 45 Zeichen weg und schreibt den Block zwischen
+die Marker `/* BASAL-EXPORT Q7_BASAL … */` und `/* ENDE BASAL-EXPORT … */`.
+Diesen Block nie von Hand ändern, sondern im Skript (Liste `KORREKTUR`:
+falsche Lösungsschlüssel, Fragen mit mehreren richtigen Antworten, wirre
+Erläuterungen) und neu exportieren: `python export_livequiz.py 7`. Für eine
+weitere Klassenstufe exportiert `python export_livequiz.py 8` einen Satz
+`Q8_BASAL`, der dann noch hinten an `Q_SAETZE` muss; vorher mit `--check`
+alle Fragen lesen, der Trainer-Pool hat Fehler.
+
 **Jeopardy-Katalog.** Kategorien-Array anlegen, dann Eintrag in `KATALOGE` mit
 `id`, `titel`, `fach`, `stufe`, `inhalt`, `unter`, `hinweis`, `bezug`,
 optional `farben`. Die Kaskade Fach → Stufe → Inhalt entsteht daraus von selbst.
@@ -239,9 +262,11 @@ dem Push; die Antworttexte kommen aber ohnehin vom Beamer.
 **Offline-Runde.** Der Knopf neben „Raum öffnen“ braucht keinen Server: Der
 Beamer zeigt nur einen sechsstelligen Code (`#solo=CODE`), jedes Tablet spielt
 die Fragen allein und endet mit einer Endkarte (Name, Punkte, Code). Der Code
-trägt Satzindex, Anzahl, Zeit, Mischen und einen Zufallskeim — deshalb müssen
-die Optionen in `qAnzahl`/`qZeit` zu `Q_OFF_ANZAHL`/`Q_OFF_ZEIT` passen, und
-mehr als 128 Sätze passen nicht hinein. Live-Codes haben fünf Zeichen, daran
+trägt Satzindex, Bereichsmaske, Anzahl, Zeit, Mischen und einen Zufallskeim —
+deshalb müssen die Optionen in `qAnzahl`/`qZeit` zu `Q_OFF_ANZAHL`/`Q_OFF_ZEIT`
+passen, und mehr als 128 Sätze passen nicht hinein. Seit der Bereichsmaske
+(Oktober 2026) ist das Bitlayout ein anderes; Beamer und Tablets müssen also
+denselben Stand haben, ein lokal geänderter Beamer braucht den Push. Live-Codes haben fünf Zeichen, daran
 unterscheidet das Tablet-Formular. Zum Testen reicht ein Tab mit `#solo=CODE`.
 
 Die Endkarte trägt einen QR-Code `Q1|CODE|KENNUNG|PUNKTE|ANTWORTEN|NAME`,
