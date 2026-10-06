@@ -39,7 +39,7 @@ Zeilennummern driften bei jedem Edit, die Banner nicht.
 ICONS (Lucide-Stil)      ic() und die Pfad-Sammlung ICONS
 ABBILDUNGEN              plot(), Geometrie- und Diagramm-SVGs
 AUFGABEN                 Jeopardy-Fragen, Katalog 1
-FRAGENKATALOG 2 … 9      weitere Jeopardy-Kataloge
+FRAGENKATALOG 2 … 10     weitere Jeopardy-Kataloge (10: Physik Q2 Quanten, dort auch mi() und zp())
 FRAGENKATALOGE           Registry KATALOGE (Fach/Stufe/Inhalt)
 ZUSTAND                  state, STORAGE_KEY, el()
 ORDNER LADEN             Klassenordner „classes" vom Namenstrainer

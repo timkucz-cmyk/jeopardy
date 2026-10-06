@@ -5346,6 +5346,273 @@ var BASAL_10 = [
 ];
 
 /* =======================================================================
+   FRAGENKATALOG 10
+   Physik, Q2 (gN) — Wiederholung Quantenphysik des Lichts.
+   Fuenf Spalten in der Reihenfolge des Skripts: Hallwachs, Photonenenergie,
+   Millikan, einzelne Photonen, Wahrscheinlichkeit und Weginformation.
+   Elektronen als Quantenobjekte und de Broglie fehlen mit Absicht.
+   Konstanten wie im Skript: h = 6,626·10^-34 Js, e = 1,602·10^-19 C,
+   c = 3,0·10^8 m/s. mi() setzt eine Variable mit Index, zp() eine
+   Zehnerpotenz; beide nutzt auch der Live-Quiz-Satz Q2_QUANTEN.
+   ======================================================================= */
+
+function mi(v, idx){ return M(v) + "<sub>" + idx + "</sub>"; }
+function zp(n){ return "10<sup>" + n + "</sup>"; }
+
+var PHYSIK_Q2_QUANTEN = [
+
+/* ------------------ 1 ------------------ */
+{
+  name:"Hallwachs und Photoeffekt",
+  questions:[
+  {
+    points:100, afb:"I", operator:"Beschreibe", kompetenz:"Fachwissen",
+    zeit:"ca. 2 min", check:"Hallwachsversuch",
+    q:"Eine Zinkplatte auf einem Elektroskop wird mit dem Licht einer Quecksilberdampflampe beleuchtet.<br><br><b>Beschreibe</b>, was passiert, wenn die Platte negativ geladen ist, und was, wenn sie positiv geladen ist.",
+    s:"<li><b>Negativ geladen:</b> Der Zeigerausschlag geht zurück, die Platte entlädt sich.</li>"+
+      "<li><b>Positiv geladen:</b> Nichts passiert, der Ausschlag bleibt.</li>"+
+      "<li>Deutung: Das Licht löst <b>Elektronen</b> aus der Platte. Bei der negativen Platte verschwinden die überschüssigen Elektronen.</li>"+
+      "<li>Das heißt <b>äußerer Photoeffekt</b> (Hallwachs 1887).</li>"
+  },
+  {
+    points:200, afb:"I–II", operator:"Erkläre", kompetenz:"Fachwissen, Erkenntnisgewinnung",
+    zeit:"ca. 3 min", check:"Austrittsarbeit",
+    q:"<b>Erkläre</b>, was man unter der Austrittsarbeit "+mi("W","A")+" versteht, und <b>erkläre</b>, warum sich die <b>positiv</b> geladene Zinkplatte im Hallwachsversuch nicht entlädt.",
+    s:"<li>"+mi("W","A")+" ist die Energie, die man mindestens aufwenden muss, um ein Elektron aus dem Metall zu lösen. Sie ist eine <b>Eigenschaft des Metalls</b> (Zink: 4,3 eV).</li>"+
+      "<li>Auch die positive Platte gibt Elektronen ab, aber sie zieht die negativen Elektronen sofort wieder an. Sie fallen zurück.</li>"+
+      "<li>Selbst wenn Elektronen entkämen, würde die Platte dadurch nur noch positiver, nicht neutraler.</li>"
+  },
+  {
+    points:300, afb:"II", operator:"Erkläre", kompetenz:"Erkenntnisgewinnung",
+    zeit:"ca. 4 min", check:"Versagen des Wellenmodells",
+    q:"Eine Glasscheibe wird zwischen Lampe und negativ geladener Zinkplatte gestellt. Die Entladung hört auf, obwohl man das Licht durch das Glas sieht. Auch eine nähere Lampe ändert daran nichts.<br><br><b>Erkläre</b>, warum das dem Wellenmodell widerspricht.",
+    s:"<li>Im Wellenmodell hängt die Energie an der <b>Amplitude</b>, also an der Helligkeit (Intensität).</li>"+
+      "<li>Verliert die Welle im Glas nur etwas Energie, müsste eine hellere oder nähere Lampe das ausgleichen. Das tut sie nicht.</li>"+
+      "<li>Das Glas hält gerade das <b>UV-Licht</b> zurück. Es kommt also auf die <b>Frequenz</b> an, nicht auf die Helligkeit.</li>"
+  },
+  {
+    points:400, afb:"II–III", operator:"Beurteile", kompetenz:"Bewertung, Fachwissen",
+    zeit:"ca. 4 min", check:"Lichtquantenhypothese",
+    q:"Ein Mitschüler meint: „Mit einer sehr hellen roten Lampe klappt der Photoeffekt bei Zink auch. Man muss nur lange genug warten, bis das Elektron genug Energie gesammelt hat.“<br><br><b>Beurteile</b> die Aussage.",
+    s:"<li>Die Aussage ist <b>falsch</b>.</li>"+
+      "<li>Licht besteht aus Photonen mit "+M("E = h · f")+". Rotes Licht hat pro Photon nur etwa 1,8 eV, Zink braucht 4,3 eV.</li>"+
+      "<li>Ein Elektron nimmt immer nur <b>ein Photon als Ganzes</b> auf. Energie wird nicht über viele Photonen gesammelt.</li>"+
+      "<li>Mehr Helligkeit heißt nur: mehr Photonen derselben Energie. Es bleibt dabei, dass keins einzeln reicht.</li>"
+  },
+  {
+    points:500, afb:"III", operator:"Erläutere", kompetenz:"Erkenntnisgewinnung, Kommunikation",
+    zeit:"ca. 5 min", check:"Welle oder Teilchen?",
+    q:"Der Doppelspalt spricht für Licht als Welle, der Photoeffekt für Licht als Teilchen.<br><br><b>Erläutere</b>, wie Einsteins Lichtquantenhypothese beide Befunde zusammenbringt, und <b>gib an</b>, wer sie später experimentell bestätigt hat.",
+    s:"<li>Einstein 1905: Licht besteht aus <b>Photonen</b>. Jedes trägt die Energie "+M("E = h · f")+", die nur von der Frequenz abhängt.</li>"+
+      "<li>Photonen werden nur <b>als Ganzes</b> absorbiert oder erzeugt. Das erklärt Grenzfrequenz und Glasscheibe.</li>"+
+      "<li>Die <b>Ausbreitung</b> beschreibt man weiter mit Wellen: Photonen können am Doppelspalt interferieren.</li>"+
+      "<li>Licht ist also weder klassische Welle noch klassisches Teilchen, sondern zeigt je nach Experiment beide Seiten.</li>"+
+      "<li>Bestätigt hat das <b>Millikan</b> (1916) mit der Gegenfeldmethode, obwohl er Einstein eigentlich widerlegen wollte.</li>"
+  }
+]},
+
+/* ------------------ 2 ------------------ */
+{
+  name:"Energie eines Photons",
+  questions:[
+  {
+    points:100, afb:"I", operator:"Berechne", kompetenz:"Fachwissen",
+    zeit:"ca. 2 min", check:"E = h · f, Umrechnung J und eV",
+    q:"Gelbes Licht hat die Frequenz "+M("f")+" = 5,0 · "+zp("14")+" Hz.<br><br><b>Berechne</b> die Energie eines Photons in J und in eV.",
+    s:"<li>"+mi("E","Ph")+" = "+M("h · f")+" = 6,626 · "+zp("−34")+" J·s · 5,0 · "+zp("14")+" "+f("1","s")+"</li>"+
+      "<li><b>"+mi("E","Ph")+" ≈ 3,31 · "+zp("−19")+" J</b></li>"+
+      "<li>In eV: 3,31 · "+zp("−19")+" J : 1,602 · "+zp("−19")+" "+f("J","eV")+" ≈ <b>2,07 eV</b></li>"
+  },
+  {
+    points:200, afb:"I–II", operator:"Berechne", kompetenz:"Fachwissen",
+    zeit:"ca. 3 min", check:"Umweg über c = λ · f",
+    q:"Ein grüner Laserpointer sendet Licht der Wellenlänge "+M("λ")+" = 532 nm aus.<br><br><b>Berechne</b> die Energie eines Photons in eV.",
+    s:"<li>Gegeben ist die Wellenlänge, also Umweg über "+M("c = λ · f")+": "+mi("E","Ph")+" = "+f(M("h · c"), M("λ"))+"</li>"+
+      "<li>"+mi("E","Ph")+" = "+f("1,988 · "+zp("−25")+" J·m", "532 · "+zp("−9")+" m")+" ≈ 3,74 · "+zp("−19")+" J</li>"+
+      "<li>In eV: <b>≈ 2,33 eV</b></li>"+
+      "<li>Häufiger Fehler: nm nicht in m umgerechnet.</li>"
+  },
+  {
+    points:300, afb:"II", operator:"Bestimme, entscheide", kompetenz:"Fachwissen, Erkenntnisgewinnung",
+    zeit:"ca. 4 min", check:"Grenzwellenlänge",
+    q:"Für Zink ist "+mi("W","A")+" = 4,3 eV.<br><br><b>Bestimme</b> die größte Wellenlänge, mit der der Photoeffekt bei Zink gerade noch gelingt, und <b>entscheide</b>, ob das sichtbares Licht ist.",
+    s:"<li>Grenzfall: "+mi("E","Ph")+" = "+mi("W","A")+" = 4,3 eV = 4,3 · 1,602 · "+zp("−19")+" J ≈ 6,89 · "+zp("−19")+" J</li>"+
+      "<li>"+M("λ")+"<sub>g</sub> = "+f(M("h · c"), mi("W","A"))+" = "+f("1,988 · "+zp("−25")+" J·m", "6,89 · "+zp("−19")+" J")+" ≈ 2,89 · "+zp("−7")+" m ≈ <b>289 nm</b></li>"+
+      "<li>Sichtbar ist etwa 400 bis 750 nm. 289 nm ist <b>UV</b>.</li>"+
+      "<li>Deshalb klappt Hallwachs nur mit der Hg-Lampe und nicht hinter Glas.</li>"
+  },
+  {
+    points:400, afb:"II", operator:"Berechne", kompetenz:"Fachwissen",
+    zeit:"ca. 4 min", check:"Einstein-Gleichung",
+    q:"Die Photozelle der Sammlung hat eine Kalium-Kathode mit "+mi("W","A")+" = 2,25 eV. Sie wird mit blauem Licht der Wellenlänge 436 nm bestrahlt.<br><br><b>Berechne</b> die größte kinetische Energie der Elektronen und die Grenzspannung "+mi("U","G")+".",
+    s:"<li>"+mi("E","Ph")+" = "+f(M("h · c"), M("λ"))+" = "+f("1,988 · "+zp("−25")+" J·m", "436 · "+zp("−9")+" m")+" ≈ 4,56 · "+zp("−19")+" J ≈ 2,85 eV</li>"+
+      "<li>Einstein-Gleichung: "+mi("E","kin,max")+" = "+M("h · f")+" − "+mi("W","A")+" = 2,85 eV − 2,25 eV = <b>0,60 eV</b></li>"+
+      "<li>Mit "+mi("E","kin,max")+" = "+M("e")+" · "+mi("U","G")+" folgt <b>"+mi("U","G")+" = 0,60 V</b>.</li>"+
+      "<li>Praktisch an eV: Der Zahlenwert in eV ist direkt die Spannung in V.</li>"
+  },
+  {
+    points:500, afb:"II–III", operator:"Berechne", kompetenz:"Fachwissen, Erkenntnisgewinnung",
+    zeit:"ca. 5 min", check:"Photonenzahl und Impuls (Lichtsegel)",
+    q:"Ein roter Laserpointer hat die Leistung 1,0 mW und die Wellenlänge 650 nm. Sein Strahl trifft ein Segel und wird vollständig absorbiert.<br><br><b>Berechne</b> die Zahl der Photonen pro Sekunde, den Impuls eines Photons und die Kraft auf das Segel.",
+    s:"<li>"+mi("E","Ph")+" = "+f(M("h · c"), M("λ"))+" ≈ 3,06 · "+zp("−19")+" J</li>"+
+      "<li>Photonen pro Sekunde: "+M("Ṅ")+" = "+f(M("P"), mi("E","Ph"))+" = "+f("1,0 · "+zp("−3")+" W", "3,06 · "+zp("−19")+" J")+" ≈ <b>3,3 · "+zp("15")+" pro s</b></li>"+
+      "<li>Impuls: "+M("p")+" = "+f(M("h"), M("λ"))+" = "+f("6,626 · "+zp("−34")+" J·s", "650 · "+zp("−9")+" m")+" ≈ <b>1,0 · "+zp("−27")+" kg·m/s</b></li>"+
+      "<li>Kraft: "+M("F = Ṅ · p")+" ≈ <b>3,3 · "+zp("−12")+" N</b>. Kontrolle: "+M("F = P / c")+" ergibt dasselbe.</li>"+
+      "<li>Winzig, aber im Weltall ohne Reibung genügt das (LightSail 2).</li>"
+  }
+]},
+
+/* ------------------ 3 ------------------ */
+{
+  name:"Millikan und Gegenfeld",
+  questions:[
+  {
+    points:100, afb:"I", operator:"Erkläre", kompetenz:"Fachwissen",
+    zeit:"ca. 2 min", check:"Grenzspannung",
+    q:"In der Photozelle wird eine Gegenspannung angelegt und so lange erhöht, bis der Photostrom gerade null ist.<br><br><b>Erkläre</b>, warum man daraus die größte kinetische Energie der Elektronen erhält.",
+    s:"<li>Das Gegenfeld bremst die Elektronen auf dem Weg zur Anode, ohne sie zu berühren.</li>"+
+      "<li>Bei der <b>Grenzspannung</b> "+mi("U","G")+" kommen auch die schnellsten Elektronen nicht mehr an.</li>"+
+      "<li>Ihre Bewegungsenergie wurde vollständig in elektrische Energie umgewandelt: <b>"+mi("E","kin,max")+" = "+M("e")+" · "+mi("U","G")+"</b></li>"
+  },
+  {
+    points:200, afb:"II", operator:"Gib an, begründe", kompetenz:"Erkenntnisgewinnung",
+    zeit:"ca. 3 min", check:"Intensität und Frequenz trennen",
+    q:"Die Lampe wird <b>heller</b> gemacht, die Farbe bleibt gleich.<br><br><b>Gib an</b>, wie sich der Photostrom ohne Gegenspannung und die Grenzspannung "+mi("U","G")+" ändern, und <b>begründe</b>.",
+    s:"<li>Photostrom ohne Gegenspannung: <b>größer</b>. Mehr Photonen lösen mehr Elektronen aus.</li>"+
+      "<li>"+mi("U","G")+": <b>bleibt gleich</b>. Jedes Photon hat dieselbe Energie "+M("h · f")+", also bekommen die Elektronen höchstens dieselbe Energie.</li>"+
+      "<li>Merke: Helligkeit bestimmt die <b>Anzahl</b>, Frequenz die <b>Energie</b>.</li>"
+  },
+  {
+    points:300, afb:"II", operator:"Erläutere", kompetenz:"Fachwissen, Kommunikation",
+    zeit:"ca. 4 min", check:"U_G-f-Diagramm",
+    q:"Trägt man "+mi("U","G")+" über der Frequenz "+M("f")+" für Natrium, Lithium und Zink auf, erhält man drei parallele Geraden.<br><br><b>Erläutere</b>, was Steigung, Schnittpunkt mit der "+M("f")+"-Achse und Schnittpunkt mit der "+M("U")+"-Achse bedeuten.",
+    s:"<li><b>Steigung</b> "+f(M("h"),M("e"))+": für alle Metalle gleich, eine Eigenschaft des <b>Lichts</b>. Daraus bestimmt man "+M("h")+".</li>"+
+      "<li><b>Schnittpunkt mit der f-Achse</b>: Grenzfrequenz "+mi("f","g")+". Darunter werden keine Elektronen ausgelöst.</li>"+
+      "<li><b>Schnittpunkt mit der U-Achse</b> (verlängert): "+M("−")+f(mi("W","A"),M("e"))+". Daraus liest man die Austrittsarbeit in eV ab, eine Eigenschaft des <b>Metalls</b>.</li>"+
+      "<li>Zusammen ergibt das "+mi("E","kin,max")+" = "+M("h · f")+" − "+mi("W","A")+".</li>"
+  },
+  {
+    points:400, afb:"II", operator:"Bestimme", kompetenz:"Erkenntnisgewinnung, Fachwissen",
+    zeit:"ca. 5 min", check:"h und W_A aus Messwerten",
+    q:"Messung an einer unbekannten Kathode:<br>"+M("f")+" = 6,0 · "+zp("14")+" Hz → "+mi("U","G")+" = 0,20 V<br>"+M("f")+" = 8,0 · "+zp("14")+" Hz → "+mi("U","G")+" = 1,03 V<br><br><b>Bestimme</b> daraus "+M("h")+" und die Austrittsarbeit.",
+    s:"<li>Steigung: "+f("Δ"+M("U"),"Δ"+M("f"))+" = "+f("0,83 V","2,0 · "+zp("14")+" Hz")+" ≈ 4,15 · "+zp("−15")+" V·s</li>"+
+      "<li>"+M("h")+" = Steigung · "+M("e")+" ≈ 4,15 · "+zp("−15")+" V·s · 1,602 · "+zp("−19")+" C ≈ <b>6,6 · "+zp("−34")+" J·s</b></li>"+
+      "<li>"+f(mi("W","A"),M("e"))+" = Steigung · "+M("f")+" − "+mi("U","G")+" = 4,15 · "+zp("−15")+" V·s · 6,0 · "+zp("14")+" Hz − 0,20 V ≈ 2,3 V</li>"+
+      "<li><b>"+mi("W","A")+" ≈ 2,3 eV</b>, das passt zu Natrium.</li>"
+  },
+  {
+    points:500, afb:"III", operator:"Formuliere, begründe", kompetenz:"Erkenntnisgewinnung, Bewertung",
+    zeit:"ca. 5 min", check:"Hypothesen prüfen",
+    q:"Millikan wollte Einstein widerlegen.<br><br><b>Formuliere</b> zwei mögliche Messergebnisse, die Einsteins Lichtquantenhypothese widerlegt hätten, jeweils als Satz mit „Wenn …“. <b>Begründe</b> jeweils.",
+    s:"<li>Wenn "+mi("U","G")+" bei hellerem Licht gleicher Farbe <b>größer</b> geworden wäre, dann hinge die Elektronenenergie an der Intensität, nicht an "+M("f")+".</li>"+
+      "<li>Wenn die Geraden für verschiedene Metalle <b>verschiedene Steigungen</b> gehabt hätten, dann wäre "+f(M("h"),M("e"))+" keine Eigenschaft des Lichts.</li>"+
+      "<li>Wenn unterhalb der Grenzfrequenz bei sehr hellem Licht doch Elektronen gekommen wären (eventuell nach Wartezeit), dann würde Energie gesammelt.</li>"+
+      "<li>Keins davon trat ein. Millikan hat das nach zehn Jahren anerkannt.</li>"
+  }
+]},
+
+/* ------------------ 4 ------------------ */
+{
+  name:"Einzelne Photonen",
+  questions:[
+  {
+    points:100, afb:"I", operator:"Beschreibe", kompetenz:"Fachwissen",
+    zeit:"ca. 2 min", check:"Taylors Streitfrage",
+    q:"Taylor verdünnt das Licht am Doppelspalt so stark, dass kaum noch Licht ankommt.<br><br><b>Beschreibe</b>, was man auf dem Schirm (oder der Kamera) beobachtet.",
+    s:"<li>Einzelne, scheinbar <b>zufällig verteilte Punkte</b>: Jedes Photon wird an genau einer Stelle nachgewiesen.</li>"+
+      "<li>Mit der Zeit bauen die Punkte das <b>Interferenzmuster</b> auf.</li>"+
+      "<li>Das Muster bleibt also, seine Entstehung dauert nur länger (Antwort B der Streitfrage).</li>"
+  },
+  {
+    points:200, afb:"II", operator:"Berechne", kompetenz:"Fachwissen, Erkenntnisgewinnung",
+    zeit:"ca. 4 min", check:"Wirklich nur ein Photon in der Apparatur",
+    q:"Bei Aspden werden in 120 s etwa 10 · "+zp("6")+" Photonen nachgewiesen. Die Apparatur ist 4 m lang.<br><br><b>Berechne</b>, wie lange ein Photon für die Strecke braucht und wie viel Zeit im Mittel zwischen zwei Photonen vergeht. <b>Deute</b> das Ergebnis.",
+    s:"<li>Durchflugzeit: "+M("t")+" = "+f("4 m","3,0 · "+zp("8")+" m/s")+" ≈ 1,3 · "+zp("−8")+" s</li>"+
+      "<li>Abstand zweier Photonen: "+f("120 s","1,0 · "+zp("7")+"")+" = 1,2 · "+zp("−5")+" s</li>"+
+      "<li>Die Apparatur ist also etwa <b>900-mal länger leer</b>, als ein Photon zum Durchfliegen braucht.</li>"+
+      "<li>Im Mittel ist höchstens ein Photon unterwegs. Es kann mit keinem anderen interferieren, nur „mit sich selbst“.</li>"
+  },
+  {
+    points:300, afb:"II", operator:"Widerlege", kompetenz:"Bewertung, Kommunikation",
+    zeit:"ca. 4 min", check:"Argumente gegen den Skeptiker",
+    q:"Ein Skeptiker sagt: „Auch bei schwachem Licht sind massenhaft Photonen unterwegs. Die stoßen sich eben, deshalb entsteht das Muster.“<br><br><b>Widerlege</b> ihn mit zwei Argumenten.",
+    s:"<li><b>Rechnung:</b> Im Mittel ist nicht einmal ein Photon gleichzeitig in der Apparatur (900-mal länger leer als Durchflugzeit).</li>"+
+      "<li><b>Helligkeit:</b> Die Form des Musters hängt nicht von der Intensität ab. Bei Stößen müsste sie sich mit der Photonendichte ändern.</li>"+
+      "<li><b>Aspden:</b> Die Kamera ist nur 5 ns offen, und nur dann, wenn ein Partnerphoton ein Photon angekündigt hat.</li>"
+  },
+  {
+    points:400, afb:"II", operator:"Vergleiche", kompetenz:"Fachwissen, Erkenntnisgewinnung",
+    zeit:"ca. 4 min", check:"Weder Kugel noch klassische Welle",
+    q:"<b>Vergleiche</b>, was eine klassische Welle und was klassische Teilchen bei einzelnen Photonen am Doppelspalt erzeugen würden, mit der Beobachtung. <b>Ziehe</b> eine Schlussfolgerung.",
+    s:"<li>Klassische Welle: Interferenzmuster <b>sofort</b> als schwaches Gesamtbild, keine einzelnen Punkte. <b>Nicht beobachtet.</b></li>"+
+      "<li>Klassische Teilchen: zwei helle Streifen hinter den Spalten. <b>Nicht beobachtet.</b></li>"+
+      "<li>Beobachtet: einzelne Punkte (Teilchen-Seite), die sich zum Interferenzmuster ordnen (Wellen-Seite).</li>"+
+      "<li>Schluss: <b>Das Photon ist keine kleine Kugel und keine klassische Welle</b>, sondern ein Quantenobjekt.</li>"
+  },
+  {
+    points:500, afb:"III", operator:"Erläutere", kompetenz:"Bewertung, Fachwissen",
+    zeit:"ca. 5 min", check:"Echter Zufall",
+    q:"Ein Würfel und ein Photon am halbdurchlässigen Spiegel liefern beide Nullen und Einsen.<br><br><b>Erläutere</b> den grundsätzlichen Unterschied und warum Firmen Quanten-Zufallsgeneratoren verkaufen.",
+    s:"<li>Auf lange Sicht ist bei beiden die <b>Verteilung</b> vorhersagbar (etwa halb 0, halb 1).</li>"+
+      "<li>Würfel: Der Ausgang ist nur <b>schwer</b> vorhersagbar. Mit genauer Kenntnis von Wurf, Luft und Tisch ließe er sich im Prinzip berechnen.</li>"+
+      "<li>Photon: Wohin es geht, ist <b>prinzipiell</b> nicht vorhersagbar, auch nicht mit besseren Geräten.</li>"+
+      "<li>Für Verschlüsselung ist das entscheidend: Ein Angreifer kann die Folge nicht nachrechnen. Verkauft wird diese Garantie, nicht die Hardware.</li>"
+  }
+]},
+
+/* ------------------ 5 ------------------ */
+{
+  name:"Wahrscheinlichkeit und Weginformation",
+  questions:[
+  {
+    points:100, afb:"I", operator:"Gib an", kompetenz:"Fachwissen",
+    zeit:"ca. 2 min", check:"Wahrscheinlichkeitsdeutung",
+    q:"Bei einzelnen Photonen am Doppelspalt hilft die Wellenbeschreibung weiter.<br><br><b>Gib an</b>, was sie über ein einzelnes Photon aussagt und was nicht.",
+    s:"<li><b>Nicht:</b> wo genau das Photon ankommt.</li>"+
+      "<li><b>Sondern:</b> mit welcher <b>Wahrscheinlichkeit</b> es an einer Stelle nachgewiesen wird.</li>"+
+      "<li>Maximum: große Wahrscheinlichkeit. Minimum: Wahrscheinlichkeit null.</li>"+
+      "<li>Vorhersagbar ist die Verteilung, nicht das einzelne Ereignis.</li>"
+  },
+  {
+    points:200, afb:"II", operator:"Erkläre", kompetenz:"Fachwissen, Kommunikation",
+    zeit:"ca. 3 min", check:"Born: P ~ |ψ|²",
+    q:"Nach Born gilt "+M("P")+" ~ "+M("|ψ|²")+" mit "+M("ψ")+" = "+mi("ψ","1")+" + "+mi("ψ","2")+".<br><br><b>Erkläre</b>, warum es Stellen gibt, an denen <b>nie</b> ein Photon ankommt, obwohl durch jeden Spalt allein dort Photonen hinkämen.",
+    s:"<li>"+M("ψ")+" selbst ist nicht messbar, "+M("|ψ|²")+" ist die Nachweiswahrscheinlichkeit (messbar als relative Häufigkeit).</li>"+
+      "<li>Erst <b>addieren</b>, dann <b>quadrieren</b>: "+M("|ψ|²")+" = "+M("|ψ")+"<sub>1</sub>"+M("|²")+" + "+M("|ψ")+"<sub>2</sub>"+M("|²")+" + Interferenzterm.</li>"+
+      "<li>Der Interferenzterm kann negativ sein. Löschen sich "+mi("ψ","1")+" und "+mi("ψ","2")+" aus, ist "+M("P")+" = 0.</li>"+
+      "<li>Klassische Wahrscheinlichkeiten würden nur addiert, dann gäbe es keine Nullstellen.</li>"
+  },
+  {
+    points:300, afb:"II", operator:"Erkläre", kompetenz:"Erkenntnisgewinnung",
+    zeit:"ca. 4 min", check:"Weginformation mit Polfiltern",
+    q:"Vor beide Spalte kommen Polarisationsfilter. Stehen beide gleich (↕ ↕), sieht man ein Interferenzmuster. Stehen sie gekreuzt (↕ ↔), ist das Muster weg.<br><br><b>Erkläre</b> das.",
+    s:"<li>Bei gekreuzten Filtern verrät die Polarisation eines Photons, durch welchen Spalt es gekommen ist: Der Weg ist <b>prinzipiell feststellbar</b>.</li>"+
+      "<li>Dann gibt es <b>keine Interferenz</b>, auf dem Schirm addieren sich nur die beiden Einzelspalt-Bilder.</li>"+
+      "<li>Bei gleichen Filtern trägt das Photon keine Weginformation, das Muster bleibt.</li>"
+  },
+  {
+    points:400, afb:"III", operator:"Beurteile", kompetenz:"Bewertung",
+    zeit:"ca. 4 min", check:"Komplementarität",
+    q:"Jemand sagt: „Das Muster verschwindet, weil jemand nachschaut, durch welchen Spalt das Photon geht. Die Messung stört das Photon.“<br><br><b>Beurteile</b> diese Aussage.",
+    s:"<li>Die Aussage ist <b>falsch</b> bzw. trifft den Kern nicht.</li>"+
+      "<li>Beim Polfilter-Versuch schaut niemand nach, und die Photonen werden nicht gebremst oder abgelenkt.</li>"+
+      "<li>Entscheidend ist allein, ob die <b>Information</b> über den Weg <b>prinzipiell vorhanden</b> ist.</li>"+
+      "<li>Komplementarität: Weginformation und Interferenz schließen sich aus.</li>"
+  },
+  {
+    points:500, afb:"III", operator:"Erkläre", kompetenz:"Erkenntnisgewinnung, Fachwissen",
+    zeit:"ca. 5 min", check:"Quantenradierer",
+    q:"Bei gekreuzten Filtern (↕ ↔) wird vor den Schirm ein dritter Filter unter 45° gestellt. Das Muster kommt zurück. Mit −45° kommt ebenfalls ein Muster, aber verschoben.<br><br><b>Erkläre</b> beide Beobachtungen und was passiert, wenn man beide Bilder addiert.",
+    s:"<li>Hinter dem 45°-Filter haben alle Photonen dieselbe Polarisation. Man kann nicht mehr erkennen, durch welchen Spalt sie kamen: Die Weginformation ist <b>gelöscht</b>, das Muster kommt zurück.</li>"+
+      "<li>Bei −45° ebenso, aber mit verschobenem Muster: Maxima liegen dort, wo vorher Minima waren.</li>"+
+      "<li>Addiert man beide Bilder, ergibt sich wieder <b>kein</b> Muster, genau wie ohne dritten Filter.</li>"+
+      "<li>Der Radierer zaubert also nichts zurück, er <b>sortiert</b> die Photonen in zwei Teilmengen mit je eigenem Muster.</li>"
+  }
+]}
+
+];
+
+/* =======================================================================
    FRAGENKATALOGE
    ======================================================================= */
 
@@ -5414,7 +5681,14 @@ var KATALOGE = [
     hinweis:"6 Kategorien, 30 Aufgaben, 1 bis 5 Minuten, Papier und Stift genügen",
     bezug:"Basale Kompetenz",
     farben:[0,5,2,6,3,4],
-    kategorien:BASAL_10 }
+    kategorien:BASAL_10 },
+  { id:"physik_q2_quanten",
+    titel:"Physik — Quantenphysik des Lichts",
+    fach:"Physik", stufe:"Q2", inhalt:"Quantenphysik des Lichts",
+    unter:"Q2 gN, Wiederholung vom Photoeffekt bis zur Weginformation",
+    hinweis:"25 Aufgaben, 2 bis 5 Minuten, Taschenrechner nötig",
+    bezug:"Skript",
+    kategorien:PHYSIK_Q2_QUANTEN }
 ];
 
 function katalog(){ return KATALOGE[state.katalog]; }
@@ -11821,7 +12095,269 @@ var Q7_BASAL = {
 };
 /* ENDE BASAL-EXPORT Q7_BASAL */
 
-var Q_SAETZE = [Q7_RATIONAL, Q7_BASAL];
+/* Physik Q2 (gN): Quantenphysik des Lichts. Bereiche wie die Spalten des
+   Jeopardy-Katalogs PHYSIK_Q2_QUANTEN, mi() und zp() stehen dort. */
+var Q2_QUANTEN = {
+  fach:"Physik",
+  stufe:"Q2",
+  titel:"Quantenphysik des Lichts",
+  unter:"Q2 gN, Wiederholung: Photoeffekt, Photonenenergie, Millikan, einzelne Photonen, Wahrscheinlichkeit und Weginformation",
+  sekunden:30,
+  bereiche:["Photoeffekt", "Photonenenergie", "Millikan", "Einzelne Photonen", "Weginformation"],
+  fragen:[
+    /* ---- 0 Photoeffekt ---- */
+    {
+      b:0,
+      q:"Eine <b>negativ</b> geladene Zinkplatte wird mit dem Licht einer Hg-Lampe (mit UV) beleuchtet. Was beobachtet man?",
+      a:["Sie entlädt sich.", "Sie lädt sich stärker negativ auf.", "Nichts passiert.", "Sie wird positiv geladen."], r:0,
+      s:"Das Licht löst Elektronen aus der Platte (äußerer Photoeffekt). Die überschüssigen Elektronen verschwinden, der Ausschlag geht zurück. Bei positiver Platte passiert nichts: Sie zieht ausgelöste Elektronen gleich wieder an."
+    },
+    {
+      b:0,
+      q:"Eine Glasscheibe zwischen Lampe und Zinkplatte stoppt die Entladung. Warum?",
+      a:["Glas hält das UV-Licht zurück.", "Glas macht das Licht zu dunkel.", "Glas lädt die Platte auf.", "Glas lenkt das Licht ab."], r:0,
+      s:"Das sichtbare Licht kommt durch, nur das UV nicht. Eine hellere Lampe hilft nicht. Es kommt also auf die Frequenz an, nicht auf die Helligkeit."
+    },
+    {
+      b:0,
+      q:"Wovon hängt die Energie eines <b>einzelnen</b> Photons ab?",
+      a:["nur von der Frequenz", "nur von der Helligkeit", "von Frequenz und Helligkeit", "von der Dauer der Bestrahlung"], r:0,
+      s:M("E = h · f")+". Die Helligkeit bestimmt nur, <b>wie viele</b> Photonen ankommen."
+    },
+    {
+      b:0,
+      q:"Rotes Licht löst bei Zink keine Elektronen aus. Man macht es viel heller. Was passiert?",
+      a:["Weiterhin keine Elektronen", "Nach einer Wartezeit kommen Elektronen.", "Es kommen langsame Elektronen.", "Es kommen mehr Elektronen."], r:0,
+      s:"Jedes rote Photon hat zu wenig Energie (ca. 1,8 eV statt 4,3 eV). Ein Elektron nimmt immer nur ein Photon auf und sammelt keine Energie über viele Photonen. Mehr Helligkeit heißt nur mehr Photonen, und keins reicht."
+    },
+    {
+      b:0,
+      q:"UV-Licht löst bei Zink Elektronen aus. Was bewirkt <b>helleres</b> UV-Licht derselben Frequenz?",
+      a:["mehr Elektronen, gleiche Höchstenergie", "schnellere Elektronen", "mehr und schnellere Elektronen", "keine Änderung"], r:0,
+      s:"Mehr Photonen lösen mehr Elektronen aus, der Photostrom steigt. Jedes Photon hat aber dieselbe Energie, also bleibt die größte kinetische Energie gleich."
+    },
+    {
+      b:0,
+      q:"Welche Aussage zur Austrittsarbeit "+mi("W","A")+" stimmt?",
+      a:["Sie hängt vom Metall ab.", "Sie hängt von der Frequenz des Lichts ab.", "Sie ist für alle Metalle gleich.", "Sie hängt von der Helligkeit ab."], r:0,
+      s:mi("W","A")+" ist die Mindestenergie, um ein Elektron aus dem Metall zu lösen, eine Eigenschaft des Metalls (Zink 4,3 eV, Kalium ca. 2,25 eV)."
+    },
+    {
+      b:0,
+      q:"Wie nimmt ein Elektron beim Photoeffekt Energie auf?",
+      a:["Es absorbiert genau ein Photon als Ganzes.", "Es sammelt Energie vieler Photonen.", "Es nimmt einen Teil eines Photons auf.", "Es nimmt Energie aus der Lichtwelle auf."], r:0,
+      s:"Photonen werden nur als Ganzes absorbiert oder erzeugt (Quantisierung). Darum entscheidet die Energie des einzelnen Photons."
+    },
+
+    /* ---- 1 Photonenenergie ---- */
+    {
+      b:1,
+      q:"Welches Photon hat die <b>größte</b> Energie?",
+      a:["UV", "blau", "grün", "rot"], r:0,
+      s:"Größte Frequenz, kleinste Wellenlänge, größte Energie: UV. Rot liegt am anderen Ende."
+    },
+    {
+      b:1,
+      q:"Die Wellenlänge von Licht wird verdoppelt. Wie ändert sich die Photonenenergie?",
+      a:["Sie halbiert sich.", "Sie verdoppelt sich.", "Sie viertelt sich.", "Sie bleibt gleich."], r:0,
+      s:mi("E","Ph")+" = "+f(M("h · c"), M("λ"))+". Die Energie ist umgekehrt proportional zur Wellenlänge."
+    },
+    {
+      b:1, zeit:45,
+      q:"Ein Photon hat die Energie 3,2 · "+zp("−19")+" J. Wie viel ist das in eV?",
+      a:["2,0 eV", "0,50 eV", "5,1 · "+zp("−38")+" eV", "3,2 eV"], r:0,
+      s:"Durch 1,602 · "+zp("−19")+" J/eV <b>teilen</b>: 3,2 : 1,602 ≈ 2,0 eV. 5,1 · "+zp("−38")+": multipliziert statt geteilt. 0,50: Bruch umgedreht."
+    },
+    {
+      b:1, zeit:60,
+      q:"Licht hat die Frequenz 6,0 · "+zp("14")+" Hz. Welche Energie hat ein Photon?",
+      a:["4,0 · "+zp("−19")+" J", "1,1 · "+zp("−48")+" J", "4,0 · "+zp("−17")+" J", "6,6 · "+zp("−34")+" J"], r:0,
+      s:mi("E","Ph")+" = "+M("h · f")+" = 6,626 · "+zp("−34")+" J·s · 6,0 · "+zp("14")+" Hz ≈ 4,0 · "+zp("−19")+" J (≈ 2,5 eV). 1,1 · "+zp("−48")+": durch "+M("f")+" geteilt. 6,6 · "+zp("−34")+": nur "+M("h")+"."
+    },
+    {
+      b:1, zeit:90,
+      q:"Violettes Licht hat "+M("λ")+" = 400 nm. Welche Energie hat ein Photon?",
+      a:["3,1 eV", "4,97 eV", "3,1 · "+zp("−9")+" eV", "1,6 eV"], r:0,
+      s:mi("E","Ph")+" = "+f(M("h · c"), M("λ"))+" = "+f("1,988 · "+zp("−25")+" J·m", "4,00 · "+zp("−7")+" m")+" ≈ 4,97 · "+zp("−19")+" J ≈ 3,1 eV. 4,97 eV: nicht in eV umgerechnet. 3,1 · "+zp("−9")+": nm nicht in m umgerechnet."
+    },
+    {
+      b:1, zeit:60,
+      q:"Ein Photon trägt 2,0 eV. Welche Farbe hat das Licht?",
+      a:["orange-rot (ca. 620 nm)", "violett (ca. 400 nm)", "grün (ca. 530 nm)", "UV (ca. 300 nm)"], r:0,
+      s:M("λ")+" = "+f(M("h · c"), M("E"))+" = "+f("1,988 · "+zp("−25")+" J·m", "3,2 · "+zp("−19")+" J")+" ≈ 6,2 · "+zp("−7")+" m = 620 nm. Faustregel: 3,1 eV ist violett, 2 eV orange-rot."
+    },
+    {
+      b:1,
+      q:"Welche Formel gibt den Impuls eines Photons an?",
+      a:[M("p")+" = "+f(M("h"), M("λ")), M("p = h · λ"), M("p = m · c"), M("p = h · f")], r:0,
+      s:M("p")+" = "+f(M("E"), M("c"))+" = "+f(M("h · f"), M("c"))+" = "+f(M("h"), M("λ"))+". "+M("p = m · c")+" geht nicht, das Photon hat keine Masse. Bei "+M("h · f")+" fehlt das "+M(": c")+"."
+    },
+    {
+      b:1,
+      q:"Ein Photon hat keine Masse. Was trägt es trotzdem?",
+      a:["Energie und Impuls", "nur Energie", "nur Impuls", "weder Energie noch Impuls"], r:0,
+      s:M("E = h · f")+" und "+M("p")+" = "+f(M("h"), M("λ"))+". Der Impuls reicht, um ein Lichtsegel wie LightSail 2 anzutreiben."
+    },
+
+    /* ---- 2 Millikan ---- */
+    {
+      b:2,
+      q:"Bei der Grenzspannung "+mi("U","G")+" kommt gerade kein Elektron mehr an. Was gilt dann?",
+      a:[mi("E","kin,max")+" = "+M("e · ")+mi("U","G"), mi("E","kin,max")+" = "+mi("U","G")+" : "+M("e"), mi("E","Ph")+" = "+M("e · ")+mi("U","G"), mi("W","A")+" = "+M("e · ")+mi("U","G")], r:0,
+      s:"Das Gegenfeld nimmt den schnellsten Elektronen genau ihre Bewegungsenergie: "+mi("E","kin,max")+" = "+M("e")+" · "+mi("U","G")+". Die Photonenenergie ist größer, denn "+mi("W","A")+" ist schon abgezogen."
+    },
+    {
+      b:2,
+      q:"Die Lampe wird <b>heller</b>, die Farbe bleibt. Wie ändert sich "+mi("U","G")+"?",
+      a:["bleibt gleich", "wird größer", "wird kleiner", "wird null"], r:0, fest:true,
+      s:"Gleiche Frequenz, gleiche Photonenenergie, gleiche Höchstenergie der Elektronen. Nur der Photostrom ohne Gegenspannung wird größer."
+    },
+    {
+      b:2,
+      q:"Das Licht hat eine <b>höhere Frequenz</b>, das Metall bleibt. Wie ändert sich "+mi("U","G")+"?",
+      a:["wird größer", "bleibt gleich", "wird kleiner", "wird null"], r:0, fest:true,
+      s:mi("E","kin,max")+" = "+M("h · f")+" − "+mi("W","A")+" wächst mit "+M("f")+", also auch "+mi("U","G")+"."
+    },
+    {
+      b:2,
+      q:"Im "+mi("U","G")+"-"+M("f")+"-Diagramm ist die Steigung der Geraden …",
+      a:[f(M("h"),M("e"))+", für alle Metalle gleich", mi("W","A")+", je nach Metall", M("h")+", je nach Metall", f(M("e"),M("h"))+", für alle Metalle gleich"], r:0,
+      s:"Aus "+M("e")+" · "+mi("U","G")+" = "+M("h · f")+" − "+mi("W","A")+" folgt die Steigung "+f(M("h"),M("e"))+". Sie ist eine Eigenschaft des Lichts, deshalb sind die Geraden parallel."
+    },
+    {
+      b:2,
+      q:"Wo schneidet die Gerade im "+mi("U","G")+"-"+M("f")+"-Diagramm die "+M("f")+"-Achse?",
+      a:["bei der Grenzfrequenz "+mi("f","g"), "bei der Austrittsarbeit", "bei der Planck-Konstante", "bei der Lichtgeschwindigkeit"], r:0,
+      s:"Bei "+mi("f","g")+" ist "+mi("U","G")+" = 0: Die Photonen reichen gerade, um Elektronen auszulösen. Die Austrittsarbeit liest man am verlängerten Schnittpunkt mit der "+M("U")+"-Achse ab."
+    },
+    {
+      b:2, zeit:45,
+      q:"Kalium ("+mi("W","A")+" = 2,25 eV) wird mit Photonen von 3,10 eV bestrahlt. Wie groß ist "+mi("U","G")+"?",
+      a:["0,85 V", "5,35 V", "3,10 V", "2,25 V"], r:0,
+      s:mi("E","kin,max")+" = 3,10 eV − 2,25 eV = 0,85 eV, also "+mi("U","G")+" = 0,85 V. 5,35 V: addiert statt subtrahiert."
+    },
+    {
+      b:2, zeit:90,
+      q:"Zink hat "+mi("W","A")+" = 4,3 eV. Wie groß ist die Grenzfrequenz?",
+      a:["1,0 · "+zp("15")+" Hz", "6,5 · "+zp("33")+" Hz", "9,6 · "+zp("−16")+" Hz", "2,9 · "+zp("−7")+" Hz"], r:0,
+      s:mi("f","g")+" = "+f(mi("W","A"),M("h"))+" = "+f("4,3 · 1,602 · "+zp("−19")+" J", "6,626 · "+zp("−34")+" J·s")+" ≈ 1,0 · "+zp("15")+" Hz. 6,5 · "+zp("33")+": eV nicht in J umgerechnet. 9,6 · "+zp("−16")+": Bruch umgedreht."
+    },
+    {
+      b:2, zeit:45,
+      q:"Welches Messergebnis hätte Einsteins Lichtquantenhypothese widerlegt?",
+      a:[mi("U","G")+" steigt mit der Helligkeit.", mi("U","G")+" steigt mit der Frequenz.", "Der Photostrom steigt mit der Helligkeit.", "Die Geraden aller Metalle sind parallel."], r:0,
+      s:"Nach Einstein bestimmt nur die Frequenz die Energie der Elektronen. Hinge "+mi("U","G")+" an der Helligkeit, wäre das widerlegt. Die anderen drei Ergebnisse hat Millikan tatsächlich gemessen."
+    },
+
+    /* ---- 3 Einzelne Photonen ---- */
+    {
+      b:3,
+      q:"Extrem schwaches Licht fällt auf einen Doppelspalt. Was sieht die Kamera <b>am Anfang</b>?",
+      a:["einzelne Punkte", "ein schwaches Streifenmuster", "zwei Streifen", "gleichmäßige Helligkeit"], r:0,
+      s:"Jedes Photon wird an genau einer Stelle nachgewiesen. Ein schwaches Gesamtmuster wäre das Bild einer klassischen Welle."
+    },
+    {
+      b:3,
+      q:"Extrem schwaches Licht fällt lange auf einen Doppelspalt. Was zeigt die Kamera <b>nach langer Zeit</b>?",
+      a:["Die Punkte bilden das Interferenzmuster.", "zwei Streifen hinter den Spalten", "gleichmäßig verteilte Punkte", "Die Punkte verschwinden wieder."], r:0,
+      s:"Das Muster bleibt, es entsteht nur langsamer (Taylors Streitfrage, Antwort B). Zwei Streifen hätten klassische Teilchen erzeugt."
+    },
+    {
+      b:3, zeit:45,
+      q:"Bei Aspden ist die Apparatur etwa 900-mal länger leer, als ein Photon zum Durchfliegen braucht. Was folgt daraus?",
+      a:["Meist ist kein oder ein Photon unterwegs.", "Etwa 900 Photonen sind gleichzeitig unterwegs.", "Die Photonen stoßen nur selten.", "Die Photonen sind langsamer als Licht."], r:0,
+      s:"Durchflugzeit ca. 1,3 · "+zp("−8")+" s, Abstand zwischen zwei Photonen ca. 1,2 · "+zp("−5")+" s. Ein Photon kann mit keinem anderen interferieren, nur mit sich selbst."
+    },
+    {
+      b:3,
+      q:"Wozu dient bei Aspden das Partnerphoton?",
+      a:["Es kündigt das Photon an.", "Es interferiert mit dem Photon.", "Es verstärkt das Signal.", "Es wählt den Spalt aus."], r:0,
+      s:"Photonen entstehen im Kristall paarweise. Meldet der Detektor den Partner, öffnet die Kamera für nur 5 ns. So gibt es kein Rauschen, und man weiß, dass genau ein Photon unterwegs war."
+    },
+    {
+      b:3,
+      q:"Wie hängt die <b>Form</b> des Musters von der Helligkeit ab?",
+      a:["gar nicht", "heller: schmalere Streifen", "dunkler: kein Muster", "heller: mehr Streifen"], r:0,
+      s:"Die Lage der Maxima hängt nur an "+M("λ")+", "+M("d")+" und "+M("e")+". Würden sich Photonen stoßen, müsste sich das Muster mit der Photonendichte ändern."
+    },
+    {
+      b:3,
+      q:"Was lässt sich bei Photonen am Doppelspalt vorhersagen?",
+      a:["die Verteilung vieler Photonen", "der Auftreffort jedes Photons", "beides", "nichts davon"], r:0,
+      s:"Vorhersagbar ist die Verteilung, nicht das einzelne Ereignis. Wo ein einzelnes Photon auftrifft, kann niemand sagen."
+    },
+    {
+      b:3,
+      q:"Ein Photon trifft auf einen halbdurchlässigen Spiegel. Warum ist nicht vorhersagbar, welcher Detektor anspricht?",
+      a:["Das ist prinzipiell zufällig.", "Die Detektoren sind zu ungenau.", "Der Spiegel ist nicht perfekt.", "Die Startbedingungen sind unbekannt."], r:0,
+      s:"Beim Würfel fehlt nur Information über Wurf und Umgebung. Beim Photon gibt es nichts, was man genauer messen könnte. Deshalb eignet es sich für sichere Zufallszahlen."
+    },
+    {
+      b:3,
+      q:"Welche Aussage über das Photon passt zu allen Versuchen?",
+      a:["weder Kugel noch klassische Welle", "eine sehr kleine Kugel", "eine klassische Welle", "abwechselnd Welle und Teilchen"], r:0,
+      s:"Punkte wie Teilchen, Muster wie eine Welle, aber keins der beiden klassischen Modelle sagt beides voraus. Das Photon ist ein Quantenobjekt, es wechselt nicht zwischen zwei Zuständen hin und her."
+    },
+
+    /* ---- 4 Wahrscheinlichkeit und Weginformation ---- */
+    {
+      b:4,
+      q:"Was gibt "+M("|ψ|²")+" an einer Stelle des Schirms an?",
+      a:["die Nachweiswahrscheinlichkeit", "den genauen Ort des Photons", "die Energie des Photons", "die Geschwindigkeit des Photons"], r:0,
+      s:"Born 1926: "+M("P")+" ~ "+M("|ψ|²")+". "+M("ψ")+" selbst ist nicht messbar, "+M("|ψ|²")+" zeigt sich als relative Häufigkeit."
+    },
+    {
+      b:4,
+      q:"Was gilt an einem <b>Minimum</b> des Interferenzmusters?",
+      a:["Dort kommt nie ein Photon an.", "Dort löschen sich zwei Photonen aus.", "Dort kommen energiearme Photonen an.", "Dort kommen Photonen später an."], r:0,
+      s:"An einem Minimum ist die Nachweiswahrscheinlichkeit null. Es löschen sich keine Photonen gegenseitig aus, es ist ja immer nur eins unterwegs."
+    },
+    {
+      b:4,
+      q:"Wie entsteht bei zwei Spalten die Nachweiswahrscheinlichkeit?",
+      a:["erst addieren, dann quadrieren", "erst quadrieren, dann addieren", "nur den näheren Spalt quadrieren", "die Spalte multiplizieren"], r:0, zeit:45,
+      s:M("ψ")+" = "+mi("ψ","1")+" + "+mi("ψ","2")+", dann "+M("|ψ|²")+" bilden. So entsteht der Interferenzterm, der Nullstellen möglich macht. Erst quadrieren, dann addieren wäre klassisch: kein Muster."
+    },
+    {
+      b:4,
+      q:"Vor den Spalten stehen <b>gekreuzte</b> Polfilter (↕ und ↔). Was zeigt der Schirm?",
+      a:["kein Interferenzmuster", "ein helleres Muster", "ein verschobenes Muster", "gar kein Licht"], r:0,
+      s:"Die Polarisation verrät, durch welchen Spalt das Photon kam. Ist der Weg prinzipiell feststellbar, gibt es keine Interferenz."
+    },
+    {
+      b:4,
+      q:"Vor beiden Spalten steht der <b>gleiche</b> Polfilter (↔ und ↔). Was zeigt der Schirm?",
+      a:["ein Interferenzmuster", "kein Interferenzmuster", "gar kein Licht"], r:0,
+      s:"Alle Photonen haben dieselbe Polarisation, sie tragen keine Weginformation. Das Muster bleibt."
+    },
+    {
+      b:4, zeit:45,
+      q:"Wovon hängt es ab, ob das Interferenzmuster verschwindet?",
+      a:["ob der Weg prinzipiell feststellbar ist", "ob jemand hinschaut", "ob das Photon gestört wird", "ob das Licht hell genug ist"], r:0,
+      s:"Komplementarität: Entscheidend ist die Information, nicht ein Beobachter und nicht eine Störung. Beim Polfilter-Versuch schaut niemand nach."
+    },
+    {
+      b:4,
+      q:"Gekreuzte Filter (↕ ↔), dazu ein dritter Filter unter 45° vor dem Schirm. Was passiert?",
+      a:["Das Muster kommt zurück.", "Das Muster bleibt weg.", "Es kommt kein Licht mehr an.", "Es entstehen zwei Streifen."], r:0,
+      s:"Hinter dem 45°-Filter haben alle Photonen dieselbe Polarisation, die Weginformation ist gelöscht (Quantenradierer)."
+    },
+    {
+      b:4, zeit:45,
+      q:"Man addiert das Schirmbild hinter dem +45°-Filter und das hinter dem −45°-Filter. Was ergibt sich?",
+      a:["kein Muster", "ein doppelt so helles Muster", "ein verschobenes Muster", "Streifen mit halbem Abstand"], r:0,
+      s:"Bei −45° liegen die Maxima dort, wo bei +45° Minima sind. Zusammen ergibt das wieder kein Muster. Der Radierer sortiert die Photonen nur in zwei Gruppen."
+    },
+    {
+      b:4, zeit:45,
+      q:"Einstein hielt die Quantentheorie für unvollständig („verborgene Größen“). Was zeigen heutige Experimente?",
+      a:["Lokale verborgene Größen sind ausgeschlossen.", "Verborgene Größen sind nachgewiesen.", "Die Frage lässt sich nicht prüfen.", "Einstein hatte recht."], r:0,
+      s:"Experimente, für die es 2022 den Nobelpreis gab, schließen lokale verborgene Größen aus. Der Quantenzufall ist also nach heutigem Stand echt."
+    }
+  ]
+};
+
+var Q_SAETZE = [Q7_RATIONAL, Q7_BASAL, Q2_QUANTEN];
 
 /* -----------------------------------------------------------------------
    LIVE-QUIZ: QR-Code
