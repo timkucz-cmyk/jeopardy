@@ -827,7 +827,9 @@
   .qfragetext.lang{font-size:clamp(24px, 2.5vw, 36px);}
   .qbildbox{margin:14px 0 0; text-align:center;}
   .qbild{display:inline-block; width:100%; max-width:360px; height:auto;}
+  .qbild.kdia{max-width:min(600px, 54vh);}
   .sfragetext .qbild{max-width:260px;}
+  .sfragetext .qbild.kdia{max-width:100%;}
   .qtab{border-collapse:collapse; margin:12px auto; font-weight:500;}
   .qtab td{border:1px solid var(--line-2); padding:4px 16px; text-align:center;}
   .m .ul{text-decoration:underline;}
@@ -12357,7 +12359,324 @@ var Q2_QUANTEN = {
   ]
 };
 
-var Q_SAETZE = [Q7_RATIONAL, Q7_BASAL, Q2_QUANTEN];
+/* Bewegungsdiagramm fuer die Kinematik-Fragen: Gitter, Achsen mit Groesse
+   und Einheit, ein oder mehrere Graphen als Streckenzug. Farben ueber
+   CSS-Variablen, damit das Bild zum Rest passt.
+     xmax, ymax   Achsenende, beide Achsen beginnen bei 0
+     gx, gy       Gitterabstand, lx optional: nur jede lx-te Zahl beschriften
+     xname, yname Achsenbeschriftung, etwa "t in s"
+     linien       Liste von {p:[[x,y], ...], farbe, name, at:[x,y]}; farbe ist
+                  eine CSS-Variable, Standard --fg-1. Die Antwortfarben
+                  --qa0 bis --qa3 meiden, sonst wirkt der Graph wie ein Hinweis. */
+function kDia(o){
+  var W = 480, H = 280, L = 56, R = 24, T = 30, B = 42;
+  var sx = (W - L - R)/o.xmax, sy = (H - T - B)/o.ymax;
+  var lx = o.lx || o.gx;
+  function X(x){ return +(L + x*sx).toFixed(1); }
+  function Y(y){ return +(H - B - y*sy).toFixed(1); }
+  function de(n){ return String(+n.toFixed(2)).replace(".", ","); }
+  var s = '<div class="qbildbox"><svg class="qbild kdia" viewBox="0 0 ' + W + ' ' + H +
+    '" xmlns="http://www.w3.org/2000/svg" style="font-family:var(--sans); font-size:19px">';
+  var g = "", t = "", x, y;
+  for(x = o.gx; x <= o.xmax + 1e-9; x += o.gx){
+    g += '<path d="M' + X(x) + ' ' + T + 'V' + (H - B) + '"/>';
+    if(Math.abs(x/lx - Math.round(x/lx)) < 1e-6){
+      t += '<text x="' + X(x) + '" y="' + (H - B + 22) + '" text-anchor="middle">' + de(x) + '</text>';
+    }
+  }
+  for(y = o.gy; y <= o.ymax + 1e-9; y += o.gy){
+    g += '<path d="M' + L + ' ' + Y(y) + 'H' + (W - R) + '"/>';
+    t += '<text x="' + (L - 8) + '" y="' + (Y(y) + 6) + '" text-anchor="end">' + de(y) + '</text>';
+  }
+  t += '<text x="' + (L - 8) + '" y="' + (H - B + 22) + '" text-anchor="end">0</text>';
+  s += '<g style="stroke:var(--line-2); stroke-width:1; fill:none">' + g + '</g>';
+  s += '<g style="stroke:var(--fg-3); stroke-width:1.6; fill:none">' +
+       '<path d="M' + L + ' ' + (H - B) + 'H' + (W - 8) + '"/><path d="M' + (W - 16) + ' ' + (H - B - 5) + 'L' + (W - 8) + ' ' + (H - B) + 'L' + (W - 16) + ' ' + (H - B + 5) + '"/>' +
+       '<path d="M' + L + ' ' + (H - B) + 'V' + 8 + '"/><path d="M' + (L - 5) + ' 16L' + L + ' 8L' + (L + 5) + ' 16"/></g>';
+  s += '<g style="fill:var(--fg-3)">' + t + '</g>';
+  s += '<g style="fill:var(--fg-1); font-weight:600">' +
+       '<text x="' + (W - 12) + '" y="' + (H - B - 10) + '" text-anchor="end">' + o.xname + '</text>' +
+       '<text x="' + (L + 10) + '" y="' + 20 + '">' + o.yname + '</text></g>';
+  o.linien.forEach(function(li){
+    var farbe = "var(" + (li.farbe || "--fg-1") + ")";
+    s += '<polyline style="fill:none; stroke:' + farbe + '; stroke-width:3.5; stroke-linejoin:round; stroke-linecap:round" points="' +
+         li.p.map(function(p){ return X(p[0]) + "," + Y(p[1]); }).join(" ") + '"/>';
+    if(li.name){
+      s += '<text x="' + X(li.at[0]) + '" y="' + Y(li.at[1]) + '" style="fill:' + farbe + '; font-weight:700">' + li.name + '</text>';
+    }
+  });
+  return s + '</svg></div>';
+}
+
+var K_TS_RAD = kDia({ xmax:5.5, ymax:70, gx:1, gy:10, xname:"t in s", yname:"s in m",
+  linien:[{ p:[[0,10],[5,60]] }] });
+var K_VT_AUTO = kDia({ xmax:9.5, ymax:25, gx:1, gy:5, xname:"t in s", yname:"v in m/s",
+  linien:[{ p:[[0,0],[8,20],[9.5,20]] }] });
+var K_VT_FAHRT = kDia({ xmax:13.5, ymax:12, gx:1, gy:2, lx:2, xname:"t in s", yname:"v in m/s",
+  linien:[{ p:[[0,0],[4,10],[10,10],[12,0]] }] });
+var K_TS_TOUR = kDia({ xmax:33, ymax:60, gx:5, gy:10, xname:"t in s", yname:"s in m",
+  linien:[{ p:[[0,0],[10,50],[20,50],[30,0]] }] });
+var K_VT_POLIZEI = kDia({ xmax:11, ymax:45, gx:1, gy:10, lx:2, xname:"t in s", yname:"v in m/s",
+  linien:[{ p:[[0,20],[11,20]], name:"Raser", at:[8.6,23] },
+          { p:[[0,0],[10,40]], farbe:"--fg-4", name:"Polizei", at:[4.6,33] }] });
+
+var QE_KINEMATIK = {
+  fach:"Physik",
+  stufe:"E",
+  titel:"Kinematik",
+  unter:"E-Phase eN, Wiederholung: Einheiten, gleichförmige und beschleunigte Bewegung, Diagramme, freier Fall, waagerechter Wurf; Transfer mit zusammengesetzten Bewegungen. Rechnen mit g = 9,81 m/s², ohne Luftwiderstand.",
+  sekunden:45,
+  bereiche:["Grundlagen", "Gleichförmig", "Beschleunigt", "Diagramme", "Fall und Wurf", "Transfer"],
+  fragen:[
+    /* ---- 0 Grundlagen ---- */
+    {
+      b:0,
+      q:"Wie viel sind "+M("72")+" km/h in m/s?",
+      a:[M("20")+" m/s", M("259,2")+" m/s", M("7,2")+" m/s", M("2")+" m/s"], r:0,
+      s:M("72 : 3,6 = 20")+". Aus km/h wird m/s durch Teilen durch 3,6, denn "+M("1")+" km/h "+M("=")+" "+f("1000 m", "3600 s")+". Wer mit 3,6 malnimmt, rechnet in die falsche Richtung."
+    },
+    {
+      b:0,
+      q:"Einheitenprobe: Welche Gleichung <b>kann nicht</b> stimmen?",
+      a:[M("v = a · t²"), M("v = a · t"), M("s = ½ · a · t²"), M("s = v · t")], r:0,
+      s:"Einheiten einsetzen: "+f("m", "s²")+" · s² = m. Herauskommen müsste aber m/s. Bei den anderen drei passt die Einheit."
+    },
+    {
+      b:0,
+      q:"Gemessen: "+M("s = 12,4")+" m und "+M("t = 3,0")+" s. Wie gibt man "+M("v")+" sinnvoll an?",
+      a:[M("4,1")+" m/s", M("4,13")+" m/s", M("4,1333")+" m/s", M("4")+" m/s"], r:0,
+      s:"Beim Teilen bestimmt der ungenaueste Messwert die Stellen: "+M("3,0")+" s hat zwei signifikante Stellen, also "+M("4,1")+" m/s. Mehr Stellen täuschen eine Genauigkeit vor, die die Messung nicht hat."
+    },
+    {
+      b:0,
+      q:"Ein Körper hat die Beschleunigung "+M("a = 3")+" m/s². Was bedeutet das?",
+      a:["Er wird in jeder Sekunde um 3 m/s schneller.", "Er legt in jeder Sekunde 3 m zurück.", "Er ist nach 1 s genau 3 m/s schnell.", "Er legt in jeder Sekunde 3 m mehr zurück."], r:0, zeit:30,
+      s:"Beschleunigung ist die Änderung der Geschwindigkeit pro Zeit: "+M("a = Δv : Δt")+". Wie schnell er nach 1 s ist, hängt noch von "+mi("v","0")+" ab."
+    },
+
+    /* ---- 1 Gleichförmige Bewegung ---- */
+    {
+      b:1, zeit:60,
+      q:"Ein Radfahrer bewegt sich gleichförmig. Wie groß ist seine Geschwindigkeit?"+K_TS_RAD,
+      a:[M("10")+" m/s", M("12")+" m/s", M("0,1")+" m/s", M("60")+" m/s"], r:0,
+      s:"Steigung ablesen: "+M("v = Δs : Δt = (60 − 10)")+" m "+M(": 5")+" s "+M("= 10")+" m/s. Wer "+M("60 : 5")+" rechnet, übersieht den Startort "+mi("s","0")+M(" = 10")+" m."
+    },
+    {
+      b:1, zeit:60,
+      q:"Eine Joggerin läuft gleichförmig mit "+M("2,5")+" m/s. Wie weit kommt sie in 20 Minuten?",
+      a:[M("3,0")+" km", M("50")+" m", M("0,3")+" km", M("30")+" km"], r:0,
+      s:"Erst in SI-Einheiten: 20 min "+M("= 1200")+" s. Dann "+M("s = v · t = 2,5")+" m/s "+M("· 1200")+" s "+M("= 3000")+" m. Die 50 m entstehen, wenn man die Minuten nicht umrechnet."
+    },
+    {
+      b:1,
+      q:"Ein Bus fährt nach "+M("s(t) = 25")+" "+f("km", "h")+M(" · t + 2")+" km. Was bedeuten die 2 km?",
+      a:["der Startort bei "+M("t = 0"), "der Weg nach einer Stunde", "der Weg nach zwei Stunden", "die Geschwindigkeit"], r:0,
+      s:M("s(0) = 2")+" km: Der Bus startet 2 km vom Nullpunkt entfernt. Die Geschwindigkeit ist der Faktor vor "+M("t")+", hier 25 km/h."
+    },
+    {
+      b:1,
+      q:"Im "+M("t")+"-"+M("s")+"-Diagramm verlaufen die Graphen zweier Autos parallel. Was gilt sicher?",
+      a:["Sie haben dieselbe Geschwindigkeit.", "Sie sind am selben Ort.", "Sie sind am selben Ort gestartet.", "Eines holt das andere ein."], r:0,
+      s:"Parallel heißt gleiche Steigung, also gleiches "+M("v")+". Der Abstand bleibt immer gleich, einholen gibt es nicht. Die Startorte "+mi("s","0")+" sind verschieden."
+    },
+    {
+      b:1, zeit:90,
+      q:"Auto A startet bei "+M("s = 0")+" mit "+M("20")+" m/s. Auto B startet <b>5 s später</b> am selben Ort mit "+M("30")+" m/s. Wo holt B das Auto A ein?",
+      a:[M("300")+" m", M("200")+" m", M("100")+" m", M("450")+" m"], r:0,
+      s:"Uhr beim Start von A: "+mi("s","A")+M(" = 20 · t")+", "+mi("s","B")+M(" = 30 · (t − 5)")+". Gleichsetzen: "+M("20t = 30t − 150")+", also "+M("t = 15")+" s und "+M("s = 20 · 15 = 300")+" m. 200 m kommen heraus, wenn man die 10 s ab dem Start von B in die Gleichung von A einsetzt."
+    },
+    {
+      b:1, zeit:75,
+      q:"Zwei Autos fahren aufeinander zu: "+mi("s","A")+M("(t) = 20")+" "+f("m", "s")+M(" · t")+" und "+mi("s","B")+M("(t) = −10")+" "+f("m", "s")+M(" · t + 300")+" m. An welchem Ort begegnen sie sich?",
+      a:[M("200")+" m", M("100")+" m", M("150")+" m", M("300")+" m"], r:0,
+      s:"Gleichsetzen: "+M("20t = −10t + 300")+", also "+M("t = 10")+" s. Ort: "+M("s = 20 · 10 = 200")+" m. B hat bis dahin 100 m zurückgelegt, das ist aber nicht der Ort."
+    },
+
+    /* ---- 2 Beschleunigte Bewegung ---- */
+    {
+      b:2, zeit:60,
+      q:"Ein Auto beschleunigt gleichmäßig in "+M("5,0")+" s von 0 auf "+M("90")+" km/h. Wie groß ist "+M("a")+"?",
+      a:[M("5,0")+" m/s²", M("18")+" m/s²", M("0,2")+" m/s²", M("125")+" m/s²"], r:0,
+      s:M("90")+" km/h "+M("= 25")+" m/s. "+M("a = Δv : Δt = 25 : 5,0 = 5,0")+" m/s². Die 18 entstehen ohne Umrechnung in m/s, die 0,2 bei vertauschtem Bruch."
+    },
+    {
+      b:2, zeit:60,
+      q:"Ein Motorrad wird gleichmäßig in "+M("6")+" s von "+M("18")+" m/s auf "+M("30")+" m/s beschleunigt. Wie groß ist "+M("a")+"?",
+      a:[M("2")+" m/s²", M("5")+" m/s²", M("3")+" m/s²", M("8")+" m/s²"], r:0,
+      s:"Es zählt die <b>Änderung</b>: "+M("a = (30 − 18) : 6 = 2")+" m/s². 5 m/s² erhält, wer "+M("30 : 6")+" rechnet und die Anfangsgeschwindigkeit vergisst."
+    },
+    {
+      b:2, zeit:60,
+      q:"Ein Auto fährt aus dem Stand mit "+M("a = 2")+" m/s² los. Welche Strecke hat es nach "+M("6")+" s zurückgelegt?",
+      a:[M("36")+" m", M("72")+" m", M("12")+" m", M("24")+" m"], r:0,
+      s:M("s = ½ · a · t² = ½ · 2 · 36 = 36")+" m. Ohne das ½ kommen 72 m heraus, 12 ist die Geschwindigkeit in m/s."
+    },
+    {
+      b:2, zeit:75,
+      q:"Ein Zug hat "+mi("v","0")+M(" = 10")+" m/s und beschleunigt gleichmäßig mit "+M("0,5")+" m/s². Welchen Weg legt er in "+M("20")+" s zurück?",
+      a:[M("300")+" m", M("100")+" m", M("200")+" m", M("400")+" m"], r:0,
+      s:M("s = ½ · a · t² + ")+mi("v","0")+M(" · t = ½ · 0,5 · 400 + 10 · 20 = 100 + 200 = 300")+" m. Fehlt ein Term, kommt 100 m oder 200 m heraus."
+    },
+    {
+      b:2, zeit:30,
+      q:"Ein Körper wird aus dem Stand gleichmäßig beschleunigt. Die Zeit wird verdoppelt. Was passiert mit dem zurückgelegten Weg?",
+      a:["Er vervierfacht sich.", "Er verdoppelt sich.", "Er verdreifacht sich.", "Er bleibt gleich."], r:0,
+      s:M("s = ½ · a · t²")+": Mit "+M("2t")+" wird "+M("t²")+" zu "+M("4t²")+". Nach doppelter Zeit ist der Weg viermal so lang."
+    },
+    {
+      b:2, zeit:60,
+      q:"Für ein Flugzeug gilt "+M("s(t) = 5")+" "+f("m", "s²")+M(" · t²")+". Wie schnell ist es nach "+M("3")+" s?",
+      a:[M("30")+" m/s", M("45")+" m/s", M("15")+" m/s", M("90")+" m/s"], r:0,
+      s:"Geschwindigkeit ist die Ableitung: "+M("v(t) = s′(t) = 10 · t")+", also "+M("v(3) = 30")+" m/s. 45 ist der Ort "+M("s(3)")+", keine Geschwindigkeit."
+    },
+    {
+      b:2, zeit:75,
+      q:"Zwei Flugzeuge: "+mi("s","1")+M("(t) = 5t²")+" und "+mi("s","2")+M("(t) = 2t² + 14")+" (SI-Einheiten). Wann ist Flugzeug 2 schneller als Flugzeug 1?",
+      a:["nie (für "+M("t > 0")+")", "ab "+M("t = 2")+" s", "von Anfang an", "ab "+M("t = 14")+" s"], r:0,
+      s:mi("v","1")+M(" = 10t")+", "+mi("v","2")+M(" = 4t")+". Für jedes "+M("t > 0")+" ist "+mi("v","1")+" größer. Die 14 m sind nur ein Vorsprung im Ort, sie ändern die Geschwindigkeit nicht. Bei "+M("t = 2")+" s sind beide am selben Ort."
+    },
+
+    /* ---- 3 Diagramme ---- */
+    {
+      b:3, zeit:30,
+      q:"Wie sieht der "+M("t")+"-"+M("s")+"-Graph einer gleichmäßig beschleunigten Bewegung aus dem Stand aus?",
+      a:["Parabelast", "Gerade durch den Ursprung", "waagerechte Gerade", "fallende Gerade"], r:0,
+      s:M("s = ½ · a · t²")+" ist eine quadratische Funktion. Im "+M("t")+"-"+M("v")+"-Diagramm ist dieselbe Bewegung eine Gerade durch den Ursprung."
+    },
+    {
+      b:3, zeit:30,
+      q:"Was gibt die Steigung im "+M("t")+"-"+M("v")+"-Diagramm an?",
+      a:["die Beschleunigung", "den Weg", "die Geschwindigkeit", "die Zeit"], r:0,
+      s:M("a = Δv : Δt")+" ist die Steigung im "+M("t")+"-"+M("v")+"-Diagramm. Die Steigung im "+M("t")+"-"+M("s")+"-Diagramm ist die Geschwindigkeit."
+    },
+    {
+      b:3, zeit:60,
+      q:"Ein Auto fährt aus dem Stand los. Wie groß ist seine Beschleunigung?"+K_VT_AUTO,
+      a:[M("2,5")+" m/s²", M("0,4")+" m/s²", M("20")+" m/s²", M("160")+" m/s²"], r:0,
+      s:"Steigung im Beschleunigungsabschnitt: "+M("a = 20")+" m/s "+M(": 8")+" s "+M("= 2,5")+" m/s². 0,4 ist der Kehrwert "+M("Δt : Δv")+"."
+    },
+    {
+      b:3,
+      q:"Im "+M("t")+"-"+M("v")+"-Diagramm ist eine Bewegung eine waagerechte Gerade bei "+M("5")+" m/s. Wie sieht das "+M("t")+"-"+M("a")+"-Diagramm aus?",
+      a:["waagerecht auf der "+M("t")+"-Achse", "waagerecht bei "+M("5")+" m/s²", "steigende Gerade", "Parabelast"], r:0,
+      s:"Die Geschwindigkeit ändert sich nicht, also "+M("a = 0")+". Der Graph liegt auf der Zeitachse."
+    },
+    {
+      b:3, zeit:60,
+      q:"Ein Auto bremst gleichmäßig von "+M("20")+" m/s bis zum Stillstand in "+M("4")+" s. Welche Beschleunigung hat es?",
+      a:[M("−5")+" m/s²", M("5")+" m/s²", M("−0,2")+" m/s²", M("−80")+" m/s²"], r:0,
+      s:M("a = Δv : Δt = (0 − 20) : 4 = −5")+" m/s². Das Minus zeigt: Die Geschwindigkeit nimmt ab, der Graph im "+M("t")+"-"+M("v")+"-Diagramm fällt."
+    },
+
+    /* ---- 4 Freier Fall und waagerechter Wurf ---- */
+    {
+      b:4, zeit:30,
+      q:"In einer luftleeren Röhre fallen eine Bleikugel und eine Feder gleichzeitig los. Was beobachtet man?",
+      a:["Beide kommen gleichzeitig unten an.", "Die Kugel ist zuerst unten.", "Die Feder ist zuerst unten.", "Die Feder schwebt."], r:0,
+      s:"Ohne Luftwiderstand fallen alle Körper mit derselben Beschleunigung "+M("g")+", unabhängig von Masse und Form. Im Alltag bremst die Luft die Feder viel stärker."
+    },
+    {
+      b:4, zeit:75,
+      q:"Ein Ball fällt aus "+M("20")+" m Höhe. Nach welcher Zeit kommt er unten an?",
+      a:[M("2,0")+" s", M("4,1")+" s", M("1,4")+" s", M("0,5")+" s"], r:0,
+      s:M("h = ½ · g · t²")+" nach "+M("t")+" umstellen: "+M("t = √(2h : g) = √(40 : 9,81) ≈ 2,0")+" s. Ohne Wurzel kommt 4,1 heraus, ohne die 2 kommt 1,4 heraus."
+    },
+    {
+      b:4, zeit:60,
+      q:"Der Ball aus 20 m ist nach "+M("2,0")+" s unten. Wie schnell ist er kurz vor dem Aufprall?",
+      a:[M("19,8")+" m/s", M("9,9")+" m/s", M("196")+" m/s", M("2,0")+" m/s"], r:0,
+      s:M("v = g · t = 9,81 · 2,02 ≈ 19,8")+" m/s. 9,9 m/s ist "+M("h : t")+", das ist nur die mittlere Geschwindigkeit."
+    },
+    {
+      b:4, zeit:30,
+      q:"Aus 15 m Höhe wird Kugel A fallen gelassen und gleichzeitig Kugel B mit "+M("20")+" m/s waagerecht abgeschossen. Welche ist zuerst unten?",
+      a:["beide gleichzeitig", "Kugel A", "Kugel B", "hängt von den Massen ab"], r:0,
+      s:"Die senkrechte Bewegung ist bei beiden ein freier Fall aus 15 m. Die waagerechte Bewegung läuft unabhängig daneben und ändert die Fallzeit nicht."
+    },
+    {
+      b:4, zeit:30,
+      q:"Waagerechter Wurf: Wie ändern sich "+mi("v","x")+" und "+mi("v","y")+" während des Flugs?",
+      a:[mi("v","x")+" bleibt, "+mi("v","y")+" wächst", mi("v","x")+" nimmt ab, "+mi("v","y")+" bleibt", "beide bleiben gleich", "beide wachsen"], r:0,
+      s:"Zerlegung: waagerecht gleichförmig ("+mi("v","x")+M(" = ")+mi("v","0")+"), senkrecht freier Fall ("+mi("v","y")+M(" = −g · t")+", der Betrag wächst)."
+    },
+    {
+      b:4, zeit:30,
+      q:"Wovon hängt beim waagerechten Wurf die <b>Flugzeit</b> ab (ohne Luftwiderstand)?",
+      a:["nur von Abwurfhöhe und "+M("g"), "von Abwurfhöhe und "+mi("v","0"), "nur von "+mi("v","0"), "von Abwurfhöhe und Masse"], r:0,
+      s:mi("t","F")+M(" = √(2")+mi("h","0")+M(" : g)")+". Ein schnellerer Abwurf vergrößert nur die Wurfweite "+mi("s","W")+M(" = ")+mi("v","0")+M(" · ")+mi("t","F")+"."
+    },
+    {
+      b:4, zeit:90,
+      q:"Ein Körper wird aus "+mi("h","0")+M(" = 10")+" m mit "+mi("v","0")+M(" = 15")+" m/s waagerecht abgeworfen. Wie groß ist die Wurfweite?",
+      a:[M("21,4")+" m", M("15,1")+" m", M("30,6")+" m", M("150")+" m"], r:0,
+      s:"Flugzeit aus dem freien Fall: "+mi("t","F")+M(" = √(2 · 10 : 9,81) ≈ 1,43")+" s. Dann "+mi("s","W")+M(" = 15 · 1,43 ≈ 21,4")+" m. 15,1 m kommen ohne die 2 unter der Wurzel heraus, 30,6 m ohne die Wurzel."
+    },
+    {
+      b:4, zeit:90,
+      q:"Derselbe Körper ("+mi("v","0")+M(" = 15")+" m/s, Flugzeit "+M("1,43")+" s): Wie schnell ist er beim Aufprall?",
+      a:[M("20,5")+" m/s", M("29,0")+" m/s", M("14,0")+" m/s", M("15,0")+" m/s"], r:0,
+      s:mi("v","y")+M(" = g · t = 9,81 · 1,43 ≈ 14,0")+" m/s, "+mi("v","x")+M(" = 15")+" m/s. Die Komponenten stehen senkrecht aufeinander: "+M("v = √(15² + 14,0²) ≈ 20,5")+" m/s. Einfach addieren (29,0) geht nur bei gleicher Richtung."
+    },
+
+    /* ---- 5 Transfer: zusammengesetzte Bewegungen ---- */
+    {
+      b:5, zeit:45,
+      q:"Ein Auto fährt an, fährt gleichförmig und bremst. In welchem Abschnitt ist der <b>Betrag</b> der Beschleunigung am größten?"+K_VT_FAHRT,
+      a:["10 s bis 12 s", "0 s bis 4 s", "4 s bis 10 s", "überall gleich groß"], r:0,
+      s:"Anfahren: "+M("10 : 4 = 2,5")+" m/s². Gleichförmig: "+M("0")+". Bremsen: "+M("−10 : 2 = −5")+" m/s². Der steilste Abschnitt hat die größte Beschleunigung, auch wenn sie negativ ist."
+    },
+    {
+      b:5, zeit:120,
+      q:"Ein Auto fährt an, fährt gleichförmig und bremst. Welchen Weg legt es in den 12 s insgesamt zurück?"+K_VT_FAHRT,
+      a:[M("90")+" m", M("80")+" m", M("120")+" m", M("60")+" m"], r:0,
+      s:"Abschnittsweise rechnen: Anfahren "+M("½ · 2,5 · 4² = 20")+" m, gleichförmig "+M("10 · 6 = 60")+" m, Bremsen "+M("10 · 2 − ½ · 5 · 2² = 10")+" m. Zusammen 90 m. Das ist auch die Fläche unter dem Graphen. 80 m: Bremsweg vergessen, 120 m: 12 s lang mit 10 m/s gerechnet."
+    },
+    {
+      b:5, zeit:45,
+      q:"Ein Radfahrer macht eine kurze Tour. Was tut er zwischen 10 s und 20 s?"+K_TS_TOUR,
+      a:["Er steht still.", "Er fährt mit konstanter Geschwindigkeit.", "Er fährt mit 50 m/s.", "Er bremst."], r:0,
+      s:"Im "+M("t")+"-"+M("s")+"-Diagramm heißt waagerecht: Der Ort ändert sich nicht, also "+M("v = 0")+". Konstante Geschwindigkeit wäre eine schräge Gerade."
+    },
+    {
+      b:5, zeit:60,
+      q:"Ein Radfahrer macht eine kurze Tour. Wie bewegt er sich zwischen 20 s und 30 s?"+K_TS_TOUR,
+      a:["mit 5 m/s zurück zum Start", "mit 5 m/s vom Start weg", "mit 2,5 m/s zurück zum Start", "mit 50 m/s zurück zum Start"], r:0,
+      s:"Steigung "+M("(0 − 50) : (30 − 20) = −5")+" m/s. Das Minus heißt: Der Ort nimmt ab, er fährt zurück."
+    },
+    {
+      b:5, zeit:90,
+      q:"Ein Auto beschleunigt aus dem Stand 5,0 s lang mit "+M("3,0")+" m/s² und fährt dann gleichförmig weiter. Welche Gleichung gilt im zweiten Abschnitt ("+M("t′")+" ab Ende des Anfahrens, SI-Einheiten)?",
+      a:[M("s = 15 · t′ + 37,5"), M("s = 1,5 · t′² + 37,5"), M("s = 15 · t′"), M("s = 3 · t′ + 37,5")], r:0,
+      s:"Endwerte des ersten Abschnitts sind Startwerte des zweiten: "+M("v = 3,0 · 5,0 = 15")+" m/s und "+mi("s","0")+M(" = ½ · 3,0 · 5,0² = 37,5")+" m. Im zweiten Abschnitt ist "+M("a = 0")+", also "+M("s = v · t′ + ")+mi("s","0")+"."
+    },
+    {
+      b:5, zeit:120,
+      q:"Ein Auto fährt mit "+M("72")+" km/h. Die Fahrerin reagiert nach "+M("1,0")+" s und bremst dann mit "+M("5")+" m/s² bis zum Stand. Wie lang ist der Anhalteweg?",
+      a:[M("60")+" m", M("40")+" m", M("100")+" m", M("80")+" m"], r:0,
+      s:M("72")+" km/h "+M("= 20")+" m/s. Reaktionsweg (gleichförmig): "+M("20 · 1,0 = 20")+" m. Bremsdauer "+M("20 : 5 = 4")+" s, Bremsweg "+M("20 · 4 − ½ · 5 · 4² = 40")+" m. Zusammen 60 m. 40 m: Reaktionsweg vergessen, 100 m: das ½ vergessen."
+    },
+    {
+      b:5, zeit:90,
+      q:"Ein Raser fährt mit "+M("20")+" m/s an einem stehenden Polizeiauto vorbei. Das fährt im selben Moment mit "+M("4")+" m/s² los. Nach welcher Zeit holt es den Raser ein?",
+      a:[M("10")+" s", M("5")+" s", M("20")+" s", M("7,1")+" s"], r:0,
+      s:"Gleicher Ort: "+M("½ · 4 · t² = 20 · t")+", also "+M("2t = 20")+" und "+M("t = 10")+" s (bei 200 m). Nach 5 s sind nur die <b>Geschwindigkeiten</b> gleich, da liegt die Polizei noch 50 m zurück."
+    },
+    {
+      b:5, zeit:45,
+      q:"Ein Polizeiauto fährt aus dem Stand los, als ein Raser vorbeifährt. Was bedeutet der Schnittpunkt der Graphen bei 5 s?"+K_VT_POLIZEI,
+      a:["gleich schnell, Abstand am größten", "Die Polizei holt den Raser ein.", "Beide sind am selben Ort.", "Die Polizei hört auf zu beschleunigen."], r:0,
+      s:"Im "+M("t")+"-"+M("v")+"-Diagramm heißt Schnittpunkt: gleiche Geschwindigkeit. Bis dahin ist der Raser schneller und der Abstand wächst, danach schrumpft er. Eingeholt wird erst bei 10 s, wenn die Flächen unter beiden Graphen gleich sind."
+    },
+    {
+      b:5, zeit:90,
+      q:"Ein Ball wird mit "+M("15")+" m/s senkrecht nach oben geworfen: "+M("s(t) = 15 · t − ½ · 9,81 · t²")+". Wie hoch steigt er?",
+      a:[M("11,5")+" m", M("22,9")+" m", M("1,5")+" m", M("5,7")+" m"], r:0,
+      s:"Gleichförmig nach oben und freier Fall überlagert. Am höchsten Punkt ist "+M("v = 15 − 9,81 · t = 0")+", also "+M("t ≈ 1,53")+" s. Einsetzen: "+M("s ≈ 15 · 1,53 − 4,905 · 1,53² ≈ 11,5")+" m. 22,9 m kommen heraus, wenn man den Fall-Term vergisst."
+    }
+  ]
+};
+
+var Q_SAETZE = [Q7_RATIONAL, Q7_BASAL, Q2_QUANTEN, QE_KINEMATIK];
 
 /* -----------------------------------------------------------------------
    LIVE-QUIZ: QR-Code

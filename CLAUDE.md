@@ -188,7 +188,11 @@ kurz halten, sie stehen auch auf dem Tablet; dort filtert `qSauber()` alles
 außer `span`, `i`, `b`, `sub`, `sup` heraus, `M()` und `f()` passen also.
 Falsche Antworten aus typischen Fehlern bauen, die Auswertung nach der Runde
 nennt den häufigsten. `qSatzInfo` warnt bei ungültigem `r` oder fehlender
-Erklärung.
+Erklärung. Bewegungsdiagramme (t-s, t-v) zeichnet `kDia()` direkt über
+`QE_KINEMATIK`: Streckenzüge, Farben als CSS-Variablen, Klasse `qbild kdia`
+(am Beamer höchstens `min(600px, 54vh)` breit, damit vier Antworten noch auf
+1080p passen). Das SVG steht am Ende von `q` und kommt mit der Frage auch auf
+das Tablet der Offline-Runde.
 
 Optional teilt `bereiche` (Liste von Namen) einen Satz in Bereiche, jede Frage
 trägt dann `b` (Index). Am Beamer stehen die Bereiche als Häkchen unter der
