@@ -61,6 +61,8 @@ LIVE-QUIZ: QR-Code …     qrGeruest(), qrSvg(), QR-Leser (qrLesen),
                          Zustand am Beamer (qstate), Ablauf, Anzeige, Speichern,
                          Vorbereitung, Bedienung, Offline-Runde (sstate),
                          Tablet (hstate)
+FEHLERJAGD: Tablet-Runde Code, Endkarte in Teilen, Einsammeln (fScan…),
+                         Tablet (tstate, ftRender)
 STARTSEITE               Registry SPIELE, Kacheln, Thumbnails
 STARTSEITE: Stufe > Fach > Spiel   ST_STUFEN, stSaetze(), stRender(), stStarte()
 SEITENWECHSEL            SEITEN, zeigeSeite()
@@ -102,7 +104,7 @@ Texte auf diesen Seiten kurz halten. Dazu Overlays (`qOverlay`,
 | `plot(...)` | Funktionsgraph als SVG |
 | `fmt(ms)` | Millisekunden → `m:ss` |
 | `beep()` | Ton bei Timer-Ende, per WebAudio |
-| `askConfirm(titel, text, fn)` | Bestätigungsdialog statt `confirm()` |
+| `askConfirm(titel, text, fn, ja)` | Bestätigungsdialog statt `confirm()`, `ja` beschriftet den Knopf (sonst „Zurücksetzen“) |
 | `zeigeSeite(name)` | Blendet genau eine Section ein, setzt Kopfzeile und Titel |
 
 CSS-Bausteine, die jedes Spiel nutzt: `.card`, `.label`, `.sub`, `.note`, `.row`,
@@ -115,7 +117,8 @@ Jedes Spiel hat seinen **eigenen** Zustand und localStorage-Key:
 |---|---|---|
 | Jeopardy | `state` | `jeopardy_q1_wdh_e_v1` |
 | Bingo | `bstate` | `bingo_klasse7_v2` |
-| Fehlerjagd | `fstate` | `fehlerjagd_v1` |
+| Fehlerjagd (auch Tablet-Runde am Beamer) | `fstate` | `fehlerjagd_v1` |
+| Fehlerjagd (Tablet) | `tstate` | `fehlerjagd_tablet_v1` |
 | Live-Quiz (Beamer) | `qstate` | `quiz_v1` |
 | Live-Quiz (Tablet) | `hstate` | `quiz_tablet_v1` |
 | Live-Quiz (offline, Tablet) | `sstate` | `quiz_solo_v1` |
@@ -124,7 +127,12 @@ Jedes Spiel hat seinen **eigenen** Zustand und localStorage-Key:
 
 Die Uhr ist die Ausnahme: `bTimerStart(sek, label, prefix)` steuert seine
 Timerbox über das ID-Präfix und ist damit ohnehin allgemein. Die Fehlerjagd
-hängt sich als dritte Box mit `"fTimer"` daran, statt eine eigene Uhr zu bauen.
+hängt sich als dritte Box mit `"fTimer"` daran, statt eine eigene Uhr zu bauen,
+in der Tablet-Runde als vierte mit `"fTTimer"`.
+
+Kamera und QR-Leser sind ebenfalls geteilt: `qKameraStarten()` liest Ziel-IDs,
+Aktiv-Prüfung und Empfänger aus `qoff.ziel` (`Q_SCAN_QUIZ` beim Live-Quiz,
+`F_SCAN` bei der Fehlerjagd). Wer scannen will, setzt vorher `qoff.ziel`.
 
 ## Rezept: neues Spiel ergänzen
 
@@ -255,6 +263,27 @@ Bei neuen Rechenaufgaben zusätzlich die Terme maschinell nachrechnen, statt sie
 nur zu überfliegen — die Terme sind gültiges JS, wenn man `·`→`*`, `:`→`/`
 und `−`→`-` ersetzt.
 
+### Fehlerjagd mit Tablets
+
+„Mit Tablets spielen“ in `fehlerSetup` braucht keinen Server, gebaut wie die
+Offline-Runde des Live-Quiz. Der Beamer zeigt einen vierstelligen Code
+(`#fehler=CODE`: Satz 9 Bit, also höchstens 512 Sätze, Anzahl, Keim). Jede Gruppe bearbeitet am Tablet die
+Aufgaben im eigenen Tempo (eigene Reihenfolge), tippt die erste falsche Zeile
+an und begründet in höchstens 80 Zeichen. Das Tablet zeigt keine Lösungen.
+Nach „Abgeben“ zeigt die Endkarte die Antworten als QR-Codes
+`F1|CODE|KENNUNG|TEIL/VON|NAME|K.Z.TEXT|…`, auf Teile zu höchstens 213 Byte (Version 10)
+verteilt, die im Wechsel erscheinen. „Endkarten einsammeln“ setzt die Teile
+je Kennung zusammen. „Besprechung starten“ macht daraus eine gewöhnliche
+Runde (`fRundeAnfangen`) mit Gruppennamen und Antworten: vor dem Auflösen die
+Verteilung der gewählten Zeilen, danach die Antworten jeder Gruppe. Den
+Zeilenpunkt vergibt `fAufloesen` selbst, die Begründung hakt die Lehrkraft ab.
+
+Zum Testen: Tablet-Tab mit `#fehler=CODE` durchspielen, die SVGs aus `#ftQr`
+einsammeln (mehrere Teile wechseln alle 1,6 s) und im Beamer-Tab
+`getUserMedia` durch einen `canvas.captureStream()` ersetzen, auf den die
+Codes im Wechsel gemalt werden. Für eine zweite Gruppe im selben Browser
+`fehlerjagd_tablet_v1` löschen.
+
 ### Live-Quiz
 
 Der Browser-Durchlauf zeigt nur die Beamer-Seite. Das Tablet ist dieselbe
@@ -270,8 +299,8 @@ trägt Satzindex, Bereichsmaske, Anzahl, Zeit, Mischen und einen Zufallskeim —
 deshalb müssen die Optionen in `qAnzahl`/`qZeit` zu `Q_OFF_ANZAHL`/`Q_OFF_ZEIT`
 passen, und mehr als 128 Sätze passen nicht hinein. Seit der Bereichsmaske
 (Oktober 2026) ist das Bitlayout ein anderes; Beamer und Tablets müssen also
-denselben Stand haben, ein lokal geänderter Beamer braucht den Push. Live-Codes haben fünf Zeichen, daran
-unterscheidet das Tablet-Formular. Zum Testen reicht ein Tab mit `#solo=CODE`.
+denselben Stand haben, ein lokal geänderter Beamer braucht den Push. Live-Codes haben fünf Zeichen, Fehlerjagd-Codes
+vier, daran unterscheidet das Tablet-Formular. Zum Testen reicht ein Tab mit `#solo=CODE`.
 
 Die Endkarte trägt einen QR-Code `Q1|CODE|KENNUNG|PUNKTE|ANTWORTEN|NAME`,
 den „Ergebnisse einsammeln“ am Beamer mit der Kamera liest und daraus Podest

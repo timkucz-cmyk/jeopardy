@@ -775,6 +775,50 @@
   /* Aufloesung am Rundenende: die Aufgabenstellung klein ueber der
      korrigierten Zeile, damit beide in dieselbe Gitterzelle passen. */
   .auf-frage{display:block; font-size:.62em; font-weight:600; color:var(--fg-3); margin-bottom:4px;}
+  /* Tablet-Runde am Beamer: wie viele Gruppen eine Zeile gewaehlt haben,
+     und nach dem Aufloesen die Antwort jeder Gruppe in der Wertung. */
+  ol.fzeilen.mitwahl li{grid-template-columns:44px minmax(0,1fr) auto auto;}
+  .fz-wahl{
+    font-family:var(--mono); font-size:17px; font-weight:700; color:var(--fg-2); white-space:nowrap;
+    background:var(--surface-sunken); border-radius:999px; padding:3px 12px; align-self:center;
+  }
+  .fz-wahl.leer{visibility:hidden;}
+  .fg-antwort{grid-column:1 / span 2; font-size:16px; color:var(--fg-2); line-height:1.4; overflow-wrap:anywhere;}
+  .fg-antwort b{color:var(--ok);}
+  .fg-antwort.daneben b{color:var(--mathe-ink);}
+  .fg-antwort.leer{color:var(--fg-4);}
+
+  /* ---------- Fehlerjagd am Tablet ---------- */
+  .ftab{display:flex; flex-direction:column; gap:14px; width:100%; max-width:980px; margin:0 auto;}
+  .ftab .floesung{padding:20px 18px;}
+  .ftab .fstart{font-size:clamp(20px, 3.4vw, 30px); margin-top:8px; padding-bottom:14px;}
+  .ftab .fz-term{font-size:clamp(20px, 3.6vw, 32px);}
+  .ftab ol.fzeilen li{
+    cursor:pointer; border:2px solid transparent; touch-action:manipulation;
+    -webkit-tap-highlight-color:transparent; padding:12px 12px;
+  }
+  .ftab ol.fzeilen li.gewaehlt{border-color:var(--mathe); background:var(--mathe-soft);}
+  .ftab ol.fzeilen li.gewaehlt::before{color:var(--mathe);}
+  .ft-hinweis{margin:0; font-size:18px; color:var(--fg-3); text-align:center;}
+  .ft-feld textarea{
+    width:100%; font-family:inherit; font-size:20px; line-height:1.35; padding:12px 14px; resize:none;
+    border:1px solid var(--line-2); border-radius:4px; background:var(--surface-page); color:var(--fg-1); outline:none;
+  }
+  .ft-feld textarea:focus{border-color:var(--mathe);}
+  .ft-rest{margin-top:-8px; font-size:14px; color:var(--fg-4); text-align:right;}
+  .ft-nav{display:flex; gap:12px;}
+  .ft-nav .btn{flex:1; justify-content:center; font-size:20px; padding:14px;}
+  .ft-uebersicht{list-style:none; margin:0; padding:0; background:var(--surface-page); border:1px solid var(--line-1); border-radius:6px;}
+  .ft-uebersicht li{
+    display:grid; grid-template-columns:minmax(0,1fr) auto auto; gap:16px; align-items:baseline;
+    padding:14px 16px; border-top:1px solid var(--line-1); font-size:19px; color:var(--fg-2); cursor:pointer;
+  }
+  .ft-uebersicht li:first-child{border-top:0;}
+  .ft-uebersicht .ft-nr{font-weight:600; color:var(--fg-1);}
+  .ft-uebersicht .offen{color:var(--mathe-ink);}
+  .ft-teile{display:flex; justify-content:center; gap:8px; margin-top:10px;}
+  .ft-teile span{width:14px; height:14px; border-radius:50%; background:var(--line-2);}
+  .ft-teile span.an{background:var(--mathe);}
   /* ---------- Live-Quiz am Beamer ---------- */
   .qlobby{display:grid; grid-template-columns:minmax(0, 460px) minmax(0, 1fr); gap:24px; align-items:start;}
   @media (max-width:980px){ .qlobby{grid-template-columns:minmax(0, 1fr);} }
@@ -1469,7 +1513,11 @@
     </div>
 
     <div class="ek-start">
-      <button class="btn btn-primary" id="fStartBtn"></button>
+      <div class="row">
+        <button class="btn btn-primary" id="fStartBtn"></button>
+        <button class="btn" id="fTabletBtn"></button>
+      </div>
+      <p class="note">Mit Tablets: jede Gruppe arbeitet im eigenen Tempo, die Antworten sammelst du am Ende per QR-Code ein. Kein Server nötig.</p>
     </div>
 
   </section>
@@ -1486,6 +1534,61 @@
         <span class="sub num" id="fFortschritt"></span>
         <button class="btn btn-quiet" id="fResetBtn"></button>
         <button class="btn btn-quiet" id="fBackBtn"></button>
+      </div>
+    </div>
+
+    <!-- Tablet-Runde: Code zeigen, dann Endkarten einsammeln -->
+    <div id="fTabPhase" class="qlobby" style="display:none">
+      <div class="card">
+        <span class="label">Mit dem Tablet mitmachen</span>
+        <div class="qqr" id="fTabQr"></div>
+        <div class="qcode" id="fTabCode"></div>
+        <p class="sub" style="text-align:center">QR-Code scannen – oder <span class="qurl" id="fTabUrl"></span> öffnen, „Am Tablet mitspielen“ tippen und den Code eingeben.</p>
+      </div>
+      <div class="card">
+        <span class="label">So läuft die Tablet-Runde</span>
+        <h2 style="margin-top:8px" id="fTabTitel"></h2>
+        <ol class="ablauf">
+          <li><b>Suchen.</b> Jede Gruppe arbeitet im eigenen Tempo: erste falsche Zeile antippen, kurz begründen.</li>
+          <li><b>Abgeben.</b> Das Tablet zeigt eine Endkarte mit QR-Code, aber keine Lösungen.</li>
+          <li><b>Einsammeln.</b> Endkarten vor die Kamera halten, bis es piept.</li>
+          <li><b>Besprechen.</b> Jede Aufgabe gemeinsam auflösen. Die Zeile wertet die Sammlung, die Begründung hakst du ab.</li>
+        </ol>
+        <div class="timerbox" id="fTTimerBox" style="margin-top:18px">
+          <div class="timer" id="fTTimerDisplay">0:00</div>
+          <div class="timer-label" id="fTTimerLabel"></div>
+          <div class="row">
+            <button class="btn btn-quiet" id="fTTimerPlusBtn"></button>
+          </div>
+        </div>
+        <hr class="sep">
+        <div class="row">
+          <button class="btn btn-primary" id="fTabScanBtn"></button>
+        </div>
+      </div>
+    </div>
+
+    <div id="fScanPhase" class="qscan" style="display:none">
+      <div class="card">
+        <div class="row" style="justify-content:space-between">
+          <span class="label">Kamera</span>
+          <label class="feld" style="min-width:0"><select id="fKameraSel"><option value="">Standardkamera</option></select></label>
+        </div>
+        <div class="qvideo" id="fVideoRahmen"><video id="fVideo" playsinline muted></video></div>
+        <p class="sub" id="fScanStatus"></p>
+      </div>
+      <div class="card">
+        <div class="row" style="justify-content:space-between">
+          <span class="label">Eingesammelt</span>
+          <span class="qanzahl" id="fScanZahl">0</span>
+        </div>
+        <ol class="qscanliste" id="fScanListe"></ol>
+        <p class="note">Eine Endkarte kann aus mehreren QR-Codes bestehen, die das Tablet nacheinander zeigt. Ruhig vor die Kamera halten, bis alle Teile da sind.</p>
+        <hr class="sep">
+        <div class="row">
+          <button class="btn btn-primary" id="fScanEndeBtn"></button>
+          <button class="btn btn-quiet" id="fScanZurueckBtn"></button>
+        </div>
       </div>
     </div>
 
@@ -6829,9 +6932,11 @@ el("podestReset").addEventListener("click", function(){
    ======================================================================= */
 
 var confirmAction = null;
-function askConfirm(title, text, fn){
+/* ja beschriftet den Bestaetigungsknopf, sonst "Zuruecksetzen". */
+function askConfirm(title, text, fn, ja){
   el("confirmTitle").textContent = title;
   el("confirmText").textContent = text;
+  el("confirmYes").textContent = ja || "Zurücksetzen";
   confirmAction = fn;
   el("confirmOverlay").classList.add("open");
 }
@@ -9172,10 +9277,19 @@ var fstate = {
   wertung:[],        /* Stand der laufenden Aufgabe: {zeile, grund} */
   gruppen:4,
   anzahl:6,
-  sekunden:120
+  sekunden:120,
+  basis:null,        /* Punkte vor der laufenden Aufgabe, gegen doppeltes Zaehlen beim Fortsetzen */
+  basisPos:-1,
+  /* Tablet-Runde, sonst leer. Phasen davor: "tablets" (Code), "scan" */
+  tab:"",            /* Rundencode, siehe FEHLERJAGD: Tablet-Runde */
+  erg:{},            /* eingesammelte Endkarten je Kennung */
+  namen:[],          /* Gruppennamen von den Tablets */
+  antw:[],           /* je Gruppe und Aufgabe {z:Zeile, t:Begruendung} */
+  tEnde:0            /* Ende der Arbeitszeit am Beamer */
 };
 
 function fsatz(){ return F_SAETZE[fstate.satz]; }
+function fGruppenName(i){ return fstate.namen[i] || "Gruppe " + (i + 1); }
 function faufgabe(){ return fsatz().aufgaben[fstate.reihenfolge[fstate.pos]]; }
 
 /* Zeilen ohne Umformung am Rand duerfen als blosser String dastehen. */
@@ -9210,6 +9324,7 @@ function fRender(){
 
   var ol = el("fZeilen");
   ol.innerHTML = "";
+  ol.className = "fzeilen" + (fstate.tab ? " mitwahl" : "");
   a.zeilen.forEach(function(z, i){
     var d = fzeile(z), li = document.createElement("li"), nr = i + 1;
     /* Vor dem Aufloesen sehen alle Zeilen gleich aus, sonst waere die
@@ -9218,8 +9333,16 @@ function fRender(){
     else if(auf && nr > a.fehler) li.className = "folge";
     li.innerHTML = '<span class="fz-term">' + d.t + '</span>' +
                    '<span class="fz-op">' + (d.op || "") + '</span>';
+    /* Tablet-Runde: wie viele Gruppen diese Zeile gewaehlt haben. Das ist
+       der Einstieg in die Besprechung, noch vor dem Aufloesen. */
+    if(fstate.tab){
+      var n = fstate.antw.filter(function(g){ return g[fstate.pos] && g[fstate.pos].z === nr; }).length;
+      li.innerHTML += '<span class="fz-wahl' + (n ? "" : " leer") + '">' +
+        (n === 1 ? "1 Gruppe" : n + " Gruppen") + '</span>';
+    }
     ol.appendChild(li);
   });
+  el("fTimerBox").style.display = fstate.tab ? "none" : "";
 
   el("fKorrektur").style.display = auf ? "block" : "none";
   if(auf){
@@ -9240,10 +9363,10 @@ function fRender(){
   el("fAufloesenBtn").className = auf ? "btn" : "btn btn-primary";
   el("fNaechsteBtn").className  = auf ? "btn btn-primary" : "btn";
 
-  el("fPhaseLabel").textContent = auf ? "Aufgelöst" : "Wo steckt der Fehler?";
+  el("fPhaseLabel").textContent = auf ? "Aufgelöst" : (fstate.tab ? "Besprechung" : "Wo steckt der Fehler?");
   el("fPhaseInfo").textContent  = auf
-    ? "Punkte vergeben, dann weiter."
-    : "Zeilennummer und Begründung notieren.";
+    ? (fstate.tab ? "Begründungen abhaken, dann weiter." : "Punkte vergeben, dann weiter.")
+    : (fstate.tab ? "Welche Zeile ist falsch, und warum?" : "Zeilennummer und Begründung notieren.");
   el("fFortschritt").textContent =
     "Aufgabe " + (fstate.pos + 1) + " von " + fstate.reihenfolge.length;
 
@@ -9261,25 +9384,45 @@ function fRenderWertung(){
     d = document.createElement("div");
     d.className = "fgruppe";
     d.innerHTML =
-      '<span class="fg-name">Gruppe ' + (i + 1) + '</span>' +
+      '<span class="fg-name"></span>' +
       '<span class="fg-punkte num">' + fstate.punkte[i] + '</span>' +
+      (offen ? fAntwortHtml(i) : '') +
       '<span class="fg-knoepfe">' +
         '<button class="fg-knopf' + (w.zeile ? " an" : "") + '" data-g="' + i +
           '" data-art="zeile"' + (offen ? "" : " disabled") + '>Zeile</button>' +
         '<button class="fg-knopf' + (w.grund ? " an" : "") + '" data-g="' + i +
           '" data-art="grund"' + (offen ? "" : " disabled") + '>Begründung</button>' +
       '</span>';
+    d.querySelector(".fg-name").textContent = fGruppenName(i);
     box.appendChild(d);
   }
   el("fWertungNote").textContent = offen
-    ? "Ein Punkt für die richtige Zeile, ein Punkt für die Begründung."
-    : "Die Knöpfe öffnen sich, sobald aufgelöst ist.";
+    ? (fstate.tab ? "Die Zeile ist schon gewertet. Passt die Begründung, Knopf anklicken."
+                  : "Ein Punkt für die richtige Zeile, ein Punkt für die Begründung.")
+    : (fstate.tab ? "Nach dem Auflösen stehen hier die Antworten der Gruppen."
+                  : "Die Knöpfe öffnen sich, sobald aufgelöst ist.");
+}
+
+/* Was die Gruppe auf dem Tablet abgegeben hat. Der Text kommt aus dem
+   QR-Code, also von aussen, und wird deshalb maskiert. */
+function fAntwortHtml(i){
+  if(!fstate.tab) return "";
+  var e = (fstate.antw[i] || [])[fstate.pos];
+  if(!e || (!e.z && !e.t)) return '<span class="fg-antwort leer">keine Antwort</span>';
+  var daneben = e.z !== faufgabe().fehler;
+  return '<span class="fg-antwort' + (daneben ? " daneben" : "") + '"><b>' +
+    (e.z ? "Zeile " + e.z : "keine Zeile") + '</b>' +
+    (e.t ? ' · „' + qEsc(e.t) + '“' : ' · ohne Begründung') + '</span>';
 }
 
 function zeigeFPhase(){
   var ende = (fstate.phase === "ende");
-  el("fSpielPhase").style.display = ende ? "none" : "grid";
+  var tab = (fstate.phase === "tablets"), scan = (fstate.phase === "scan");
+  el("fSpielPhase").style.display = (ende || tab || scan) ? "none" : "grid";
   el("fEndePhase").style.display  = ende ? "block" : "none";
+  el("fTabPhase").style.display   = tab ? "grid" : "none";
+  el("fScanPhase").style.display  = scan ? "grid" : "none";
+  el("fResetBtn").style.display   = scan ? "none" : "";
   if(ende){
     /* Das letzte Bild steht sonst doppelt im Dokument, versteckt hier und
        sichtbar in der Aufloesung. SVG-Verweise per id (Knotenpunkte im
@@ -9301,9 +9444,17 @@ function fNeueRunde(){
   var n = fstate.anzahl ? Math.min(fstate.anzahl, alle) : alle;
   var i;
   fstate.reihenfolge = fMischen(alle).slice(0, n);
+  fstate.tab = ""; fstate.erg = {}; fstate.namen = []; fstate.antw = [];
+  fRundeAnfangen();
+}
+
+/* Gemeinsamer Beginn der Wertung, fuer Papier und Tablets. */
+function fRundeAnfangen(){
+  var i;
   fstate.pos = 0;
   fstate.punkte = [];
   fstate.wertung = [];
+  fstate.basis = null; fstate.basisPos = -1;
   for(i = 0; i < fstate.gruppen; i++){
     fstate.punkte.push(0);
     fstate.wertung.push({zeile:false, grund:false});
@@ -9314,17 +9465,36 @@ function fNeueRunde(){
 
 function fAufgabeZeigen(){
   var i;
+  /* Beim Fortsetzen derselben Aufgabe beginnt die Wertung neu; die schon
+     vergebenen Punkte dieser Aufgabe muessen dann wieder heraus. */
+  if(fstate.basis && fstate.basisPos === fstate.pos && fstate.basis.length === fstate.gruppen){
+    fstate.punkte = fstate.basis.slice();
+  } else {
+    fstate.basis = fstate.punkte.slice(); fstate.basisPos = fstate.pos;
+  }
   for(i = 0; i < fstate.gruppen; i++) fstate.wertung[i] = {zeile:false, grund:false};
   fstate.phase = "aufgabe";
   zeigeFPhase();
   fRender();
-  bTimerStart(fstate.sekunden, "Zeit zum Suchen.", "fTimer");
+  if(fstate.tab) bTimerHalt();
+  else bTimerStart(fstate.sekunden, "Zeit zum Suchen.", "fTimer");
   fSave();
 }
 
 function fAufloesen(){
   fstate.phase = "loesung";
   bTimerHalt();
+  /* Tablet-Runde: den Zeilenpunkt vergibt die Sammlung selbst. */
+  if(fstate.tab){
+    var soll = faufgabe().fehler;
+    for(var i = 0; i < fstate.gruppen; i++){
+      var e = (fstate.antw[i] || [])[fstate.pos];
+      if(e && e.z === soll && !fstate.wertung[i].zeile){
+        fstate.wertung[i].zeile = true;
+        fstate.punkte[i]++;
+      }
+    }
+  }
   fRender();
   fSave();
 }
@@ -9352,10 +9522,11 @@ function fEndeRender(){
   for(i = 0; i < fstate.gruppen; i++){
     d = document.createElement("div");
     d.className = "fgruppe" + ((best > 0 && fstate.punkte[i] === best) ? " fuehrt" : "");
-    d.innerHTML = '<span class="fg-name">Gruppe ' + (i + 1) + '</span>' +
+    d.innerHTML = '<span class="fg-name"></span>' +
                   '<span class="fg-punkte num">' + fstate.punkte[i] + '</span>';
+    d.querySelector(".fg-name").textContent = fGruppenName(i);
     box.appendChild(d);
-    if(fstate.punkte[i] === best) sieger.push("Gruppe " + (i + 1));
+    if(fstate.punkte[i] === best) sieger.push(qEsc(fGruppenName(i)));
   }
 
   el("fSiegerText").innerHTML = (best === 0)
@@ -9392,6 +9563,8 @@ function fSave(){
       satz:fstate.satz, phase:fstate.phase, reihenfolge:fstate.reihenfolge,
       pos:fstate.pos, punkte:fstate.punkte, wertung:fstate.wertung,
       gruppen:fstate.gruppen, anzahl:fstate.anzahl, sekunden:fstate.sekunden,
+      basis:fstate.basis, basisPos:fstate.basisPos,
+      tab:fstate.tab, erg:fstate.erg, namen:fstate.namen, antw:fstate.antw, tEnde:fstate.tEnde,
       ts:Date.now()
     }));
   }catch(err){}
@@ -9402,17 +9575,22 @@ function fLoad(){
     var raw = localStorage.getItem(F_KEY);
     if(!raw) return null;
     var s = JSON.parse(raw);
-    return (s && s.reihenfolge && s.reihenfolge.length) ? s : null;
+    return (s && ((s.reihenfolge && s.reihenfolge.length) || (s.tab && fTabLesen(s.tab)))) ? s : null;
   }catch(err){ return null; }
 }
 
 function fResumeAnzeigen(){
   var s = fLoad();
   if(!s || !F_SAETZE[s.satz]){ el("fResumeCard").style.display = "none"; return; }
-  el("fResumeInfo").textContent =
-    "Angefangene Runde: " + fTitelLang(F_SAETZE[s.satz]) + ", Aufgabe " +
-    (s.pos + 1) + " von " + s.reihenfolge.length + ", gespeichert am " +
-    new Date(s.ts).toLocaleString("de-DE") + ".";
+  var n = Object.keys(s.erg || {}).length;
+  el("fResumeInfo").textContent = (s.phase === "tablets" || s.phase === "scan")
+    ? "Tablet-Runde mit Code " + s.tab + ": " + fTitelLang(F_SAETZE[s.satz]) + ", " +
+      (n === 1 ? "eine Endkarte" : n + " Endkarten") + " eingesammelt, gespeichert am " +
+      new Date(s.ts).toLocaleString("de-DE") + "."
+    : (s.tab ? "Besprechung der Tablet-Runde: " : "Angefangene Runde: ") +
+      fTitelLang(F_SAETZE[s.satz]) + ", Aufgabe " +
+      (s.pos + 1) + " von " + s.reihenfolge.length + ", gespeichert am " +
+      new Date(s.ts).toLocaleString("de-DE") + ".";
   el("fResumeCard").style.display = "block";
 }
 
@@ -9601,13 +9779,22 @@ el("fResumeBtn").addEventListener("click", function(){
   fstate.gruppen     = s.gruppen || 4;
   fstate.anzahl      = s.anzahl || 6;
   fstate.sekunden    = s.sekunden || 120;
+  fstate.basis       = s.basis || null;
+  fstate.basisPos    = s.basisPos === undefined ? -1 : s.basisPos;
+  fstate.tab         = s.tab || "";
+  fstate.erg         = s.erg || {};
+  fstate.namen       = s.namen || [];
+  fstate.antw        = s.antw || [];
+  fstate.tEnde       = s.tEnde || 0;
   el("fZeit").value    = fstate.sekunden;
-  el("fGruppen").value = fstate.gruppen;
+  if(!fstate.tab) el("fGruppen").value = fstate.gruppen;   /* Tablet-Runden haben beliebig viele */
   el("fAnzahl").value  = fstate.anzahl;
   fSetupFuellen();   /* die fortgesetzte Runde kann aus einer anderen Stufe stammen */
   fKopf();
   zeigeSeite("fehlerGame");
-  if(s.phase === "ende"){
+  if(s.phase === "tablets" || s.phase === "scan"){
+    fTabZeigen();
+  } else if(s.phase === "ende"){
     fstate.phase = "ende";
     zeigeFPhase();
     fEndeRender();
@@ -9625,7 +9812,9 @@ el("fVerwerfenBtn").addEventListener("click", function(){
 el("fAufloesenBtn").addEventListener("click", fAufloesen);
 el("fNaechsteBtn").addEventListener("click", fWeiter);
 el("fBeendenBtn").addEventListener("click", fEnde);
-el("fNeueRundeBtn").addEventListener("click", fNeueRunde);
+el("fNeueRundeBtn").addEventListener("click", function(){
+  if(fstate.tab) fTabletStarten(); else fNeueRunde();
+});
 
 el("fGruppenListe").addEventListener("click", function(e){
   var b = e.target.closest(".fg-knopf");
@@ -9639,12 +9828,19 @@ el("fGruppenListe").addEventListener("click", function(e){
 });
 
 el("fResetBtn").addEventListener("click", function(){
+  if(fstate.tab){
+    askConfirm("Neue Tablet-Runde",
+      "Es gibt einen neuen Code. Eingesammelte Endkarten und Punkte dieser Runde werden verworfen, die Tablets müssen neu beginnen.",
+      fTabletStarten, "Neue Runde");
+    return;
+  }
   askConfirm("Neue Runde",
     "Der Punktestand und die bisher gezeigten Aufgaben werden verworfen, die Reihenfolge wird neu gemischt.",
     fNeueRunde);
 });
 el("fBackBtn").addEventListener("click", function(){
   bTimerHalt();
+  if(fstate.phase === "scan"){ fstate.phase = "tablets"; qKameraStoppen(); fSave(); }
   fSetupFuellen();
   zeigeSeite("fehlerSetup");
 });
@@ -15006,33 +15202,52 @@ function qScanStarten(){
   el("qPhaseInfo").textContent = "Code " + qstate.solo;
   qoff.zuletzt = {};
   qScanListe();
-  /* Ton vorbereiten, solange der Klick noch frisch ist; sonst bleibt der
-     Browser stumm. */
+  qTonBereit();
+  qoff.ziel = Q_SCAN_QUIZ;
+  qKameraStarten();
+}
+
+/* Ton vorbereiten, solange der Klick noch frisch ist; sonst bleibt der
+   Browser stumm. */
+function qTonBereit(){
   try{
     var Ctx = window.AudioContext || window.webkitAudioContext;
     if(Ctx && !qoff.audio) qoff.audio = new Ctx();
     if(qoff.audio && qoff.audio.state === "suspended") qoff.audio.resume();
   }catch(err){}
-  qKameraStarten();
 }
 
-function qScanStatus(txt){ el("qScanStatus").textContent = txt; }
+/* Kamera und Leser gehoeren nicht dem Quiz allein: Die Fehlerjagd sammelt
+   ihre Endkarten genauso ein. Das Ziel sagt, in welche Elemente das Bild
+   geht, wann noch gescannt wird und wer die gelesenen Texte bekommt. */
+var Q_SCAN_QUIZ = {video:"qVideo", sel:"qKameraSel", status:"qScanStatus", rahmen:"qVideoRahmen",
+                   aktiv:function(){ return qstate.phase === "scan"; },
+                   nimm:function(text){ qScanAufnehmen(text); }};
+qoff.ziel = Q_SCAN_QUIZ;
+
+function qScanStatus(txt){ el(qoff.ziel.status).textContent = txt; }
+
+function qScanTreffer(){
+  var r = el(qoff.ziel.rahmen);
+  r.classList.add("treffer");
+  setTimeout(function(){ r.classList.remove("treffer"); }, 450);
+}
 
 function qKameraStarten(){
   qKameraStoppen();
-  var md = navigator.mediaDevices, lauf = ++qoff.lauf;
+  var md = navigator.mediaDevices, lauf = ++qoff.lauf, ziel = qoff.ziel;
   if(!md || !md.getUserMedia){
     qScanStatus("Dieser Browser gibt hier keine Kamera frei. Öffne die Sammlung über " + Q_ONLINE + " in Chrome, Edge oder Safari.");
     return;
   }
-  var wahl = el("qKameraSel").value;
+  var wahl = el(ziel.sel).value;
   var video = {width:{ideal:1920}, height:{ideal:1080}};
   if(wahl) video.deviceId = {exact:wahl}; else video.facingMode = {ideal:"environment"};
   qScanStatus("Kamera wird gestartet …");
   md.getUserMedia({video:video, audio:false}).then(function(stream){
-    if(lauf !== qoff.lauf || qstate.phase !== "scan"){ stream.getTracks().forEach(function(t){ t.stop(); }); return; }
+    if(lauf !== qoff.lauf || !ziel.aktiv()){ stream.getTracks().forEach(function(t){ t.stop(); }); return; }
     qoff.stream = stream;
-    var v = el("qVideo");
+    var v = el(ziel.video);
     v.srcObject = stream;
     v.play().catch(function(){});
     qKameraListe();
@@ -15051,7 +15266,7 @@ function qKameraStoppen(){
   clearTimeout(qoff.timer);
   if(qoff.stream) qoff.stream.getTracks().forEach(function(t){ t.stop(); });
   qoff.stream = null;
-  var v = el("qVideo");
+  var v = el(qoff.ziel.video);
   if(v) v.srcObject = null;
 }
 
@@ -15059,7 +15274,7 @@ function qKameraListe(){
   var md = navigator.mediaDevices;
   if(!md || !md.enumerateDevices) return;
   md.enumerateDevices().then(function(geraete){
-    var sel = el("qKameraSel"), wahl = sel.value, k = 0;
+    var sel = el(qoff.ziel.sel), wahl = sel.value, k = 0;
     sel.innerHTML = '<option value="">Standardkamera</option>';
     geraete.forEach(function(g){
       if(g.kind !== "videoinput" || !g.deviceId) return;
@@ -15086,12 +15301,12 @@ function qDetektorHolen(){
 
 function qScanSchritt(lauf){
   if(lauf !== qoff.lauf || !qoff.stream) return;
-  var v = el("qVideo");
+  var v = el(qoff.ziel.video), nimm = qoff.ziel.nimm;
   function weiter(){ if(lauf === qoff.lauf) qoff.timer = setTimeout(function(){ qScanSchritt(lauf); }, 90); }
   if(v.readyState < 2 || !v.videoWidth){ weiter(); return; }
   if(qoff.detektor){
     qoff.detektor.detect(v).then(function(codes){
-      codes.forEach(function(c){ qScanAufnehmen(c.rawValue); });
+      codes.forEach(function(c){ nimm(c.rawValue); });
     }, function(){}).then(weiter);
     return;
   }
@@ -15100,7 +15315,7 @@ function qScanSchritt(lauf){
   if(cv.width !== w || cv.height !== h){ cv.width = w; cv.height = h; }
   var ctx = cv.getContext("2d", {willReadFrequently:true});
   ctx.drawImage(v, 0, 0, w, h);
-  try{ qrLesen(ctx.getImageData(0, 0, w, h).data, w, h).forEach(qScanAufnehmen); }catch(err){}
+  try{ qrLesen(ctx.getImageData(0, 0, w, h).data, w, h).forEach(function(t){ nimm(t); }); }catch(err){}
   weiter();
 }
 
@@ -15144,9 +15359,7 @@ function qScanAufnehmen(text){
   qOffSpeichern();
   qPiep();
   qScanStatus("Eingesammelt: „" + e.n + "“ mit " + e.p + " Punkten.");
-  var r = el("qVideoRahmen");
-  r.classList.add("treffer");
-  setTimeout(function(){ r.classList.remove("treffer"); }, 450);
+  qScanTreffer();
   qScanListe(e.id);
 }
 
@@ -15406,6 +15619,7 @@ function qHashLesen(){
   var h = location.hash.replace(/^#/, "");
   if(h === "mitspielen") return {};
   if(h.indexOf("solo=") === 0) return {solo:h.slice(5).toUpperCase()};
+  if(h.indexOf("fehler=") === 0) return {fehler:h.slice(7).toUpperCase()};
   if(h.indexOf("quiz=") !== 0) return null;
   var p = {};
   h.split("&").forEach(function(teil){
@@ -15419,6 +15633,7 @@ function qHashLesen(){
 
 function hStart(param){
   param = param || {};
+  if(param.fehler){ ftStart(param.fehler); return; }
   /* Offline-Runde: angefangene oder fertige Runde mit demselben Code
      wieder aufnehmen, sonst Formular mit vorbelegtem Code. */
   if(param.solo){
@@ -15451,17 +15666,21 @@ function hStart(param){
 function hFormular(){
   hTrennen();
   clearInterval(sstate.uhr);
+  clearInterval(ftUhr.qr);
   var off = qOffLesen(hstate.code);
-  hKopfSetzen("Live-Quiz", "");
+  var fj = hstate.code.length === 4 ? fTabLesen(hstate.code) : null;
+  hKopfSetzen(fj ? "Fehlerjagd" : "Live-Quiz", "");
   el("hBody").innerHTML =
     '<div class="hform">' +
       '<div class="hgross" style="text-align:center">Mitspielen</div>' +
       '<label class="feld"><span class="label">Raumcode</span>' +
         '<input type="text" id="hCodeIn" maxlength="6" autocomplete="off" autocapitalize="characters" spellcheck="false"></label>' +
-      '<label class="feld"><span class="label">Dein Spitzname</span>' +
+      '<label class="feld"><span class="label">' + (fj ? "Name der Gruppe" : "Dein Spitzname") + '</span>' +
         '<input type="text" id="hNameIn" maxlength="16" autocomplete="off" spellcheck="false"></label>' +
-      (off ? '<div class="hinfo" id="hOffInfo"></div>' : '') +
-      '<p class="note" style="margin:0">' + (off
+      ((off || fj) ? '<div class="hinfo" id="hOffInfo"></div>' : '') +
+      '<p class="note" style="margin:0">' + (fj
+        ? 'Ein Gruppenname, keine vollen Namen. Er steht auf eurer Endkarte und am Beamer.'
+        : off
         ? 'Nimm einen Spitznamen, keinen vollen Namen. Er steht auf deiner Endkarte.'
         : 'Nimm einen Spitznamen, keinen vollen Namen. Er steht nur am Beamer.') + '</p>' +
       (hstate.fehler ? '<div class="hfehler"></div>' : '') +
@@ -15474,6 +15693,9 @@ function hFormular(){
   if(off){
     el("hOffInfo").textContent = "Offline-Runde: " + fTitelLang(Q_SAETZE[off.satz]) + " · " + qOffAnzahl(off) + " Fragen";
   }
+  if(fj){
+    el("hOffInfo").textContent = "Fehlerjagd: " + fTitelLang(F_SAETZE[fj.satz]) + " · " + fTabMenge(fj).length + " Aufgaben";
+  }
   hstate.fehler = "";
   (hstate.code ? el("hNameIn") : el("hCodeIn")).focus();
 }
@@ -15482,8 +15704,16 @@ function hBeitreten(){
   var code = el("hCodeIn").value.toUpperCase().replace(/[^A-Z0-9]/g, "");
   var name = qNameSauber(el("hNameIn").value);
   hstate.code = code; hstate.name = name;
-  if(code.length !== 5 && code.length !== 6){ hstate.fehler = "Der Raumcode hat fünf Zeichen, bei einer Offline-Runde sechs. Er steht groß am Beamer."; hFormular(); return; }
-  if(!name){ hstate.fehler = "Bitte gib einen Spitznamen ein."; hFormular(); return; }
+  if(code.length < 4 || code.length > 6){ hstate.fehler = "Der Code hat vier bis sechs Zeichen. Er steht groß am Beamer."; hFormular(); return; }
+  if(!name){ hstate.fehler = code.length === 4 ? "Bitte gebt einen Gruppennamen ein." : "Bitte gib einen Spitznamen ein."; hFormular(); return; }
+  if(code.length === 4){
+    var fj = fTabLesen(code);
+    if(!fj){ hstate.fehler = "Diesen Code kennt die Seite nicht. Stimmt er?"; hFormular(); return; }
+    var alt4 = ftLaden();
+    if(alt4 && alt4.code === code){ ftFortsetzen(alt4); return; }
+    ftBeginnen(fj, name);
+    return;
+  }
   if(code.length === 6){
     var off = qOffLesen(code);
     if(!off){ hstate.fehler = "Diesen Code kennt die Seite nicht. Stimmt er?"; hFormular(); return; }
@@ -15735,6 +15965,7 @@ el("hBody").addEventListener("click", function(ev){
   if(ev.target.closest("#hJoinBtn")){ hBeitreten(); return; }
   if(ev.target.closest("#hNeuBtn")){ hFormular(); return; }
   if(ev.target.closest("#sWeiterBtn")){ sWeiter(); return; }
+  if(ftKlick(ev)) return;
   var sk = ev.target.closest("[data-sw]");
   if(sk){ sAntwort(+sk.getAttribute("data-sw")); return; }
   if(ev.target.closest("#hAuswahlBtn")){
@@ -15761,6 +15992,508 @@ document.addEventListener("visibilitychange", function(){
   if(document.hidden) return;
   if(hstate.mqtt) hstate.mqtt.wecken();
   if(qnetz.mqtt) qnetz.mqtt.wecken();
+});
+
+
+/* -----------------------------------------------------------------------
+   FEHLERJAGD: Tablet-Runde
+   Statt Zetteln: Jede Gruppe hat ein Tablet, arbeitet die Loesungswege im
+   eigenen Tempo durch, tippt die erste falsche Zeile an und begruendet in
+   einem Satz. Ohne Server, wie die Offline-Runde des Live-Quiz: Der Beamer
+   zeigt nur einen Code, am Ende sammelt er die Endkarten per Kamera ein.
+   Danach laeuft die gewohnte Besprechung am Beamer, Aufgabe fuer Aufgabe;
+   den Zeilenpunkt vergibt die Sammlung, die Begruendung hakt die Lehrkraft
+   ab. Das Tablet zeigt keine Loesungen, sonst waeren sie nach der ersten
+   fertigen Gruppe im Raum.
+
+   Code: 4 Zeichen aus Q_CODEZEICHEN, 20 Bit, davon Satz 9 (Index in
+   F_SAETZE, bis 512 Saetze, die Routine haengt taeglich einen an),
+   Anzahl 2 (F_TAB_ANZAHL, passend zu fAnzahl) und ein Zufallskeim 9.
+   Live-Codes haben 5, Offline-Quiz-Codes 6 Zeichen.
+
+   Endkarte: Freitext passt nicht in einen einzigen QR-Code, den der eigene
+   Leser noch schafft (Version 10, 213 Byte). Die Antworten werden deshalb
+   auf mehrere Teile verteilt, die das Tablet im Wechsel zeigt:
+     F1|CODE|KENNUNG|TEIL/VON|NAME|K.Z.TEXT|K.Z.TEXT|…
+   K ist die Stelle der Aufgabe in fTabMenge, Z die gewaehlte Zeile (0 fuer
+   keine), TEXT die Begruendung ohne "|". Der Beamer setzt die Teile ueber
+   die Kennung wieder zusammen; erst eine vollstaendige Karte zaehlt.
+   ----------------------------------------------------------------------- */
+
+var F_TAB_ANZAHL = [4, 6, 8, 0];
+var F_TAB_TEXT = 80;     /* Zeichen je Begruendung */
+var F_TAB_TEIL = 213;    /* Byte je QR-Code: Grenze von Version 10 */
+
+function fTabCode(satz, anzahl){
+  var ai = Math.max(0, F_TAB_ANZAHL.indexOf(anzahl));
+  var keim = crypto.getRandomValues(new Uint32Array(1))[0] % 512;
+  var v = (satz * 4 + ai) * 512 + keim, s = "";
+  for(var i = 0; i < 4; i++){
+    s = Q_CODEZEICHEN.charAt(v % 32) + s;
+    v = Math.floor(v / 32);
+  }
+  return s;
+}
+
+function fTabLesen(code){
+  code = String(code || "").toUpperCase();
+  if(code.length !== 4) return null;
+  var v = 0;
+  for(var i = 0; i < 4; i++){
+    var k = Q_CODEZEICHEN.indexOf(code.charAt(i));
+    if(k < 0) return null;
+    v = v * 32 + k;
+  }
+  var keim = v % 512;   v = (v - keim) / 512;
+  var ai = v % 4;       v = (v - ai) / 4;
+  if(!F_SAETZE[v]) return null;
+  return {code:code, satz:v, anzahl:F_TAB_ANZAHL[ai], keim:keim};
+}
+
+/* Die Aufgaben der Runde, aufsteigend nach Stelle im Satz, fuer alle
+   Tablets und den Beamer gleich. */
+function fTabMenge(p){
+  var rnd = qOffZufall(p.keim + 7919 * p.satz);
+  var alle = F_SAETZE[p.satz].aufgaben.length, idx = [], i;
+  for(i = 0; i < alle; i++) idx.push(i);
+  for(i = idx.length - 1; i > 0; i--){
+    var j = Math.floor(rnd() * (i + 1)), t = idx[i];
+    idx[i] = idx[j]; idx[j] = t;
+  }
+  var n = p.anzahl ? Math.min(p.anzahl, alle) : alle;
+  return idx.slice(0, n).sort(function(a, b){ return a - b; });
+}
+
+/* Was in den QR-Code darf: keine Steuerzeichen, kein Trenner, keine
+   Zeichen ausserhalb der Grundebene (kann der Encoder nicht). */
+function fTabText(s){
+  return String(s || "").replace(/[\u0000-\u001f\u007f|]/g, " ").replace(/[\uD800-\uDFFF]/g, "")
+    .replace(/\s+/g, " ").trim().slice(0, F_TAB_TEXT);
+}
+
+/* Am Beamer */
+
+function fTabletStarten(){
+  qKameraStoppen();
+  fstate.satz     = +el("fSatzSel").value;
+  fstate.sekunden = +el("fZeit").value;
+  fstate.anzahl   = +el("fAnzahl").value;
+  fstate.tab = fTabCode(fstate.satz, fstate.anzahl);
+  fstate.erg = {}; fstate.namen = []; fstate.antw = [];
+  fstate.reihenfolge = []; fstate.pos = 0; fstate.punkte = []; fstate.wertung = [];
+  fstate.basis = null; fstate.basisPos = -1;
+  fstate.tEnde = Date.now() + fTabMenge(fTabLesen(fstate.tab)).length * fstate.sekunden * 1000;
+  fKopf();
+  zeigeSeite("fehlerGame");
+  fTabZeigen();
+}
+
+function fTabZeigen(){
+  var p = fTabLesen(fstate.tab), n = fTabMenge(p).length;
+  qKameraStoppen();
+  fstate.phase = "tablets";
+  zeigeFPhase();
+  el("fPhaseLabel").textContent = "Tablet-Runde";
+  el("fPhaseInfo").textContent = "Code " + p.code + " · " + n + " Aufgaben";
+  el("fFortschritt").textContent = "";
+  el("fTabQr").innerHTML = qrSvg(qBasisUrl() + "#fehler=" + p.code, "QR-Code zum Mitmachen");
+  el("fTabCode").textContent = p.code;
+  el("fTabUrl").textContent = qBasisUrl().replace(/^https?:\/\//, "").replace(/\/$/, "");
+  el("fTabTitel").textContent = fTitelLang(fsatz()) + " · " + n + " Aufgaben";
+  var k = Object.keys(fstate.erg).length;
+  el("fTabScanBtn").innerHTML = ic("search") + "Endkarten einsammeln" + (k ? " (" + k + ")" : "");
+  /* Die Uhr ist nur ein Richtwert fuer alle zusammen: Anzahl mal Zeit je
+     Aufgabe. Sie laeuft ueber das Einsammeln und Neuladen hinweg weiter. */
+  var rest = fstate.tEnde - Date.now();
+  if(rest > 0) bTimerStart(rest / 1000, "Richtwert für alle Aufgaben.", "fTTimer");
+  else {
+    bTimerHalt();
+    btimer.prefix = "fTTimer";
+    el("fTTimerDisplay").textContent = "0:00";
+    el("fTTimerBox").className = "timerbox done";
+    el("fTTimerLabel").textContent = "Richtzeit abgelaufen.";
+  }
+  fSave();
+}
+
+var F_SCAN = {video:"fVideo", sel:"fKameraSel", status:"fScanStatus", rahmen:"fVideoRahmen",
+              aktiv:function(){ return fstate.phase === "scan"; },
+              nimm:function(text){ fScanAufnehmen(text); }};
+
+function fScanStarten(){
+  bTimerHalt();
+  fstate.phase = "scan";
+  zeigeFPhase();
+  el("fPhaseLabel").textContent = "Endkarten einsammeln";
+  el("fPhaseInfo").textContent = "Code " + fstate.tab;
+  qoff.zuletzt = {};
+  fScanListe();
+  qTonBereit();
+  qoff.ziel = F_SCAN;
+  qKameraStarten();
+}
+
+/* Einen Teil einer Endkarte lesen; null bei fremden Codes. */
+function fTabTeilLesen(text){
+  var t = String(text).split("|");
+  if(t.length < 5 || t[0] !== "F1") return null;
+  var p = fTabLesen(t[1]);
+  if(!p) return null;
+  var tg = /^(\d+)\/(\d+)$/.exec(t[3]);
+  if(!tg || !/^[a-z0-9]{1,8}$/.test(t[2])) return null;
+  var teil = +tg[1], von = +tg[2];
+  if(von < 1 || von > 40 || teil < 1 || teil > von) return null;
+  var menge = fTabMenge(p), satz = F_SAETZE[p.satz], eintraege = [];
+  for(var i = 5; i < t.length; i++){
+    var m = /^(\d+)\.(\d+)\.([\s\S]*)$/.exec(t[i]);
+    if(!m) return null;
+    var k = +m[1], z = +m[2];
+    if(k >= menge.length || z > satz.aufgaben[menge[k]].zeilen.length) return null;
+    eintraege.push({k:k, z:z, t:fTabText(m[3])});
+  }
+  return {code:p.code, id:t[2], teil:teil, von:von, n:qNameSauber(t[4]) || "ohne Namen", e:eintraege};
+}
+
+function fTabKomplett(e){ return Object.keys(e.teile).length >= e.von; }
+
+function fScanAufnehmen(text){
+  var e = fTabTeilLesen(text);
+  if(!e){
+    if(!qoff.zuletzt.fremd || Date.now() - qoff.zuletzt.fremd > 3000){
+      qoff.zuletzt.fremd = Date.now();
+      qScanStatus("Ein QR-Code, der keine Endkarte der Fehlerjagd ist – übersprungen.");
+    }
+    return;
+  }
+  if(e.code !== fstate.tab){
+    qScanStatus("Diese Karte gehört zu Runde " + e.code + ", hier läuft Runde " + fstate.tab + ".");
+    return;
+  }
+  var alt = fstate.erg[e.id];
+  if(!alt || alt.von !== e.von){
+    alt = fstate.erg[e.id] = {n:e.n, von:e.von, teile:{}, t:Date.now()};
+  }
+  if(alt.teile[e.teil]){
+    if(!qoff.zuletzt[e.id] || Date.now() - qoff.zuletzt[e.id] > 4000){
+      qoff.zuletzt[e.id] = Date.now();
+      qScanStatus(fTabKomplett(alt) ? "„" + alt.n + "“ ist schon vollständig eingesammelt."
+                                    : "„" + alt.n + "“: noch " + (alt.von - Object.keys(alt.teile).length) + " Teil(e) offen, Tablet weiter davorhalten.");
+    }
+    return;
+  }
+  alt.teile[e.teil] = e.e;
+  qoff.zuletzt[e.id] = Date.now();
+  fSave();
+  var fertig = fTabKomplett(alt);
+  if(fertig) qPiep();
+  qScanStatus(fertig ? "Eingesammelt: „" + alt.n + "“."
+                     : "„" + alt.n + "“: Teil " + Object.keys(alt.teile).length + " von " + alt.von + " gelesen …");
+  if(fertig) qScanTreffer();
+  fScanListe(e.id);
+}
+
+/* Antworten einer Karte als Liste je Aufgabe der Runde. */
+function fTabAntworten(e, n){
+  var a = [], i;
+  for(i = 0; i < n; i++) a.push({z:0, t:""});
+  Object.keys(e.teile).forEach(function(k){
+    e.teile[k].forEach(function(x){ a[x.k] = {z:x.z, t:x.t}; });
+  });
+  return a;
+}
+
+function fScanListe(neu){
+  var n = fTabMenge(fTabLesen(fstate.tab)).length;
+  var ids = Object.keys(fstate.erg).sort(function(a, b){ return fstate.erg[b].t - fstate.erg[a].t; });
+  var ol = el("fScanListe"), fertig = 0;
+  ol.innerHTML = "";
+  ids.forEach(function(id){
+    var e = fstate.erg[id], li = document.createElement("li"), komplett = fTabKomplett(e);
+    if(id === neu && komplett) li.className = "neu";
+    li.innerHTML = '<span class="qs-name"></span><span class="qs-punkte num"></span><span class="qs-info"></span>';
+    li.querySelector(".qs-name").textContent = e.n;
+    var info = li.querySelector(".qs-info");
+    if(komplett){
+      fertig++;
+      var bearbeitet = fTabAntworten(e, n).filter(function(x){ return x.z > 0; }).length;
+      li.querySelector(".qs-punkte").innerHTML = ic("check");
+      info.textContent = bearbeitet + " von " + n + " Aufgaben mit Zeile";
+    } else {
+      info.textContent = "Teil " + Object.keys(e.teile).length + " von " + e.von + " – Tablet weiter davorhalten";
+      info.className = "qs-info warn";
+    }
+    ol.appendChild(li);
+  });
+  if(!ids.length) ol.innerHTML = '<li class="sub" style="display:block">Noch keine Endkarte gescannt.</li>';
+  el("fScanZahl").textContent = fertig;
+  el("fScanEndeBtn").disabled = !fertig;
+}
+
+/* Aus den vollstaendigen Karten wird eine gewoehnliche Runde mit so
+   vielen Gruppen, wie Karten da sind. Ab hier laeuft die Besprechung
+   ueber fRender und fRenderWertung. */
+function fTabAuswerten(){
+  qKameraStoppen();
+  var menge = fTabMenge(fTabLesen(fstate.tab));
+  var ids = Object.keys(fstate.erg).filter(function(id){ return fTabKomplett(fstate.erg[id]); })
+    .sort(function(a, b){ return fstate.erg[a].t - fstate.erg[b].t; });
+  if(!ids.length) return;
+  var belegt = {};
+  fstate.namen = ids.map(function(id){
+    var name = fstate.erg[id].n, neu = name;
+    for(var k = 2; belegt[neu.toLowerCase()]; k++) neu = name.slice(0, 13) + " " + k;
+    belegt[neu.toLowerCase()] = true;
+    return neu;
+  });
+  fstate.antw = ids.map(function(id){ return fTabAntworten(fstate.erg[id], menge.length); });
+  fstate.gruppen = ids.length;
+  fstate.reihenfolge = menge.slice();
+  fRundeAnfangen();
+}
+
+/* Am Tablet. Der Stand liegt im localStorage, damit ein Neuladen nichts
+   kostet und eine abgegebene Karte abgegeben bleibt. pos laeuft bis zur
+   Anzahl der Aufgaben; die Stelle dahinter ist die Uebersicht vor der
+   Abgabe. */
+
+var FT_KEY = "fehlerjagd_tablet_v1";
+
+var tstate = {code:"", name:"", id:"", reihe:[], pos:0, ant:{}, phase:"", ende:0};
+var ftUhr = {qr:null, teil:0};
+
+function ftSpeichern(){
+  try{ localStorage.setItem(FT_KEY, JSON.stringify(tstate)); }catch(err){}
+}
+function ftLaden(){
+  try{
+    var s = JSON.parse(localStorage.getItem(FT_KEY) || "null");
+    return (s && s.code && fTabLesen(s.code) && s.reihe && s.reihe.length) ? s : null;
+  }catch(err){ return null; }
+}
+
+function ftStart(code){
+  var alt = ftLaden();
+  if(alt && alt.code === code){ ftFortsetzen(alt); return; }
+  zeigeSeite("quizHandy");
+  document.title = "Fehlerjagd";
+  hstate.code = fTabLesen(code) ? code : "";
+  if(!hstate.code) hstate.fehler = "Diesen Code kennt die Seite nicht. Bitte den Code vom Beamer abtippen.";
+  if(alt) hstate.name = alt.name || "";
+  hFormular();
+}
+
+function ftBeginnen(p, name){
+  clearInterval(ftUhr.qr);
+  /* Alle Gruppen bekommen dieselben Aufgaben, aber in eigener Folge:
+     Wer zum Nachbartisch schaut, sieht dort einen anderen Loesungsweg. */
+  tstate = {code:p.code, name:name, id:qZufall(4), reihe:qMischen(fTabMenge(p).slice()),
+            pos:0, ant:{}, phase:"aufgabe", ende:0};
+  try{ history.replaceState(null, "", "#fehler=" + p.code); }catch(err){}
+  ftSpeichern();
+  zeigeSeite("quizHandy");
+  document.title = "Fehlerjagd";
+  ftRender();
+}
+
+function ftFortsetzen(alt){
+  tstate = alt;
+  zeigeSeite("quizHandy");
+  document.title = "Fehlerjagd";
+  ftRender();
+}
+
+function ftSatz(){ return F_SAETZE[fTabLesen(tstate.code).satz]; }
+function ftAntwort(idx){ return tstate.ant[idx] || (tstate.ant[idx] = {z:0, t:""}); }
+
+/* Inhalt der QR-Codes, Aufbau im Kopfkommentar. Ein Eintrag, der allein
+   schon zu lang ist, bekommt einen eigenen, groesseren Code. */
+function ftTeile(){
+  var menge = fTabMenge(fTabLesen(tstate.code)), teile = [], akt = [], laenge = 0;
+  var name = tstate.name.replace(/[|\uD800-\uDFFF]/g, "");
+  var kopf = qrUtf8("F1|" + tstate.code + "|" + tstate.id + "|10/10|" + name + "|").length;
+  menge.forEach(function(idx, k){
+    var a = tstate.ant[idx] || {z:0, t:""}, t = fTabText(a.t);
+    var e = k + "." + (a.z || 0) + "." + t;
+    /* Mit vielen Sonderzeichen (3 Byte je Zeichen) waere ein einzelner
+       Eintrag zu lang fuer Version 10; dann wird gekuerzt. */
+    while(kopf + qrUtf8(e).length > 200){ t = t.slice(0, -1); e = k + "." + (a.z || 0) + "." + t; }
+    var b = qrUtf8(e).length + 1;
+    if(akt.length && kopf + laenge + b > F_TAB_TEIL){ teile.push(akt); akt = []; laenge = 0; }
+    akt.push(e); laenge += b;
+  });
+  if(akt.length || !teile.length) teile.push(akt);
+  return teile.map(function(t, i){
+    return ["F1", tstate.code, tstate.id, (i + 1) + "/" + teile.length, name].concat(t).join("|");
+  });
+}
+
+function ftRender(){
+  clearInterval(ftUhr.qr);
+  var body = el("hBody"), n = tstate.reihe.length, satz = ftSatz();
+
+  if(tstate.phase === "ende"){
+    hKopfSetzen(tstate.name, "abgegeben");
+    var bearbeitet = tstate.reihe.filter(function(i){ return tstate.ant[i] && tstate.ant[i].z; }).length;
+    var uhrzeit = new Date(tstate.ende).toLocaleTimeString("de-DE", {hour:"2-digit", minute:"2-digit"});
+    var codes = ftTeile().map(function(t, i, alle){
+      return qrSvg(t, "QR-Code mit euren Antworten, Teil " + (i + 1) + " von " + alle.length);
+    });
+    body.innerHTML = '<div class="sendcard"><div class="sinfo">' +
+      '<div class="hpokal">' + ic("check", 48) + '</div>' +
+      '<span class="label">Fehlerjagd · ' + qEsc(satz.titel) + '</span>' +
+      '<div class="hgross" id="ftEndName"></div>' +
+      '<div class="hklein">' + bearbeitet + ' von ' + n + ' Aufgaben mit Zeile abgegeben</div>' +
+      '<div class="sfuss">Code ' + tstate.code + ' · abgegeben um ' + uhrzeit + '</div>' +
+      '<div class="hklein">Zeigt diese Karte eurer Lehrkraft. Zum Einsammeln das Tablet ruhig vor die Kamera halten' +
+        (codes.length > 1 ? ', bis alle ' + codes.length + ' Teile gelesen sind' : '') + '.</div>' +
+      '</div><div class="sqr"><div id="ftQr"></div>' +
+      (codes.length > 1 ? '<div class="ft-teile" id="ftTeile">' +
+        codes.map(function(){ return '<span></span>'; }).join("") + '</div>' : '') +
+      '</div></div>';
+    el("ftEndName").textContent = tstate.name;
+    /* Mehrere Teile im Wechsel, damit jeder Code gross genug fuer die
+       Kamera bleibt. */
+    ftUhr.teil = 0;
+    var zeige = function(){
+      el("ftQr").innerHTML = codes[ftUhr.teil];
+      var punkte = el("ftTeile");
+      if(punkte) [].forEach.call(punkte.children, function(s, i){ s.className = i === ftUhr.teil ? "an" : ""; });
+    };
+    zeige();
+    if(codes.length > 1){
+      ftUhr.qr = setInterval(function(){
+        if(!el("ftQr")){ clearInterval(ftUhr.qr); return; }
+        ftUhr.teil = (ftUhr.teil + 1) % codes.length;
+        zeige();
+      }, 1600);
+    }
+    return;
+  }
+
+  if(tstate.pos >= n){
+    hKopfSetzen(tstate.name, "Abgabe");
+    var s = '<div class="ftab"><span class="label">Vor der Abgabe</span>' +
+      '<div class="hgross">Alles drin?</div><ol class="ft-uebersicht">';
+    tstate.reihe.forEach(function(idx, i){
+      var a = tstate.ant[idx] || {z:0, t:""}, t = fTabText(a.t);
+      s += '<li data-ftgehe="' + i + '"><span class="ft-nr">Aufgabe ' + (i + 1) + '</span>' +
+        '<span class="' + (a.z ? "" : "offen") + '">' + (a.z ? "Zeile " + a.z : "keine Zeile") + '</span>' +
+        '<span class="' + (t ? "" : "offen") + '">' + (t ? "begründet" : "ohne Begründung") + '</span></li>';
+    });
+    body.innerHTML = s + '</ol><p class="note" style="margin:0">Antippen, um eine Aufgabe noch einmal zu öffnen. Nach dem Abgeben lässt sich nichts mehr ändern.</p>' +
+      '<div class="ft-nav"><button class="btn btn-quiet" id="ftZurueckBtn">' + ic("left") + 'Zurück</button>' +
+      '<button class="btn btn-primary" id="ftAbgebenBtn">' + ic("check") + 'Abgeben</button></div></div>';
+    return;
+  }
+
+  var idx = tstate.reihe[tstate.pos], a = satz.aufgaben[idx], ant = ftAntwort(idx);
+  hKopfSetzen(tstate.name, "Aufgabe " + (tstate.pos + 1) + " von " + n);
+  var zeilen = a.zeilen.map(function(z, i){
+    var d = fzeile(z);
+    return '<li data-tz="' + (i + 1) + '"' + (ant.z === i + 1 ? ' class="gewaehlt"' : '') + '>' +
+      '<span class="fz-term">' + d.t + '</span><span class="fz-op">' + (d.op || "") + '</span></li>';
+  }).join("");
+  body.innerHTML = '<div class="ftab">' +
+    '<div class="floesung"><span class="label">' + a.auftrag + '</span>' +
+      (a.start ? '<div class="fstart">' + a.start + '</div>' : '') +
+      (a.bild ? '<div class="fbildbox">' + a.bild + '</div>' : '') +
+      '<ol class="fzeilen">' + zeilen + '</ol></div>' +
+    '<p class="ft-hinweis">Tippt die <b>erste</b> falsche Zeile an.</p>' +
+    '<label class="feld ft-feld"><span class="label">Was ist dort falsch?</span>' +
+      '<textarea id="ftText" rows="2" maxlength="' + F_TAB_TEXT + '" spellcheck="false"></textarea></label>' +
+    '<div class="ft-rest" id="ftRest"></div>' +
+    '<div class="ft-nav">' +
+      (tstate.pos > 0 ? '<button class="btn btn-quiet" id="ftZurueckBtn">' + ic("left") + 'Zurück</button>' : '') +
+      '<button class="btn btn-primary" id="ftWeiterBtn">' +
+        (tstate.pos + 1 < n ? 'Weiter' + ic("right") : 'Zur Abgabe' + ic("right")) + '</button></div>' +
+    '</div>';
+  el("ftText").value = ant.t;
+  ftRestZeigen();
+  window.scrollTo(0, 0);
+}
+
+function ftRestZeigen(){
+  var t = el("ftText");
+  if(t) el("ftRest").textContent = "noch " + (F_TAB_TEXT - t.value.length) + " Zeichen";
+}
+
+function ftGehe(pos){
+  tstate.pos = Math.max(0, Math.min(tstate.reihe.length, pos));
+  ftSpeichern();
+  ftRender();
+}
+
+function ftAbgeben(){
+  if(tstate.phase === "ende") return;
+  tstate.phase = "ende";
+  tstate.ende = Date.now();
+  ftSpeichern();
+  ftRender();
+}
+
+/* Klicks im Tablet-Bereich; true, wenn die Fehlerjagd zustaendig war. */
+function ftKlick(ev){
+  if(tstate.phase !== "aufgabe" || !el("hBody").querySelector(".ftab")) return false;
+  var z = ev.target.closest("[data-tz]");
+  if(z){
+    var ant = ftAntwort(tstate.reihe[tstate.pos]), nr = +z.getAttribute("data-tz");
+    ant.z = (ant.z === nr) ? 0 : nr;
+    /* Nur die Markierung umsetzen, nicht neu aufbauen: Ein halb getippter
+       Text und die Tastatur bleiben so stehen. */
+    [].forEach.call(z.parentNode.children, function(li){
+      li.classList.toggle("gewaehlt", +li.getAttribute("data-tz") === ant.z);
+    });
+    ftSpeichern();
+    return true;
+  }
+  if(ev.target.closest("#ftWeiterBtn")){ ftGehe(tstate.pos + 1); return true; }
+  if(ev.target.closest("#ftZurueckBtn")){ ftGehe(tstate.pos - 1); return true; }
+  var g = ev.target.closest("[data-ftgehe]");
+  if(g){ ftGehe(+g.getAttribute("data-ftgehe")); return true; }
+  if(ev.target.closest("#ftAbgebenBtn")){
+    var offen = tstate.reihe.filter(function(i){ return !(tstate.ant[i] && tstate.ant[i].z); }).length;
+    askConfirm("Abgeben?",
+      (offen ? (offen === 1 ? "Bei einer Aufgabe" : "Bei " + offen + " Aufgaben") + " ist noch keine Zeile angetippt. " : "") +
+      "Nach dem Abgeben lassen sich die Antworten nicht mehr ändern.", ftAbgeben, "Abgeben");
+    return true;
+  }
+  return false;
+}
+
+el("hBody").addEventListener("input", function(ev){
+  if(ev.target.id !== "ftText" || tstate.phase !== "aufgabe" || tstate.pos >= tstate.reihe.length) return;
+  ftAntwort(tstate.reihe[tstate.pos]).t = ev.target.value.slice(0, F_TAB_TEXT);
+  ftRestZeigen();
+  ftSpeichern();
+});
+
+el("fTabletBtn").innerHTML     = ic("tablet") + "Mit Tablets spielen";
+el("fTabScanBtn").innerHTML    = ic("search") + "Endkarten einsammeln";
+el("fScanEndeBtn").innerHTML   = ic("trophy") + "Besprechung starten";
+el("fScanZurueckBtn").innerHTML = ic("left") + "Zurück zum Code";
+el("fTTimerPlusBtn").innerHTML = ic("plus") + "30 s";
+
+el("fTabletBtn").addEventListener("click", function(){
+  var s = fLoad();
+  if(s && s.tab && (s.phase === "tablets" || s.phase === "scan") && Object.keys(s.erg || {}).length){
+    askConfirm("Neue Tablet-Runde",
+      "Es gibt noch eine Tablet-Runde mit eingesammelten Endkarten. Eine neue Runde verwirft sie; weiter geht es dort über „Runde fortsetzen“.",
+      fTabletStarten, "Neue Runde");
+    return;
+  }
+  fTabletStarten();
+});
+el("fTabScanBtn").addEventListener("click", fScanStarten);
+el("fScanZurueckBtn").addEventListener("click", fTabZeigen);
+el("fScanEndeBtn").addEventListener("click", fTabAuswerten);
+el("fKameraSel").addEventListener("change", function(){
+  if(fstate.phase === "scan"){ qoff.ziel = F_SCAN; qKameraStarten(); }
+});
+el("fTTimerPlusBtn").addEventListener("click", function(){
+  if(btimer.prefix !== "fTTimer") return;
+  if(fstate.tEnde < Date.now()) fstate.tEnde = Date.now();
+  fstate.tEnde += 30000;
+  fTabZeigen();
 });
 
 
@@ -16107,6 +16840,9 @@ function zeigeSeite(name){
   document.body.classList.toggle("einstellung",
     ["setup", "bingoSetup", "fehlerSetup", "quizSetup"].indexOf(name) >= 0);
   el("hStartBtn").style.display = (name === "startseite") ? "inline-flex" : "none";
+  /* Wer waehrend des Einsammelns die Seite verlaesst, soll keine Kamera
+     im Hintergrund laufen lassen. */
+  if(qoff.stream && name !== "quizGame" && name !== "fehlerGame") qKameraStoppen();
   if(name === "startseite"){
     el("kopfTitel").textContent = "Spielesammlung";
     el("kopfUnter").textContent = "Mathematik und Physik am Beamer";
