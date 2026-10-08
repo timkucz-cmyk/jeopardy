@@ -8036,13 +8036,76 @@ var B8_DIST_SCHWER = {
   ]
 };
 
+/* Klasse 6: nur positive Brueche, alle Ergebnisse vollstaendig gekuerzt.
+   Gemischte Zahlen nur in einer Aufgabe, im Pool keine. */
+var KUERZE = "kürze vollständig";
+
+var B6_BRUECHE = {
+  stufe:"6",
+  titel:"Bruchrechnung, alle vier Grundrechenarten",
+  unter:"Klasse 6, Kürzen, Addieren, Subtrahieren, Multiplizieren und Dividieren",
+  pool:[
+    {k:"1/10", h:f(1,10)},
+    {k:"1/8",  h:f(1,8)},
+    {k:"1/6",  h:f(1,6)},
+    {k:"1/5",  h:f(1,5)},
+    {k:"1/4",  h:f(1,4)},
+    {k:"1/3",  h:f(1,3)},
+    {k:"3/8",  h:f(3,8)},
+    {k:"2/5",  h:f(2,5)},
+    {k:"1/2",  h:f(1,2)},
+    {k:"3/5",  h:f(3,5)},
+    {k:"2/3",  h:f(2,3)},
+    {k:"3/4",  h:f(3,4)},
+    {k:"4/5",  h:f(4,5)},
+    {k:"5/6",  h:f(5,6)},
+    {k:"7/8",  h:f(7,8)},
+    {k:"1",    h:"1"}
+  ],
+  aufgaben:[
+    {e:"1/10", q:f(3,10)+" − "+f(1,5),   s:"Hauptnenner 10: "+f(3,10)+" − "+f(2,10)+"."},
+    {e:"1/10", q:f(1,2)+" · "+f(1,5),    s:"Zähler mal Zähler, Nenner mal Nenner: 2 · 5 = 10."},
+    {e:"1/8",  q:f(1,2)+" · "+f(1,4),    s:"Die Hälfte von einem Viertel ist ein Achtel."},
+    {e:"1/8",  q:f(1,4)+" : 2",          s:"Durch 2 teilen verdoppelt den Nenner."},
+    {e:"1/6",  q:f(1,2)+" − "+f(1,3),    s:"Hauptnenner 6: "+f(3,6)+" − "+f(2,6)+"."},
+    {e:"1/6",  q:f(2,3)+" : 4",          s:"Nenner mal 4: "+f(2,12)+", gekürzt "+f(1,6)+"."},
+    {e:"1/5",  auftrag:KUERZE, q:f(4,20), s:"Zähler und Nenner durch 4 teilen."},
+    {e:"1/5",  q:f(3,5)+" : 3",          s:"Drei Fünftel durch 3 sind ein Fünftel."},
+    {e:"1/4",  q:f(3,8)+" − "+f(1,8),    s:"Gleicher Nenner: "+f(2,8)+", gekürzt "+f(1,4)+"."},
+    {e:"1/4",  q:f(1,2)+" · "+f(1,2),    s:"Die Hälfte von einem Halben ist ein Viertel."},
+    {e:"1/3",  auftrag:KUERZE, q:f(6,18), s:"Schrittweise: durch 2 ergibt "+f(3,9)+", durch 3 ergibt "+f(1,3)+"."},
+    {e:"1/3",  q:f(1,6)+" + "+f(1,6),    s:"Zwei Sechstel, gekürzt ein Drittel."},
+    {e:"3/8",  q:f(1,4)+" + "+f(1,8),    s:"Hauptnenner 8: "+f(2,8)+" + "+f(1,8)+"."},
+    {e:"3/8",  q:f(3,4)+" · "+f(1,2),    s:"Zähler mal Zähler, Nenner mal Nenner: "+f(3,8)+"."},
+    {e:"2/5",  q:f(1,2)+" − "+f(1,10),   s:"Hauptnenner 10: "+f(5,10)+" − "+f(1,10)+" = "+f(4,10)+", gekürzt "+f(2,5)+"."},
+    {e:"2/5",  q:f(4,5)+" : 2",          s:"Vier Fünftel halbiert sind zwei Fünftel."},
+    {e:"1/2",  q:f(1,6)+" + "+f(1,3),    s:"Hauptnenner 6: "+f(1,6)+" + "+f(2,6)+" = "+f(3,6)+"."},
+    {e:"1/2",  q:f(3,4)+" · "+f(2,3),    s:f(6,12)+", gekürzt "+f(1,2)+". Oder vorher kürzen: die 3 gegen die 3, die 2 gegen die 4."},
+    {e:"3/5",  q:f(1,5)+" + "+f(2,5),    s:"Gleicher Nenner, nur die Zähler addieren."},
+    {e:"3/5",  q:f(9,10)+" · "+f(2,3),   s:f(18,30)+", gekürzt durch 6: "+f(3,5)+"."},
+    {e:"2/3",  auftrag:KUERZE, q:f(8,12), s:"Durch 4 teilen, oder schrittweise zweimal durch 2."},
+    {e:"2/3",  q:f(1,3)+" : "+f(1,2),    s:"Mal Kehrbruch: "+f(1,3)+" · 2."},
+    {e:"3/4",  q:f(1,2)+" + "+f(1,4),    s:"Hauptnenner 4: "+f(2,4)+" + "+f(1,4)+"."},
+    {e:"3/4",  q:f(1,2)+" : "+f(2,3),    s:"Mal Kehrbruch: "+f(1,2)+" · "+f(3,2)+" = "+f(3,4)+"."},
+    {e:"4/5",  q:"1 − "+f(1,5),          s:"1 = "+f(5,5)+", also "+f(5,5)+" − "+f(1,5)+"."},
+    {e:"4/5",  q:f(2,5)+" · 2",          s:"Mal 2 verdoppelt den Zähler."},
+    {e:"5/6",  q:f(1,2)+" + "+f(1,3),    s:"Hauptnenner 6: "+f(3,6)+" + "+f(2,6)+"."},
+    {e:"5/6",  q:f(5,9)+" : "+f(2,3),    s:"Mal Kehrbruch: "+f(5,9)+" · "+f(3,2)+" = "+f(15,18)+", gekürzt "+f(5,6)+"."},
+    {e:"7/8",  q:"1"+f(1,4)+" − "+f(3,8), s:"1"+f(1,4)+" = "+f(10,8)+", dann "+f(10,8)+" − "+f(3,8)+"."},
+    {e:"7/8",  q:f(7,4)+" : 2",          s:"Durch 2 teilen verdoppelt den Nenner."},
+    {e:"1",    q:f(5,6)+" + "+f(1,6),    s:"Sechs Sechstel sind ein Ganzes."},
+    {e:"1",    q:f(4,9)+" · "+f(9,4),    s:"Ein Bruch mal seinem Kehrbruch ergibt immer 1."}
+  ]
+};
+
 /* Neue Saetze kommen ans Ende, damit gespeicherte Runden ihren Index
    behalten. Die Reihenfolge der Dropdowns entsteht ohnehin erst in
    bSetupFuellen aus dem Feld stufe. */
 var B_SAETZE = [B_GANZE, B_DEZIMAL, B_BRUECHE, B_GEMISCHT,
                 B5_LEICHT, B5_MITTEL, B5_SCHWER,
                 B8_LEICHT, B8_MITTEL, B8_SCHWER,
-                B8_DIST_LEICHT, B8_DIST_MITTEL, B8_DIST_SCHWER];
+                B8_DIST_LEICHT, B8_DIST_MITTEL, B8_DIST_SCHWER,
+                B6_BRUECHE];
 
 
 /* -----------------------------------------------------------------------
@@ -13531,7 +13594,318 @@ var Q8_TERME = {
   ]
 };
 
-var Q_SAETZE = [Q7_RATIONAL, Q7_BASAL, Q2_QUANTEN, QE_KINEMATIK, Q8_TERME];
+/* Bruchstreifen fuer Anteile: n gleich grosse Teile, die ersten k gefaerbt. */
+function q6Streifen(n, k){
+  var W = 520, H = 90, L = 10, B = W - 2*L, w = B/n, s = "", i;
+  for(i = 0; i < n; i++){
+    s += '<rect x="' + (L + i*w).toFixed(1) + '" y="14" width="' + w.toFixed(1) + '" height="62" style="fill:' +
+         (i < k ? 'var(--mathe); fill-opacity:.45' : 'var(--surface-page)') + '"/>';
+  }
+  return '<div class="qbildbox"><svg class="qbild kdia" viewBox="0 0 ' + W + ' ' + H +
+    '" xmlns="http://www.w3.org/2000/svg"><g style="stroke:var(--fg-3); stroke-width:2">' + s + '</g></svg></div>';
+}
+
+/* Zahlenstrahl von 0 bis max mit Strichen im Abstand 1/n, Punkt P bei k/n. */
+function q6Strahl(n, max, k){
+  var W = 520, H = 100, L = 30, R = 40, Y0 = 56;
+  var sx = (W - L - R)/max;
+  function X(x){ return +(L + x*sx).toFixed(1); }
+  var g = "", t = "", i;
+  for(i = 0; i <= n*max; i++){
+    var ganz = i % n === 0;
+    g += '<path d="M' + X(i/n) + ' ' + (Y0 - (ganz ? 10 : 6)) + 'V' + (Y0 + (ganz ? 10 : 6)) + '"/>';
+    if(ganz) t += '<text x="' + X(i/n) + '" y="' + (Y0 + 34) + '" text-anchor="middle">' + (i/n) + '</text>';
+  }
+  var s = '<div class="qbildbox"><svg class="qbild kdia" viewBox="0 0 ' + W + ' ' + H +
+    '" xmlns="http://www.w3.org/2000/svg" style="font-family:var(--sans); font-size:19px">';
+  s += '<g style="stroke:var(--fg-3); stroke-width:1.6; fill:none">' +
+       '<path d="M8 ' + Y0 + 'H' + (W - 8) + '"/><path d="M' + (W - 16) + ' ' + (Y0 - 5) + 'L' + (W - 8) + ' ' + Y0 + 'L' + (W - 16) + ' ' + (Y0 + 5) + '"/>' + g + '</g>';
+  s += '<g style="fill:var(--fg-3)">' + t + '</g>';
+  s += '<circle cx="' + X(k/n) + '" cy="' + Y0 + '" r="7" style="fill:var(--mathe)"/>' +
+       '<text x="' + X(k/n) + '" y="' + (Y0 - 18) + '" text-anchor="middle" style="fill:var(--mathe); font-weight:700; font-style:italic">P</text>';
+  return s + '</svg></div>';
+}
+
+/* Gemischte Zahl, z. B. gz(2,1,4) fuer zwei ein Viertel. */
+function gz(g, z, n){ return '<span class="m">' + g + f(z, n) + '</span>'; }
+
+var Q6_BRUECHE = {
+  fach:"Mathematik",
+  stufe:"6",
+  titel:"Bruchrechnung",
+  unter:"Klasse 6, Training vor der Arbeit: Anteile, Erweitern und Kürzen, Vergleichen und Zahlenstrahl, vier Grundrechenarten, Dezimalzahlen, Sachaufgaben",
+  sekunden:30,
+  bereiche:["Anteile", "Erweitern und Kürzen", "Vergleichen und Zahlenstrahl", "Addieren und Subtrahieren", "Multiplizieren und Dividieren", "Brüche und Dezimalzahlen", "Sachaufgaben"],
+  fragen:[
+    /* ---- 0 Anteile ---- */
+    {
+      b:0,
+      q:"Welcher Anteil des Streifens ist gefärbt?"+q6Streifen(8, 3),
+      a:[f(3,8), f(3,5), f(5,8), f(1,3)], r:0,
+      s:"Der Streifen hat 8 gleich große Teile, 3 davon sind gefärbt: "+f(3,8)+". "+f(3,5)+" vergleicht gefärbte mit ungefärbten Teilen, das ist kein Anteil am Ganzen."
+    },
+    {
+      b:0,
+      q:"Welcher Anteil des Streifens ist <b>nicht</b> gefärbt?"+q6Streifen(6, 4),
+      a:[f(1,3), f(2,3), f(1,2), f(1,4)], r:0,
+      s:"2 von 6 Teilen sind weiß: "+f(2,6)+" = "+f(1,3)+". "+f(2,3)+" ist der gefärbte Anteil. "+f(1,2)+" entsteht, wenn man 2 weiße mit 4 gefärbten Teilen vergleicht."
+    },
+    {
+      b:0,
+      q:"Wie viel sind "+f(3,4)+" von 20 €?",
+      a:[M("15")+" €", M("5")+" €", M("12")+" €", M("16")+" €"], r:0,
+      s:"Ein Viertel von 20 € sind "+M("20 : 4 = 5")+" €, drei Viertel also "+M("3 · 5 = 15")+" €. Bei 5 € fehlt das Malnehmen mit dem Zähler."
+    },
+    {
+      b:0,
+      q:"Wie viele Minuten sind "+f(2,3)+" einer Stunde?",
+      a:[M("40")+" min", M("20")+" min", M("30")+" min", M("45")+" min"], r:0,
+      s:"Eine Stunde hat 60 min. Ein Drittel davon sind 20 min, zwei Drittel 40 min. 20 min ist nur ein Drittel, 45 min wären drei Viertel."
+    },
+    {
+      b:0,
+      q:f(1,5)+" einer Wanderstrecke sind 4 km. Wie lang ist die ganze Strecke?",
+      a:[M("20")+" km", M("0,8")+" km", M("9")+" km", M("5")+" km"], r:0,
+      s:"Das Ganze sind fünf Fünftel, also "+M("5 · 4 = 20")+" km. "+M("0,8")+" km wäre ein Fünftel von 4 km, gefragt ist aber umgekehrt."
+    },
+    {
+      b:0,
+      q:"In einer Klasse sind 12 Mädchen und 16 Jungen. Welcher Anteil der Klasse sind Mädchen?",
+      a:[f(3,7), f(3,4), f(4,7), f(1,2)], r:0,
+      s:"Die Klasse hat "+M("12 + 16 = 28")+" Kinder: "+f(12,28)+" = "+f(3,7)+". "+f(3,4)+" = "+f(12,16)+" vergleicht Mädchen mit Jungen statt mit der ganzen Klasse."
+    },
+
+    /* ---- 1 Erweitern und Kürzen ---- */
+    {
+      b:1,
+      q:"Kürze "+f(18,24)+" vollständig.",
+      a:[f(3,4), f(9,12), f(6,8), f(2,3)], r:0,
+      s:"Schrittweise: durch 2 ergibt "+f(9,12)+", durch 3 ergibt "+f(3,4)+". "+f(9,12)+" und "+f(6,8)+" sind richtig gekürzt, aber noch nicht vollständig."
+    },
+    {
+      b:1,
+      q:"Welcher Bruch hat denselben Wert wie "+f(2,3)+"?",
+      a:[f(10,15), f(4,5), f(2,6), f(5,6)], r:0,
+      s:"Mit 5 erweitert: "+f(10,15)+". "+f(4,5)+" und "+f(5,6)+" entstehen durch Addieren, das ändert den Wert. Bei "+f(2,6)+" wurde nur der Nenner verändert."
+    },
+    {
+      b:1,
+      q:"Erweitere "+f(3,5)+" auf den Nenner 20.",
+      a:[f(12,20), f(18,20), f(15,20), f(3,20)], r:0,
+      s:"Von 5 auf 20 heißt mal 4, also auch der Zähler mal 4: "+M("3 · 4 = 12")+". "+f(18,20)+" entsteht, wenn man zu Zähler und Nenner 15 addiert."
+    },
+    {
+      b:1,
+      q:"Welche Zahl gehört in die Lücke? "+f(4,7)+" = "+f("□",35),
+      a:[M("20"), M("32"), M("28"), M("5")], r:0,
+      s:"Der Nenner wurde mit 5 multipliziert ("+M("7 · 5 = 35")+"), also auch der Zähler: "+M("4 · 5 = 20")+". 32 entsteht durch Addieren von 28, 5 ist nur die Erweiterungszahl."
+    },
+    {
+      b:1,
+      q:"Mit welcher Zahl wurde gekürzt? "+f(24,36)+" = "+f(2,3),
+      a:[M("12"), M("6"), M("3"), M("8")], r:0,
+      s:M("24 : 12 = 2")+" und "+M("36 : 12 = 3")+". Wer schrittweise kürzt, kommt über "+f(12,18)+" und "+f(4,6)+" zum selben Ergebnis."
+    },
+    {
+      b:1,
+      q:"Welcher Bruch lässt sich <b>nicht</b> kürzen?",
+      a:[f(9,14), f(9,15), f(14,21), f(15,25)], r:0,
+      s:M("9 = 3 · 3")+" und "+M("14 = 2 · 7")+" haben keinen gemeinsamen Teiler außer 1. "+f(9,15)+" lässt sich durch 3 kürzen, "+f(14,21)+" durch 7, "+f(15,25)+" durch 5."
+    },
+
+    /* ---- 2 Vergleichen und Zahlenstrahl ---- */
+    {
+      b:2,
+      q:"Welcher Bruch ist am größten?",
+      a:[f(3,4), f(2,3), f(5,8), f(7,12)], r:0, zeit:40,
+      s:"Hauptnenner 24: "+f(18,24)+", "+f(16,24)+", "+f(15,24)+", "+f(14,24)+". "+f(7,12)+" hat zwar die größten Zahlen, ist aber am kleinsten."
+    },
+    {
+      b:2,
+      q:"Welcher Bruch ist am kleinsten?",
+      a:[f(1,9), f(1,7), f(1,5), f(1,3)], r:0,
+      s:"Gleicher Zähler: Je größer der Nenner, desto kleiner die Teile. Ein Neuntel ist das kleinste Stück."
+    },
+    {
+      b:2,
+      q:"Welches Zeichen gehört in die Lücke? "+f(5,6)+" □ "+f(7,9),
+      a:[M("&lt;"), M("="), M("&gt;")], r:2, fest:1,
+      s:"Hauptnenner 18: "+f(15,18)+" und "+f(14,18)+". Also "+f(5,6)+" &gt; "+f(7,9)+"."
+    },
+    {
+      b:2,
+      q:"Welcher Bruch gehört zum Punkt "+M("P")+"?"+q6Strahl(4, 2, 5),
+      a:[f(5,4), f(5,8), f(1,4), f(4,5)], r:0,
+      s:"Jede Einheit ist in 4 Teile geteilt. "+M("P")+" liegt 5 Viertel rechts von 0: "+f(5,4)+". "+f(5,8)+" teilt durch alle 8 Striche bis 2, "+f(1,4)+" zählt erst ab 1."
+    },
+    {
+      b:2,
+      q:"Welcher Bruch gehört zum Punkt "+M("P")+"?"+q6Strahl(6, 1, 4),
+      a:[f(2,3), f(4,7), f(3,5), f(1,3)], r:0,
+      s:"Von 0 bis 1 sind es 6 gleiche Abschnitte, "+M("P")+" liegt beim vierten: "+f(4,6)+" = "+f(2,3)+". "+f(4,7)+" zählt die 7 Striche statt der 6 Abschnitte."
+    },
+    {
+      b:2,
+      q:"Welcher Bruch liegt zwischen "+f(1,2)+" und "+f(3,4)+"?",
+      a:[f(5,8), f(2,5), f(4,5), f(7,8)], r:0,
+      s:"Hauptnenner 8: "+f(4,8)+" und "+f(6,8)+", dazwischen liegt "+f(5,8)+". "+f(2,5)+" ist kleiner als ein Halb, "+f(4,5)+" und "+f(7,8)+" sind größer als drei Viertel."
+    },
+
+    /* ---- 3 Addieren und Subtrahieren ---- */
+    {
+      b:3,
+      q:"Berechne "+f(2,9)+" + "+f(5,9)+".",
+      a:[f(7,9), f(7,18), f(10,9), f(7,81)], r:0,
+      s:"Gleicher Nenner: nur die Zähler addieren, der Nenner bleibt. "+f(7,18)+" entsteht, wenn man auch die Nenner addiert."
+    },
+    {
+      b:3,
+      q:"Berechne "+f(1,4)+" + "+f(1,6)+".",
+      a:[f(5,12), f(2,10), f(5,24), f(1,24)], r:0,
+      s:"Hauptnenner 12: "+f(3,12)+" + "+f(2,12)+" = "+f(5,12)+". "+f(2,10)+" addiert Zähler und Nenner einzeln, "+f(1,24)+" multipliziert."
+    },
+    {
+      b:3,
+      q:"Berechne "+f(5,6)+" − "+f(1,4)+".",
+      a:[f(7,12), f(4,2), f(1,3), f(7,24)], r:0,
+      s:"Hauptnenner 12: "+f(10,12)+" − "+f(3,12)+" = "+f(7,12)+". "+f(4,2)+" zieht Zähler und Nenner einzeln ab. "+f(1,3)+" = "+f(4,12)+" vergisst das Erweitern der Zähler."
+    },
+    {
+      b:3,
+      q:"Berechne "+gz(2,1,2)+" + "+gz(1,3,4)+".",
+      a:[gz(4,1,4), gz(3,4,6), gz(3,1,4), gz(4,3,4)], r:0, zeit:45,
+      s:"Ganze: "+M("2 + 1 = 3")+". Brüche: "+f(2,4)+" + "+f(3,4)+" = "+f(5,4)+" = "+gz(1,1,4)+". Zusammen "+gz(4,1,4)+". Bei "+gz(3,1,4)+" fehlt der Übertrag."
+    },
+    {
+      b:3,
+      q:"Berechne "+M("3")+" − "+f(1,3)+".",
+      a:[gz(2,2,3), gz(2,1,3), f(2,3), gz(3,1,3)], r:0,
+      s:"Ein Ganzes in Drittel tauschen: "+M("3")+" = "+gz(2,3,3)+", minus "+f(1,3)+" ergibt "+gz(2,2,3)+". "+gz(2,1,3)+" zieht 1 ab und lässt das Drittel einfach stehen."
+    },
+    {
+      b:3,
+      q:"Berechne "+f(7,10)+" − "+f(1,2)+" + "+f(3,5)+".",
+      a:[f(4,5), gz(1,4,5), f(9,17)], r:0, zeit:45,
+      s:"Hauptnenner 10: "+f(7,10)+" − "+f(5,10)+" + "+f(6,10)+" = "+f(8,10)+" = "+f(4,5)+". "+gz(1,4,5)+" übersieht das Minus, "+f(9,17)+" rechnet Zähler und Nenner einzeln."
+    },
+
+    /* ---- 4 Multiplizieren und Dividieren ---- */
+    {
+      b:4,
+      q:"Berechne "+f(2,3)+" · "+f(4,5)+".",
+      a:[f(8,15), f(10,12), f(8,5), f(6,8)], r:0,
+      s:"Zähler mal Zähler, Nenner mal Nenner: "+f(8,15)+". Einen gemeinsamen Nenner braucht man nur beim Addieren. "+f(10,12)+" rechnet über Kreuz."
+    },
+    {
+      b:4,
+      q:"Berechne "+f(3,4)+" · 8.",
+      a:[M("6"), f(3,32), f(11,4), f(3,2)], r:0,
+      s:"Nur der Zähler wird mit 8 multipliziert: "+f(24,4)+" = 6. "+f(3,32)+" multipliziert den Nenner, das wäre "+f(3,4)+" : 8."
+    },
+    {
+      b:4,
+      q:"Berechne "+f(5,6)+" : "+f(2,3)+".",
+      a:[f(5,4), f(5,9), f(4,5)], r:0, zeit:40,
+      s:"Mal Kehrbruch des zweiten Bruchs: "+f(5,6)+" · "+f(3,2)+" = "+f(15,12)+" = "+f(5,4)+". "+f(5,9)+" multipliziert ohne Kehrbruch, "+f(4,5)+" nimmt den Kehrbruch vom ersten."
+    },
+    {
+      b:4,
+      q:"Berechne "+f(6,7)+" : 3.",
+      a:[f(2,7), f(18,7), f(2,21)], r:0,
+      s:"Sechs Siebtel durch 3 sind zwei Siebtel. Ebenso: "+f(6,7)+" · "+f(1,3)+" = "+f(6,21)+" = "+f(2,7)+". "+f(2,21)+" teilt den Zähler und vergrößert zusätzlich den Nenner."
+    },
+    {
+      b:4,
+      q:"Wie viele "+f(1,4)+"-Liter-Gläser kann man aus 3 Litern Saft füllen?",
+      a:[M("12"), f(3,4), M("4")], r:0,
+      s:M("3 : ")+f(1,4)+M(" = 3 · 4 = 12")+". Vier Gläser füllen einen Liter, drei Liter füllen zwölf. "+f(3,4)+" rechnet mal statt geteilt."
+    },
+    {
+      b:4,
+      q:"Welche Aussage stimmt?",
+      a:["Mal einen Bruch unter 1 macht kleiner.", "Malnehmen macht immer größer.", "Teilen macht immer kleiner."], r:0,
+      s:"Beispiel: "+M("6 · ")+f(1,2)+M(" = 3")+", das ist kleiner als 6. Umgekehrt "+M("6 : ")+f(1,2)+M(" = 12")+": Teilen durch einen Bruch unter 1 macht größer."
+    },
+
+    /* ---- 5 Brueche und Dezimalzahlen ---- */
+    {
+      b:5,
+      q:"Schreibe "+f(3,4)+" als Dezimalzahl.",
+      a:[M("0,75"), M("0,34"), M("3,4"), M("0,43")], r:0,
+      s:"Auf den Nenner 100 erweitern: "+f(3,4)+" = "+f(75,100)+" = "+M("0,75")+". Zähler und Nenner einfach hintereinander schreiben ("+M("0,34")+") geht nicht."
+    },
+    {
+      b:5,
+      q:"Schreibe "+M("0,4")+" als vollständig gekürzten Bruch.",
+      a:[f(2,5), f(1,4), f(4,10), f(4,100)], r:0,
+      s:M("0,4")+" sind 4 Zehntel: "+f(4,10)+", gekürzt "+f(2,5)+". "+f(1,4)+" verwechselt die 4 mit dem Nenner."
+    },
+    {
+      b:5,
+      q:"Schreibe "+f(1,8)+" als Dezimalzahl.",
+      a:[M("0,125"), M("0,8"), M("0,18"), M("1,8")], r:0,
+      s:M("1 : 8 = 0,125")+". Oder über "+f(1,4)+" = "+M("0,25")+" und davon die Hälfte."
+    },
+    {
+      b:5,
+      q:"Schreibe "+M("0,35")+" als vollständig gekürzten Bruch.",
+      a:[f(7,20), f(35,10), f(3,5), f(7,2)], r:0,
+      s:M("0,35")+" sind 35 Hundertstel: "+f(35,100)+", durch 5 gekürzt "+f(7,20)+". "+f(35,10)+" wäre "+M("3,5")+"."
+    },
+    {
+      b:5,
+      q:"Welche Zahl ist größer: "+M("0,6")+" oder "+f(5,8)+"?",
+      a:[f(5,8), M("0,6"), "beide gleich groß"], r:0, fest:1,
+      s:f(5,8)+" = "+M("5 : 8 = 0,625")+", und "+M("0,625 &gt; 0,600")+". Wer "+f(5,8)+" als "+M("0,58")+" liest, hält "+M("0,6")+" für größer."
+    },
+    {
+      b:5,
+      q:"Schreibe "+f(2,3)+" als Dezimalzahl.",
+      a:[M("0,666…"), M("0,23"), M("0,6"), M("1,5")], r:0,
+      s:M("2 : 3 = 0,666…")+", die 6 wiederholt sich ohne Ende. "+M("1,5")+" ist "+M("3 : 2")+", also der Kehrbruch."
+    },
+
+    /* ---- 6 Sachaufgaben ---- */
+    {
+      b:6,
+      q:"Von einer Pizza isst ein Kind "+f(1,3)+", ein anderes "+f(1,4)+". Welcher Anteil der Pizza bleibt übrig?",
+      a:[f(5,12), f(7,12), f(2,7), f(1,2)], r:0, zeit:40,
+      s:"Gegessen: "+f(4,12)+" + "+f(3,12)+" = "+f(7,12)+". Übrig: "+f(12,12)+" − "+f(7,12)+" = "+f(5,12)+". "+f(7,12)+" ist der gegessene Teil."
+    },
+    {
+      b:6,
+      q:"Ein Schulweg ist "+gz(2,1,2)+" km lang. "+f(3,5)+" davon fährt man mit dem Bus. Wie viele Kilometer sind das?",
+      a:[gz(1,1,2)+" km", M("1")+" km", f(3,10)+" km"], r:0, zeit:45,
+      s:gz(2,1,2)+" = "+f(5,2)+", dann "+f(5,2)+" · "+f(3,5)+" = "+f(15,10)+" = "+gz(1,1,2)+". 1 km ist der Rest, den man nicht mit dem Bus fährt."
+    },
+    {
+      b:6,
+      q:f(3,4)+" l Saft werden gleichmäßig auf 6 Gläser verteilt. Wie viel kommt in jedes Glas?",
+      a:[f(1,8)+" l", gz(4,1,2)+" l", f(3,10)+" l"], r:0,
+      s:f(3,4)+" : 6 = "+f(3,24)+" = "+f(1,8)+" l. "+gz(4,1,2)+" l entsteht durch Malnehmen, das wäre mehr Saft als in der Flasche."
+    },
+    {
+      b:6,
+      q:"Von 30 Kindern kommen "+f(2,5)+" mit dem Rad und "+f(1,3)+" zu Fuß, der Rest mit dem Bus. Wie viele Kinder kommen mit dem Bus?",
+      a:[M("8"), M("22"), M("10"), M("12")], r:0, zeit:45,
+      s:f(2,5)+" von 30 sind 12, "+f(1,3)+" von 30 sind 10. Zusammen 22, also "+M("30 − 22 = 8")+" mit dem Bus. 22 ist die Zahl derer, die nicht Bus fahren."
+    },
+    {
+      b:6,
+      q:"Ein Rezept für 4 Personen braucht "+f(3,4)+" Tasse Zucker. Wie viel braucht man für 6 Personen?",
+      a:[gz(1,1,8)+" Tassen", gz(1,1,2)+" Tassen", gz(2,3,4)+" Tassen"], r:0, zeit:45,
+      s:"Für 2 Personen die Hälfte: "+f(3,8)+" Tasse. Für 6 Personen dreimal so viel: "+f(9,8)+" = "+gz(1,1,8)+". "+gz(1,1,2)+" wäre für 8 Personen."
+    },
+    {
+      b:6,
+      q:"Ein Tank ist zu "+f(2,3)+" gefüllt, das sind 40 l. Wie viel passt in den vollen Tank?",
+      a:[M("60")+" l", gz(26,2,3)+" l", M("120")+" l", M("20")+" l"], r:0,
+      s:"Zwei Drittel sind 40 l, ein Drittel also 20 l, das Ganze "+M("3 · 20 = 60")+" l. "+gz(26,2,3)+" l sind "+f(2,3)+" von 40 l, gefragt ist umgekehrt."
+    }
+  ]
+};
+
+var Q_SAETZE = [Q7_RATIONAL, Q7_BASAL, Q2_QUANTEN, QE_KINEMATIK, Q8_TERME, Q6_BRUECHE];
 
 /* -----------------------------------------------------------------------
    LIVE-QUIZ: QR-Code
