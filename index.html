@@ -12872,7 +12872,374 @@ var QE_KINEMATIK = {
   ]
 };
 
-var Q_SAETZE = [Q7_RATIONAL, Q7_BASAL, Q2_QUANTEN, QE_KINEMATIK];
+/* Zahlengerade fuer Ungleichungen: Strahl ab grenze nach rechts oder links,
+   voller Punkt = Grenze gehoert dazu, leerer Punkt = gehoert nicht dazu. */
+function zgDia(grenze, voll, rechts){
+  var W = 520, H = 90, L = 30, R = 30, Y0 = 52, min = -5, max = 5;
+  var sx = (W - L - R)/(max - min);
+  function X(x){ return +(L + (x - min)*sx).toFixed(1); }
+  var s = '<div class="qbildbox"><svg class="qbild kdia" viewBox="0 0 ' + W + ' ' + H +
+    '" xmlns="http://www.w3.org/2000/svg" style="font-family:var(--sans); font-size:19px">';
+  var t = "", g = "", x;
+  for(x = min; x <= max; x++){
+    g += '<path d="M' + X(x) + ' ' + (Y0 - 6) + 'V' + (Y0 + 6) + '"/>';
+    t += '<text x="' + X(x) + '" y="' + (Y0 + 30) + '" text-anchor="middle">' + (x < 0 ? "−" + (-x) : x) + '</text>';
+  }
+  s += '<g style="stroke:var(--fg-3); stroke-width:1.6; fill:none">' +
+       '<path d="M8 ' + Y0 + 'H' + (W - 8) + '"/><path d="M' + (W - 16) + ' ' + (Y0 - 5) + 'L' + (W - 8) + ' ' + Y0 + 'L' + (W - 16) + ' ' + (Y0 + 5) + '"/>' + g + '</g>';
+  s += '<g style="fill:var(--fg-3)">' + t + '</g>';
+  var ende = rechts ? W - 14 : 14, pf = rechts ? -1 : 1, yb = Y0 - 18;
+  s += '<g style="stroke:var(--mathe); stroke-width:4; fill:none; stroke-linecap:round; stroke-linejoin:round">' +
+       '<path d="M' + X(grenze) + ' ' + yb + 'H' + ende + '"/>' +
+       '<path d="M' + (ende + pf*12) + ' ' + (yb - 8) + 'L' + ende + ' ' + yb + 'L' + (ende + pf*12) + ' ' + (yb + 8) + '"/></g>';
+  s += '<circle cx="' + X(grenze) + '" cy="' + yb + '" r="8" style="stroke:var(--mathe); stroke-width:3; fill:' +
+       (voll ? 'var(--mathe)' : 'var(--surface-page)') + '"/>';
+  return s + '</svg></div>';
+}
+
+var Q8_TERME = {
+  fach:"Mathematik",
+  stufe:"8",
+  titel:"Terme und Gleichungen",
+  unter:"Klasse 8, Training vor der Arbeit: Terme aufstellen und berechnen, vereinfachen, Distributivgesetz, binomische Formeln, Gleichungen mit Probe, Sachaufgaben, Ungleichungen",
+  sekunden:30,
+  bereiche:["Terme aufstellen und berechnen", "Terme vereinfachen", "Distributivgesetz", "Binomische Formeln", "Gleichungen und Probe", "Sachaufgaben", "Ungleichungen"],
+  fragen:[
+    /* ---- 0 Terme aufstellen und berechnen ---- */
+    {
+      b:0,
+      q:"Welcher Term beschreibt: „Das Dreifache einer Zahl "+M("x")+", vermindert um 5“?",
+      a:[M("3x − 5"), M("3(x − 5)"), M("5 − 3x"), M("3 + x − 5")], r:0,
+      s:"Erst das Dreifache bilden ("+M("3x")+"), dann 5 abziehen. "+M("3(x − 5)")+" wäre das Dreifache der um 5 verminderten Zahl."
+    },
+    {
+      b:0,
+      q:"Ein Rechteck ist "+M("x")+" cm lang und 4 cm schmaler als lang. Welcher Term gibt den Umfang in cm an?",
+      a:[M("4x − 8"), M("x(x − 4)"), M("2x − 4"), M("4x − 4")], r:0, zeit:40,
+      s:"Breite "+M("x − 4")+". Umfang "+M("2 · x + 2 · (x − 4) = 2x + 2x − 8 = 4x − 8")+". "+M("x(x − 4)")+" wäre der Flächeninhalt."
+    },
+    {
+      b:0,
+      q:"Berechne den Wert von "+M("2x² − 3x")+" für "+M("x = −2")+".",
+      a:[M("14"), M("2"), M("−2"), M("22")], r:0, zeit:40,
+      s:M("2 · (−2)² − 3 · (−2) = 2 · 4 + 6 = 14")+". Wer "+M("−3 · (−2)")+" als "+M("−6")+" rechnet, erhält 2. Das Quadrat gehört nur zum "+M("x")+", nicht zur 2."
+    },
+    {
+      b:0,
+      q:"Berechne den Wert von "+M("5 − 3 · (x + 1)")+" für "+M("x = 4")+".",
+      a:[M("−10"), M("10"), M("−6"), M("20")], r:0,
+      s:"Klammer zuerst, dann Punkt vor Strich: "+M("5 − 3 · 5 = 5 − 15 = −10")+". Wer von links rechnet ("+M("(5 − 3) · 5")+"), erhält 10."
+    },
+    {
+      b:0,
+      q:"Mit Streichhölzern wird eine Reihe von Quadraten gelegt: 1 Quadrat braucht 4 Hölzer, 2 Quadrate 7, 3 Quadrate 10. Wie viele Hölzer braucht man für "+M("x")+" Quadrate?",
+      a:[M("3x + 1"), M("4x"), M("3x + 4"), M("x + 3")], r:0, zeit:45,
+      s:"Jedes neue Quadrat braucht 3 Hölzer, das erste eins mehr: "+M("3x + 1")+". Probe: "+M("3 · 3 + 1 = 10")+". "+M("4x")+" zählt die gemeinsamen Seiten doppelt."
+    },
+    {
+      b:0,
+      q:"Zu welchem Term passt die Wertetabelle? "+M("x")+": 1, 2, 3 → Wert: 5, 8, 11",
+      a:[M("3x + 2"), M("x + 4"), M("2x + 3"), M("5x")], r:0,
+      s:"Der Wert wächst um 3, wenn "+M("x")+" um 1 wächst, also "+M("3x + …")+". Bei "+M("x = 1")+" fehlen noch 2. "+M("x + 4")+" und "+M("2x + 3")+" passen nur beim ersten Wert."
+    },
+
+    /* ---- 1 Terme vereinfachen ---- */
+    {
+      b:1,
+      q:"Vereinfache: "+M("3x + 5 − x + 2"),
+      a:[M("2x + 7"), M("9x"), M("4x + 7"), M("2x + 3")], r:0,
+      s:"Gleichartige Glieder zusammenfassen: "+M("3x − x = 2x")+" und "+M("5 + 2 = 7")+". Das Minus vor "+M("x")+" gehört zum "+M("x")+"."
+    },
+    {
+      b:1,
+      q:"Vereinfache: "+M("4x · 3x"),
+      a:[M("12x²"), M("12x"), M("7x"), M("7x²")], r:0,
+      s:"Zahlen malnehmen, Variablen malnehmen: "+M("4 · 3 = 12")+" und "+M("x · x = x²")+". Addiert wird nur bei "+M("4x + 3x = 7x")+"."
+    },
+    {
+      b:1,
+      q:"Vereinfache: "+M("x² + x²"),
+      a:[M("2x²"), M("x⁴"), M("2x⁴"), M("4x")], r:0,
+      s:"Zwei gleichartige Glieder: "+M("1x² + 1x² = 2x²")+". Die Hochzahl ändert sich nur beim Malnehmen: "+M("x² · x² = x⁴")+"."
+    },
+    {
+      b:1,
+      q:"Vereinfache: "+M("3xy + 2x − xy + 4x"),
+      a:[M("2xy + 6x"), M("8xy"), M("4xy + 6x"), M("2xy + 6")], r:0, zeit:40,
+      s:M("xy")+"-Glieder und "+M("x")+"-Glieder getrennt: "+M("3xy − xy = 2xy")+", "+M("2x + 4x = 6x")+". "+M("xy")+" und "+M("x")+" sind nicht gleichartig."
+    },
+    {
+      b:1,
+      q:"Vereinfache: "+M("2x · 3y · (−x)"),
+      a:[M("−6x²y"), M("6x²y"), M("−6xy"), M("−5x²y")], r:0,
+      s:"Vorzeichen: ein Minus, also negativ. Zahlen: "+M("2 · 3 · 1 = 6")+". Variablen: "+M("x · x · y = x²y")+"."
+    },
+    {
+      b:1,
+      q:"Welcher Term ist gleichwertig zu "+M("2x + 3y + x − y")+"?",
+      a:[M("3x + 2y"), M("3x + 4y"), M("5xy"), M("2x + 2y")], r:0,
+      s:M("2x + x = 3x")+" und "+M("3y − y = 2y")+". "+M("x")+" und "+M("y")+" lassen sich nicht zusammenfassen."
+    },
+    {
+      b:1,
+      q:"Ein Quader hat die Kanten "+M("x")+", "+M("2x")+" und "+M("y")+". Welcher Term gibt das Volumen an?",
+      a:[M("2x²y"), M("3xy"), M("2xy"), M("3x + y")], r:0, zeit:40,
+      s:"Volumen = Länge · Breite · Höhe: "+M("x · 2x · y = 2x²y")+". "+M("3x + y")+" wäre die Summe der drei Kanten."
+    },
+
+    /* ---- 2 Distributivgesetz ---- */
+    {
+      b:2,
+      q:"Multipliziere aus: "+M("3(2x − 5)"),
+      a:[M("6x − 15"), M("6x − 5"), M("6x + 15"), M("5x − 2")], r:0,
+      s:"Jedes Glied in der Klammer mit 3 malnehmen: "+M("3 · 2x − 3 · 5 = 6x − 15")+". Bei "+M("6x − 5")+" wurde die 5 vergessen."
+    },
+    {
+      b:2,
+      q:"Multipliziere aus: "+M("−2(x − 4)"),
+      a:[M("−2x + 8"), M("−2x − 8"), M("2x − 8"), M("−2x + 4")], r:0,
+      s:M("(−2) · x = −2x")+" und "+M("(−2) · (−4) = +8")+". Minus mal Minus gibt Plus."
+    },
+    {
+      b:2,
+      q:"Löse die Klammer auf: "+M("8x − (3x − 5)"),
+      a:[M("5x + 5"), M("5x − 5"), M("11x − 5"), M("11x + 5")], r:0,
+      s:"Minus vor der Klammer dreht alle Vorzeichen in der Klammer um: "+M("8x − 3x + 5 = 5x + 5")+"."
+    },
+    {
+      b:2,
+      q:"Klammere so weit wie möglich aus: "+M("12x + 18"),
+      a:[M("6(2x + 3)"), M("6(2x + 18)"), M("12(x + 6)"), M("6(6x + 12)")], r:0,
+      s:"Größter gemeinsamer Teiler von 12 und 18 ist 6: "+M("6 · 2x + 6 · 3")+". Probe durch Ausmultiplizieren."
+    },
+    {
+      b:2,
+      q:"Klammere so weit wie möglich aus: "+M("5x² − 10x"),
+      a:[M("5x(x − 2)"), M("5x(x − 10)"), M("x(5x − 2)"), M("5x(2 − x)")], r:0, zeit:40,
+      s:"Beide Glieder enthalten "+M("5")+" und "+M("x")+": "+M("5x · x − 5x · 2 = 5x(x − 2)")+". In der Klammer bleibt, was nach dem Teilen durch "+M("5x")+" übrig ist."
+    },
+    {
+      b:2,
+      q:"Multipliziere aus: "+M("(x + 3)(x − 2)"),
+      a:[M("x² + x − 6"), M("x² − 6"), M("x² + 5x − 6"), M("x² − x − 6")], r:0, zeit:40,
+      s:"Jedes mit jedem: "+M("x² − 2x + 3x − 6 = x² + x − 6")+". Die beiden gemischten Glieder darf man nicht vergessen."
+    },
+    {
+      b:2,
+      q:"Multipliziere aus: "+M("(2x − 1)(3x + 4)"),
+      a:[M("6x² + 5x − 4"), M("6x² − 4"), M("6x² − 5x − 4"), M("6x² + 5x + 4")], r:0, zeit:45,
+      s:M("6x² + 8x − 3x − 4 = 6x² + 5x − 4")+". Vorzeichen beachten: "+M("(−1) · 4 = −4")+"."
+    },
+
+    /* ---- 3 Binomische Formeln ---- */
+    {
+      b:3,
+      q:"Multipliziere aus: "+M("(x + 5)²"),
+      a:[M("x² + 10x + 25"), M("x² + 25"), M("x² + 5x + 25"), M("x² + 10x + 10")], r:0,
+      s:"1. binomische Formel: "+M("x² + 2 · x · 5 + 5² = x² + 10x + 25")+". Ohne das gemischte Glied "+M("10x")+" stimmt es nicht."
+    },
+    {
+      b:3,
+      q:"Multipliziere aus: "+M("(3x − 2)²"),
+      a:[M("9x² − 12x + 4"), M("9x² − 4"), M("3x² − 12x + 4"), M("9x² − 6x + 4")], r:0, zeit:40,
+      s:"2. binomische Formel: "+M("(3x)² − 2 · 3x · 2 + 2² = 9x² − 12x + 4")+". Die 3 wird mitquadriert."
+    },
+    {
+      b:3,
+      q:"Multipliziere aus: "+M("(x + 4)(x − 4)"),
+      a:[M("x² − 16"), M("x² + 16"), M("x² − 8x − 16"), M("x² − 8")], r:0,
+      s:"3. binomische Formel: "+M("x² − 4² = x² − 16")+". Die gemischten Glieder "+M("−4x")+" und "+M("+4x")+" heben sich auf."
+    },
+    {
+      b:3,
+      q:"Ergänze die Lücke: "+M("x² + ___ + 36 = (x + 6)²"),
+      a:[M("12x"), M("6x"), M("36x"), M("12")], r:0,
+      s:"Das gemischte Glied ist "+M("2 · x · 6 = 12x")+". Die 2 vergisst man leicht."
+    },
+    {
+      b:3,
+      q:"Rechne geschickt mit einer binomischen Formel: "+M("19 · 21"),
+      a:[M("399"), M("400"), M("401"), M("389")], r:0,
+      s:M("(20 − 1)(20 + 1) = 20² − 1² = 400 − 1 = 399")+"."
+    },
+    {
+      b:3,
+      q:"Faktorisiere: "+M("x² − 49"),
+      a:[M("(x + 7)(x − 7)"), M("(x − 7)²"), M("(x + 7)²"), M("x(x − 49)")], r:0,
+      s:"Differenz zweier Quadrate, 3. binomische Formel rückwärts: "+M("x² − 7² = (x + 7)(x − 7)")+"."
+    },
+    {
+      b:3,
+      q:"Faktorisiere: "+M("x² + 6x + 9"),
+      a:[M("(x + 3)²"), M("(x + 9)²"), M("(x + 6)²"), M("(x + 3)(x − 3)")], r:0,
+      s:M("9 = 3²")+" und "+M("6x = 2 · x · 3")+", also 1. binomische Formel: "+M("(x + 3)²")+"."
+    },
+    {
+      b:3,
+      q:"Faktorisiere: "+M("4x² − 20x + 25"),
+      a:[M("(2x − 5)²"), M("(4x − 5)²"), M("(2x + 5)²"), M("(2x − 5)(2x + 5)")], r:0, zeit:40,
+      s:M("4x² = (2x)²")+", "+M("25 = 5²")+", "+M("20x = 2 · 2x · 5")+". Minus in der Mitte: 2. binomische Formel, "+M("(2x − 5)²")+"."
+    },
+
+    /* ---- 4 Gleichungen und Probe ---- */
+    {
+      b:4,
+      q:"Löse: "+M("3x + 7 = 22"),
+      a:[M("x = 5"), M("x = 15"), M("x = 3"), M("x = −5")], r:0,
+      s:M("| − 7")+": "+M("3x = 15")+". "+M("| : 3")+": "+M("x = 5")+". Probe: "+M("3 · 5 + 7 = 22")+"."
+    },
+    {
+      b:4,
+      q:"Löse: "+M("−3x = 12"),
+      a:[M("x = −4"), M("x = 4"), M("x = 15"), M("x = −36")], r:0,
+      s:"Durch "+M("−3")+" teilen: "+M("x = 12 : (−3) = −4")+". Das Vorzeichen gehört zur Zahl vor "+M("x")+"."
+    },
+    {
+      b:4,
+      q:"Löse: "+M("5x − 4 = 2x + 14"),
+      a:[M("x = 6"), M("x = −6"), M("x = ")+f("10", "3"), M("x = ")+f("18", "7")], r:0, zeit:40,
+      s:M("| − 2x")+": "+M("3x − 4 = 14")+". "+M("| + 4")+": "+M("3x = 18")+". "+M("| : 3")+": "+M("x = 6")+"."
+    },
+    {
+      b:4,
+      q:"Löse: "+M("2(x − 3) = x + 4"),
+      a:[M("x = 10"), M("x = 7"), M("x = −2"), M("x = 2")], r:0, zeit:45,
+      s:"Ausmultiplizieren: "+M("2x − 6 = x + 4")+". "+M("| − x")+": "+M("x − 6 = 4")+". "+M("| + 6")+": "+M("x = 10")+". Wer nur "+M("2x − 3")+" schreibt, erhält 7."
+    },
+    {
+      b:4,
+      q:"Löse: "+f(M("x"), "4")+M(" + 2 = 5"),
+      a:[M("x = 12"), M("x = 28"), M("x = 3"), M("x = 7")], r:0,
+      s:M("| − 2")+": "+f(M("x"), "4")+M(" = 3")+". "+M("| · 4")+": "+M("x = 12")+". Erst die 2 abziehen, dann malnehmen."
+    },
+    {
+      b:4,
+      q:"Welche Umformung ist <b>keine</b> Äquivalenzumformung?",
+      a:["beide Seiten mit 0 multiplizieren", "auf beiden Seiten 5 addieren", "beide Seiten durch −2 teilen", "beide Seiten vertauschen"], r:0,
+      s:"Mal 0 macht aus jeder Gleichung "+M("0 = 0")+", die Lösungsmenge ändert sich. Durch 0 teilen geht gar nicht. Alles andere ist erlaubt, auch Teilen durch negative Zahlen."
+    },
+    {
+      b:4,
+      q:"Probe: Ist "+M("x = 3")+" eine Lösung von "+M("4x − 5 = 2x + 1")+"?",
+      a:["ja, beide Seiten ergeben 7", "nein, links 7, rechts 6", "nein, links 7, rechts 9", "ja, beide Seiten ergeben 3"], r:0,
+      s:"Links: "+M("4 · 3 − 5 = 7")+". Rechts: "+M("2 · 3 + 1 = 7")+". Beide Seiten gleich, also ist 3 eine Lösung."
+    },
+    {
+      b:4,
+      q:"Mia löst "+M("3(x + 2) = 18")+" und erhält "+M("x = 8")+". Was zeigt die Probe?",
+      a:["falsch, richtig ist "+M("x = 4"), "richtig", "falsch, richtig ist "+M("x = 6"), "falsch, richtig ist "+M("x = 5")], r:0, zeit:45,
+      s:"Probe: "+M("3 · (8 + 2) = 30 ≠ 18")+". Richtig: "+M("| : 3")+" gibt "+M("x + 2 = 6")+", also "+M("x = 4")+". Probe: "+M("3 · 6 = 18")+"."
+    },
+    {
+      b:4,
+      q:"Wie viele Lösungen hat "+M("2(x + 3) = 2x + 5")+"?",
+      a:["keine", "genau eine", "unendlich viele", "zwei"], r:0, fest:true, zeit:40,
+      s:"Ausmultiplizieren: "+M("2x + 6 = 2x + 5")+". "+M("| − 2x")+": "+M("6 = 5")+", das ist falsch, egal was man für "+M("x")+" einsetzt. Also keine Lösung."
+    },
+    {
+      b:4,
+      q:"Wie viele Lösungen hat "+M("3(x − 1) = 3x − 3")+"?",
+      a:["keine", "genau eine", "unendlich viele", "zwei"], r:2, fest:true, zeit:40,
+      s:"Ausmultiplizieren: "+M("3x − 3 = 3x − 3")+". Beide Seiten sind immer gleich, jede Zahl ist eine Lösung."
+    },
+
+    /* ---- 5 Sachaufgaben ---- */
+    {
+      b:5,
+      q:"Ich denke mir eine Zahl, verdopple sie und addiere 7. Ich erhalte 31. Welche Zahl war es?",
+      a:[M("12"), M("24"), M("15,5"), M("19")], r:0,
+      s:M("2x + 7 = 31")+", also "+M("2x = 24")+" und "+M("x = 12")+". 24 ist schon das Doppelte."
+    },
+    {
+      b:5,
+      q:"Ein Handytarif kostet 9 € Grundgebühr und 0,05 € pro Minute. Die Rechnung beträgt 15 €. Welche Gleichung passt für "+M("x")+" Minuten?",
+      a:[M("9 + 0,05x = 15"), M("9x + 0,05 = 15"), M("(9 + 0,05)x = 15"), M("0,05 + 9 = 15x")], r:0, zeit:40,
+      s:"Die Grundgebühr fällt einmal an, der Minutenpreis "+M("x")+"-mal: "+M("9 + 0,05 · x = 15")+"."
+    },
+    {
+      b:5,
+      q:"Wie viele Minuten wurde telefoniert? "+M("9 + 0,05x = 15"),
+      a:["120 Minuten", "300 Minuten", "6 Minuten", "480 Minuten"], r:0, zeit:40,
+      s:M("| − 9")+": "+M("0,05x = 6")+". "+M("| : 0,05")+": "+M("x = 120")+". 300 kommt heraus, wenn man die Grundgebühr vergisst."
+    },
+    {
+      b:5,
+      q:"Tom ist 4 Jahre älter als Anna. Zusammen sind sie 30 Jahre alt. Wie alt ist Anna?",
+      a:["13 Jahre", "17 Jahre", "15 Jahre", "11 Jahre"], r:0, zeit:40,
+      s:"Anna "+M("x")+", Tom "+M("x + 4")+": "+M("x + x + 4 = 30")+", "+M("2x = 26")+", "+M("x = 13")+". 17 ist Toms Alter."
+    },
+    {
+      b:5,
+      q:"Ein Rechteck hat 36 cm Umfang. Es ist doppelt so lang wie breit. Wie breit ist es?",
+      a:["6 cm", "12 cm", "9 cm", "18 cm"], r:0, zeit:45,
+      s:"Breite "+M("x")+", Länge "+M("2x")+": "+M("2 · (x + 2x) = 36")+", "+M("6x = 36")+", "+M("x = 6")+". 12 cm ist die Länge, 9 cm wäre ein Quadrat."
+    },
+    {
+      b:5,
+      q:"Die Summe von drei aufeinanderfolgenden natürlichen Zahlen ist 72. Wie heißt die kleinste?",
+      a:[M("23"), M("24"), M("22"), M("25")], r:0, zeit:45,
+      s:M("x + (x + 1) + (x + 2) = 72")+", "+M("3x + 3 = 72")+", "+M("x = 23")+". Probe: "+M("23 + 24 + 25 = 72")+". 24 ist die mittlere."
+    },
+    {
+      b:5,
+      q:"Im Kino kostet ein Kinderticket "+M("x")+" €, ein Erwachsenenticket 4 € mehr. Zwei Erwachsene und drei Kinder zahlen 48 €. Wie teuer ist ein Kinderticket?",
+      a:["8 €", "12 €", "9,60 €", "10 €"], r:0, zeit:60,
+      s:M("2(x + 4) + 3x = 48")+", "+M("5x + 8 = 48")+", "+M("5x = 40")+", "+M("x = 8")+". Probe: "+M("2 · 12 + 3 · 8 = 48")+". 12 € ist der Erwachsenenpreis."
+    },
+
+    /* ---- 6 Ungleichungen ---- */
+    {
+      b:6,
+      q:"Löse: "+M("2x + 3 < 11"),
+      a:[M("x < 4"), M("x > 4"), M("x < 7"), M("x ≤ 4")], r:0,
+      s:M("| − 3")+": "+M("2x < 8")+". "+M("| : 2")+": "+M("x < 4")+". Wie bei Gleichungen, das Zeichen bleibt."
+    },
+    {
+      b:6,
+      q:"Löse: "+M("−3x ≤ 12"),
+      a:[M("x ≥ −4"), M("x ≤ −4"), M("x ≥ 4"), M("x ≤ 4")], r:0,
+      s:"Beim Teilen durch eine negative Zahl dreht sich das Zeichen um: "+M("x ≥ −4")+". Probe mit "+M("x = 0")+": "+M("0 ≤ 12")+" stimmt."
+    },
+    {
+      b:6,
+      q:"Löse: "+M("−2x + 1 > 7"),
+      a:[M("x < −3"), M("x > −3"), M("x < 3"), M("x > 3")], r:0, zeit:40,
+      s:M("| − 1")+": "+M("−2x > 6")+". "+M("| : (−2)")+", Zeichen dreht sich: "+M("x < −3")+"."
+    },
+    {
+      b:6,
+      q:"Welche Zahl erfüllt die Ungleichung "+M("5 − x > 2")+"?",
+      a:[M("2"), M("3"), M("4"), M("5")], r:0, fest:true,
+      s:"Einsetzen: "+M("5 − 2 = 3 > 2")+" stimmt. Bei 3 ist "+M("2 > 2")+" falsch, die Grenze gehört nicht dazu. Gelöst: "+M("x < 3")+"."
+    },
+    {
+      b:6,
+      q:"Welche Ungleichung zeigt die Zahlengerade?"+zgDia(1, false, false),
+      a:[M("x < 1"), M("x ≤ 1"), M("x > 1"), M("x ≥ 1")], r:0, fest:true,
+      s:"Der Pfeil zeigt nach links, also kleiner. Der leere Punkt heißt: 1 gehört nicht dazu, also "+M("x < 1")+"."
+    },
+    {
+      b:6,
+      q:"Welche Ungleichung zeigt die Zahlengerade?"+zgDia(-2, true, true),
+      a:[M("x < −2"), M("x ≤ −2"), M("x > −2"), M("x ≥ −2")], r:3, fest:true,
+      s:"Der Pfeil zeigt nach rechts, also größer. Der volle Punkt heißt: −2 gehört dazu, also "+M("x ≥ −2")+"."
+    },
+    {
+      b:6,
+      q:"Löse "+M("3x − 4 ≥ 2")+". Welche Zahlengerade passt?<br>A: voller Punkt bei 2, Pfeil nach rechts<br>B: leerer Punkt bei 2, Pfeil nach rechts<br>C: voller Punkt bei 2, Pfeil nach links<br>D: voller Punkt bei −2, Pfeil nach rechts",
+      a:["A", "B", "C", "D"], r:0, fest:true, zeit:45,
+      s:M("3x ≥ 6")+", "+M("x ≥ 2")+". Größer-gleich: Pfeil nach rechts, die 2 gehört dazu, also voller Punkt."
+    },
+    {
+      b:6,
+      q:"Ein Taxi kostet 4 € Grundpreis und 2 € pro km. Du hast 20 €. Wie weit kannst du höchstens fahren?",
+      a:["8 km", "10 km", "12 km", "6 km"], r:0, zeit:45,
+      s:M("4 + 2x ≤ 20")+", "+M("2x ≤ 16")+", "+M("x ≤ 8")+". 10 km kommt heraus, wenn man den Grundpreis vergisst."
+    }
+  ]
+};
+
+var Q_SAETZE = [Q7_RATIONAL, Q7_BASAL, Q2_QUANTEN, QE_KINEMATIK, Q8_TERME];
 
 /* -----------------------------------------------------------------------
    LIVE-QUIZ: QR-Code

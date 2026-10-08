@@ -200,7 +200,9 @@ Erklärung. Bewegungsdiagramme (t-s, t-v) zeichnet `kDia()` direkt über
 `QE_KINEMATIK`: Streckenzüge, Farben als CSS-Variablen, Klasse `qbild kdia`
 (am Beamer höchstens `min(600px, 54vh)` breit, damit vier Antworten noch auf
 1080p passen). Das SVG steht am Ende von `q` und kommt mit der Frage auch auf
-das Tablet der Offline-Runde.
+das Tablet der Offline-Runde. Zahlengeraden für Ungleichungen zeichnet
+`zgDia(grenze, voll, rechts)` direkt über `Q8_TERME` (−5 bis 5, voller oder
+leerer Punkt, Strahl nach rechts oder links), ebenfalls als `qbild kdia`.
 
 Optional teilt `bereiche` (Liste von Namen) einen Satz in Bereiche, jede Frage
 trägt dann `b` (Index). Am Beamer stehen die Bereiche als Häkchen unter der
