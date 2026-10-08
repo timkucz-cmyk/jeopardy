@@ -16,7 +16,7 @@ also nicht vom Namen „Jeopardy" im Repo oder in alten Links irreleiten lassen.
   Das ist Absicht: fremder Rechner, kein Netz, kein Build.
 - **Keine externen Libraries.** Einzige Ausnahme sind die Google Fonts im `<head>`.
   Ohne Netz greifen die Fallbacks, das Spiel funktioniert trotzdem.
-- **Ausnahme Live-Quiz:** Es ist das einzige Spiel, das Internet braucht (Tablets
+- **Ausnahme Live-Quiz und Diagnose:** Nur diese beiden brauchen Internet (Tablets
   ↔ Beamer über einen öffentlichen MQTT-Server). MQTT, Verschlüsselung und
   QR-Code sind trotzdem von Hand im Skript geschrieben, ohne Bibliothek. Alle
   anderen Spiele bleiben offline.
@@ -63,14 +63,19 @@ LIVE-QUIZ: QR-Code …     qrGeruest(), qrSvg(), QR-Leser (qrLesen),
                          Tablet (hstate)
 FEHLERJAGD: Tablet-Runde Code, Endkarte in Teilen, Einsammeln (fScan…),
                          Tablet (tstate, ftRender)
+DIAGNOSE                 Kopfkommentar mit Protokoll, D_HILFEN, D_SKALEN,
+                         Zustand am Beamer (dstate, dgwahl), Raum, Ablauf,
+                         Anzeige, Ausgabe als Text, Einsammeln ohne Server,
+                         Vorbereitung, Bedienung, Tablet (dtstate)
 STARTSEITE               Registry SPIELE, Kacheln, Thumbnails
 STARTSEITE: Stufe > Fach > Spiel   ST_STUFEN, stSaetze(), stRender(), stStarte()
 SEITENWECHSEL            SEITEN, zeigeSeite()
 ```
 
-Im `<body>` gibt es zehn `<section>`: `startseite`, `setup`, `bingoSetup`,
+Im `<body>` gibt es zwölf `<section>`: `startseite`, `setup`, `bingoSetup`,
 `game`, `bingoGame`, `fehlerSetup`, `fehlerGame`, `quizSetup`, `quizGame`,
-`quizHandy`. `quizHandy` ist die Tablet-Ansicht: `zeigeSeite()` setzt dafür
+`quizHandy`, `diagSetup`, `diagGame`. `quizHandy` ist die Tablet-Ansicht für
+Live-Quiz, Fehlerjagd und Diagnose: `zeigeSeite()` setzt dafür
 `body.handy`, das blendet die Kopfzeile aus. Für die Startseite setzt es
 `body.start`: Kopfzeile aus, volle Breite, eigener dunkler Kopf.
 
@@ -124,6 +129,9 @@ Jedes Spiel hat seinen **eigenen** Zustand und localStorage-Key:
 | Live-Quiz (offline, Tablet) | `sstate` | `quiz_solo_v1` |
 | Live-Quiz (offline, Beamer) | `qoff` | `quiz_offline_v1` |
 | Live-Quiz (angehakte Bereiche je Satz) | – | `quiz_bereiche_v1` |
+| Diagnose (Beamer: Raum oder Runde ohne Server) | `dstate` | `diagnose_v1` |
+| Diagnose (Vorbereitung: Satzanfänge, Skala, Antworten, Server) | `dgwahl` | `diagnose_wahl_v1` |
+| Diagnose (Tablet) | `dtstate` | `diagnose_tablet_v1` |
 
 Die Uhr ist die Ausnahme: `bTimerStart(sek, label, prefix)` steuert seine
 Timerbox über das ID-Präfix und ist damit ohnehin allgemein. Die Fehlerjagd
@@ -132,7 +140,14 @@ in der Tablet-Runde als vierte mit `"fTTimer"`.
 
 Kamera und QR-Leser sind ebenfalls geteilt: `qKameraStarten()` liest Ziel-IDs,
 Aktiv-Prüfung und Empfänger aus `qoff.ziel` (`Q_SCAN_QUIZ` beim Live-Quiz,
-`F_SCAN` bei der Fehlerjagd). Wer scannen will, setzt vorher `qoff.ziel`.
+`F_SCAN` bei der Fehlerjagd, `DG_SCAN` bei der Diagnose). Wer scannen will,
+setzt vorher `qoff.ziel`.
+
+Auch die Verbindung ist geteilt: Die Diagnose nimmt `mqttNeu`,
+`qRaumSchluessel`, `qVerpacken`/`qAuspacken`, `Q_SERVER` und `qEinzeltest` vom
+Live-Quiz. Am Tablet läuft sie über `hstate` (Kennung, Verbindung, Nachhaken);
+`hZustand` und `hNachhaken` reichen einen Zustand mit `d:1` an `dtZustand`
+und `dtNachhaken` weiter.
 
 ## Rezept: neues Spiel ergänzen
 
@@ -306,8 +321,11 @@ einen Zufallskeim (8 Bit) — deshalb müssen die Optionen in `qAnzahl` zu
 `Q_OFF_ANZAHL` passen, und mehr als 128 Sätze passen nicht hinein. Alte
 sechsstellige Codes (Zeit als Index in `Q_OFF_ZEIT`) liest `qOffLesen` weiter.
 Beamer und Tablets müssen denselben Stand haben, ein lokal geänderter Beamer
-braucht den Push. Live-Codes haben fünf Zeichen, Fehlerjagd-Codes vier, daran
-unterscheidet das Tablet-Formular. Zum Testen reicht ein Tab mit `#solo=CODE`.
+braucht den Push. Live-Codes haben fünf Zeichen, Fehlerjagd-Codes vier,
+Diagnose-Codes ohne Server acht, daran unterscheidet das Tablet-Formular. Ein
+Live-Code mit leerem Namensfeld sucht den Raum trotzdem: Ist es ein
+Diagnose-Raum, geht es anonym hinein, ist es ein Quiz, fragt `hZustand` nach
+dem Spitznamen. Zum Testen reicht ein Tab mit `#solo=CODE`.
 
 Die Endkarte trägt einen QR-Code `Q1|CODE|KENNUNG|PUNKTE|ANTWORTEN|NAME`,
 den „Ergebnisse einsammeln“ am Beamer mit der Kamera liest und daraus Podest
@@ -331,6 +349,34 @@ dass der Server behaltene Nachrichten ausliefert. Daran scheitert HiveMQ:
 verbindet, liefert den Raum aber nicht aus. Neue Server in `Q_SERVER` also
 immer erst mit dem Test prüfen. Kommt keiner durch, lässt sich unter „Eigener
 Server …“ eine `wss://`-Adresse eintragen; sie wandert im QR-Link mit.
+
+### Diagnose
+
+Kein Spiel mit Sätzen, sondern ein Werkzeug für jede Stunde: Die Kachel steht
+deshalb bei jeder Stufe und jedem Fach (`stSaetze` gibt immer `[0]`, `anz` in
+`SPIELE` ersetzt die Satzzahl). Drei Arten: Fragen zur Stunde mit
+Satzanfängen (Question Shells aus `D_HILFEN`, dazu eigene der Lehrkraft),
+Skala und Abstimmung mit eingetippten Antworten. Alles anonym. Ein Raum
+bleibt offen, während nacheinander mehrere Aufgaben gestellt werden („Neue
+Aufgabe“ führt zurück in die Vorbereitung, der Start-Knopf heißt dann „Im
+offenen Raum stellen“). Ergebnisse sind verdeckt, bis die Lehrkraft sie
+zeigt; „Kopieren“ und „Herunterladen“ geben alle Aufgaben der Stunde als Text
+aus. Protokoll und Code-Aufbau stehen im Kopfkommentar `DIAGNOSE`.
+
+`D_HILFEN` nur hinten erweitern, höchstens 24 Einträge: Die Stellen stehen im
+Code ohne Server (24-Bit-Maske) und in gespeicherten Ergebnissen.
+
+Ohne Server gehen nur Fragen, nur mit Satzanfängen aus `D_HILFEN`, ohne
+Thema. Die Endkarte `D1|CODE|KENNUNG|TEIL/VON|S.TEXT|…` wird wie bei der
+Fehlerjagd in Teilen gezeigt und mit `DG_SCAN` eingesammelt.
+
+Zum Testen ohne erreichbaren MQTT-Server (der Browser-Pane kommt nicht durch):
+in Beamer- und Tablet-Tab vor dem Verbinden `window.WebSocket` durch einen
+kleinen Nachbau ersetzen, der CONNECT, SUBSCRIBE, PUBLISH (mit behaltenen
+Nachrichten im localStorage) und PING beantwortet und PUBLISH über einen
+`BroadcastChannel` an den anderen Tab weiterreicht. Das Tablet dann über
+„Am Tablet mitspielen“ mit dem Code und leerem Namen beitreten lassen, weil
+ein Link mit `#diag=` schon beim Laden verbindet.
 
 ## Veröffentlichung
 

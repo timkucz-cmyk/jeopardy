@@ -1019,6 +1019,106 @@
   .qs-punkte{font-family:var(--mono); font-size:21px; font-weight:700; color:var(--mathe);}
   .qs-info{grid-column:1 / -1; font-size:15px; color:var(--fg-3);}
   .qs-info.warn{color:var(--mathe-ink);}
+
+  /* ---------- Diagnose: Vorbereitung ---------- */
+  .dghilfen{display:grid; grid-template-columns:repeat(auto-fill, minmax(300px, 1fr)); gap:8px 20px; margin-top:8px;}
+  .dggruppe{grid-column:1 / -1; margin:14px 0 0;}
+  .dghilfen .qbereich{margin:0;}
+  .dghilfen .dgweg{margin-left:auto; padding:2px 6px; color:var(--fg-4);}
+  .dghilfen .dgweg:hover{color:var(--mathe);}
+  textarea.dgtext{
+    width:100%; font-family:inherit; font-size:17px; line-height:1.4; padding:9px 12px; resize:vertical;
+    border:1px solid var(--line-2); border-radius:4px; background:var(--surface-page); color:var(--fg-1); outline:none;
+  }
+  textarea.dgtext:focus{border-color:var(--mathe);}
+
+  /* ---------- Diagnose: am Beamer ---------- */
+  .dgzahlen{display:flex; gap:20px; font-size:16px; color:var(--fg-3);}
+  .dgzahlen > span{display:flex; align-items:baseline; gap:6px;}
+  .dgauf-text{font-size:clamp(24px, 2.4vw, 34px); font-weight:600; line-height:1.3; color:var(--fg-1); margin:12px 0 4px;}
+  .dgauf-thema{font-size:19px; color:var(--fg-3); margin-top:8px;}
+  .dgshells{list-style:none; margin:14px 0 0; padding:0; display:flex; flex-direction:column; gap:10px;}
+  .dgshells li{
+    font-size:clamp(22px, 2.1vw, 30px); font-weight:600; line-height:1.3; color:var(--fg-1);
+    padding:10px 16px; border-left:4px solid var(--mathe); background:var(--surface-soft); border-radius:0 4px 4px 0;
+  }
+  .dgopt{list-style:none; margin:14px 0 0; padding:0; display:flex; flex-direction:column; gap:10px;}
+  .dgopt li{display:flex; align-items:center; gap:14px; font-size:clamp(20px, 1.9vw, 27px); font-weight:600; color:var(--fg-1);}
+  .dgopt-nr{flex:none; width:44px; height:44px; border-radius:6px; display:flex; align-items:center; justify-content:center;
+    font-family:var(--mono); font-size:22px; color:var(--surface-page); background:var(--fg-3);}
+  .dgskala{display:flex; gap:10px; margin-top:16px;}
+  .dgskala span{flex:1; text-align:center; font-family:var(--mono); font-size:26px; font-weight:700; padding:12px 0;
+    border:1px solid var(--line-2); border-radius:4px; color:var(--fg-2);}
+  .dgskala-enden{display:flex; justify-content:space-between; gap:16px; margin-top:6px; font-size:17px; color:var(--fg-3);}
+
+  .dgkopf{display:flex; justify-content:space-between; align-items:flex-start; gap:24px; flex-wrap:wrap; margin-bottom:20px;}
+  .dgfrage{font-size:clamp(24px, 2.4vw, 34px); font-weight:600; line-height:1.3; color:var(--fg-1); margin-top:4px; max-width:1000px;}
+  .dgverteilung{display:flex; height:30px; border-radius:4px; overflow:hidden; background:var(--surface-sunken);}
+  .dgverteilung span{display:block; height:100%;}
+  .dglegende{display:flex; flex-wrap:wrap; gap:6px 20px; margin-top:10px; font-size:17px; color:var(--fg-2);}
+  .dglegende i{display:inline-block; width:14px; height:14px; border-radius:3px; margin-right:6px; vertical-align:-1px;}
+  .dgg0{background:var(--qa1);} .dgg1{background:var(--qa0);} .dgg2{background:var(--qa2);}
+  .dgg3{background:var(--qa3);} .dgg4{background:var(--qa3);} .dgg5{background:var(--fg-3);} .dgg6{background:var(--fg-4);}
+  .dgabschnitt{margin-top:28px;}
+  .dgabschnitt-kopf{display:flex; align-items:center; gap:12px; font-size:21px; font-weight:600; color:var(--fg-2);
+    padding-bottom:8px; border-bottom:1px solid var(--line-1);}
+  .dgabschnitt-kopf i{flex:none; width:12px; height:12px; border-radius:3px;}
+  .dgabschnitt-kopf .num{margin-left:auto; font-family:var(--mono); color:var(--fg-3);}
+  .dgkarten{display:grid; grid-template-columns:repeat(auto-fill, minmax(340px, 1fr)); gap:12px; margin-top:12px;}
+  .dgkarte{
+    display:flex; align-items:flex-start; gap:8px; background:var(--surface-page); border:1px solid var(--line-1);
+    border-radius:6px; padding:14px 10px 14px 16px; box-shadow:var(--shadow-1);
+  }
+  .dgkarte.stern{border-color:var(--warn); background:var(--warn-soft);}
+  .dgkarte.aus{opacity:.35;}
+  .dgkarte-text{flex:1; font-size:21px; line-height:1.35; color:var(--fg-1); overflow-wrap:anywhere; cursor:zoom-in;}
+  .dgkarte .btn-icon{padding:5px 6px; color:var(--fg-4);}
+  .dgkarte .btn-icon:hover{color:var(--fg-1);}
+  .dgkarte.stern .dgstern{color:var(--warn);}
+  .dgleer{font-size:19px; color:var(--fg-3); padding:24px 0;}
+  .dgbalken{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:16px;}
+  .dgbalken li{display:grid; grid-template-columns:minmax(0, 1fr) 140px; gap:6px 20px; align-items:center;}
+  .dgb-name{grid-column:1 / -1; display:flex; align-items:center; gap:12px; font-size:clamp(20px, 1.8vw, 26px); font-weight:600; color:var(--fg-1);}
+  .dgb-spur{height:34px; background:var(--surface-sunken); border-radius:4px; overflow:hidden; position:relative;}
+  .dgb-spur span{display:block; height:100%; border-radius:4px; transition:width 500ms var(--ease);}
+  .dgb-vorher{height:8px; background:var(--surface-sunken); border-radius:4px; overflow:hidden; grid-column:1;}
+  .dgb-vorher span{display:block; height:100%; background:var(--fg-5);}
+  .dgb-zahl{font-family:var(--mono); font-size:24px; font-weight:700; color:var(--fg-1); text-align:right;}
+  .dgb-zahl small{font-size:17px; color:var(--fg-3); font-weight:600; margin-left:6px;}
+  .dgmittel{font-size:21px; color:var(--fg-2); margin-top:20px;}
+  .dgfokus{width:100%; max-width:1200px; text-align:center;}
+  .dgfokus-text{font-size:clamp(34px, 4.4vw, 64px); font-weight:600; line-height:1.3; color:var(--fg-1); margin-top:20px; overflow-wrap:anywhere;}
+
+  /* ---------- Diagnose am Tablet ---------- */
+  .dtab{display:flex; flex-direction:column; gap:14px; width:100%; max-width:860px; margin:0 auto;}
+  .dt-thema{font-size:19px; color:var(--fg-3);}
+  .dt-auftrag{font-size:clamp(22px, 3.6vw, 30px); font-weight:600; line-height:1.3; color:var(--fg-1);}
+  .dt-hilfen{display:grid; grid-template-columns:repeat(auto-fill, minmax(260px, 1fr)); gap:10px;}
+  .dt-hilfe{
+    text-align:left; font-size:21px; font-weight:600; line-height:1.3; color:var(--fg-1); padding:16px 18px;
+    background:var(--surface-page); border:1px solid var(--line-2); border-left:4px solid var(--mathe); border-radius:4px;
+    touch-action:manipulation; -webkit-tap-highlight-color:transparent;
+  }
+  .dt-hilfe:active{transform:scale(.97);}
+  .dt-hilfe.eigen{border-left-color:var(--fg-4); color:var(--fg-3);}
+  .dt-meine{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:8px;}
+  .dt-meine li{display:flex; align-items:flex-start; gap:10px; font-size:19px; line-height:1.35; color:var(--fg-1);
+    background:var(--surface-page); border:1px solid var(--line-1); border-radius:4px; padding:12px 14px;}
+  .dt-meine li span:first-child{flex:1; overflow-wrap:anywhere;}
+  .dt-status{flex:none; font-size:15px; color:var(--fg-4); white-space:nowrap;}
+  .dt-status.ok{color:var(--ok);}
+  .dt-leit{font-size:19px; color:var(--fg-3);}
+  .dt-leit b{color:var(--fg-1);}
+  .dt-wahl{display:flex; flex-direction:column; gap:12px;}
+  .dt-opt{
+    display:flex; align-items:center; gap:14px; text-align:left; font-size:clamp(20px, 3.4vw, 28px); font-weight:600;
+    padding:16px 18px; border-radius:8px; background:var(--surface-page); border:2px solid var(--line-2); color:var(--fg-1);
+    touch-action:manipulation; -webkit-tap-highlight-color:transparent;
+  }
+  .dt-opt.an{border-color:var(--mathe); background:var(--mathe-soft);}
+  .dt-skala{display:flex; gap:8px;}
+  .dt-skala .dt-opt{flex:1; justify-content:center; font-family:var(--mono); font-size:30px; padding:20px 0;}
+  .dt-enden{display:flex; justify-content:space-between; gap:12px; font-size:17px; color:var(--fg-3);}
 </style>
 </head>
 <body>
@@ -1066,7 +1166,7 @@
           <div class="st-held-innen">
             <p class="st-kicker">Fachschaft Mathematik und Physik</p>
             <h1 class="st-titel">Spielesammlung</h1>
-            <p class="st-lead">Lernspiele für Mathematik und Physik am Beamer: Jeopardy, Bingo, Fehlerjagd und Live-Quiz. Die Klasse braucht nur Heft und Stift, beim Live-Quiz dazu Tablets. Wähle Klassenstufe und Fach, um passende Spiele zu finden.</p>
+            <p class="st-lead">Lernspiele für Mathematik und Physik am Beamer: Jeopardy, Bingo, Fehlerjagd und Live-Quiz, dazu die Diagnose mit Fragen und Abstimmungen zur Stunde. Die Klasse braucht nur Heft und Stift, beim Live-Quiz und bei der Diagnose dazu Tablets. Wähle Klassenstufe und Fach, um passende Spiele zu finden.</p>
           </div>
         </header>
       </div>
@@ -1098,7 +1198,7 @@
       </main>
 
       <footer class="st-fuss">
-        <div class="st-fuss-innen"><span>Ludwig-Meyn-Gymnasium Uetersen</span><span>Läuft offline am Beamer, nur das Live-Quiz braucht Internet.</span></div>
+        <div class="st-fuss-innen"><span>Ludwig-Meyn-Gymnasium Uetersen</span><span>Läuft offline am Beamer, nur Live-Quiz und Diagnose brauchen Internet.</span></div>
       </footer>
     </div>
   </section>
@@ -1892,6 +1992,191 @@
 
   </section>
 
+  <!-- ============ DIAGNOSE: VORBEREITUNG ============ -->
+  <section id="diagSetup" style="display:none">
+
+    <div class="row zurueckzeile">
+      <button class="btn btn-quiet" id="dgZurueckBtn"></button>
+    </div>
+
+    <div class="ek-hinweis" id="dgResumeCard" style="display:none">
+      <p class="ek-hinweis-titel" id="dgResumeTitel">Offener Raum</p>
+      <p class="sub" id="dgResumeInfo"></p>
+      <div class="row">
+        <button class="btn btn-primary" id="dgResumeBtn"></button>
+        <button class="btn btn-quiet" id="dgVerwerfenBtn">Schließen und verwerfen</button>
+      </div>
+    </div>
+
+    <div class="st-schritt aktiv">
+      <div class="st-leitung" aria-hidden="true"><span class="st-nr">1</span><span class="st-linie"></span></div>
+      <div class="st-inhalt">
+        <h2 class="st-frage">Was soll die Klasse tun?</h2>
+        <div class="chips" id="dgArtWahl">
+          <button class="chip-class" data-art="fragen">Fragen zur Stunde</button>
+          <button class="chip-class" data-art="skala">Abstimmung mit Skala</button>
+          <button class="chip-class" data-art="mc">Abstimmung mit Antworten</button>
+        </div>
+        <p class="note" id="dgArtInfo"></p>
+      </div>
+    </div>
+
+    <div class="st-schritt aktiv">
+      <div class="st-leitung" aria-hidden="true"><span class="st-nr">2</span><span class="st-linie"></span></div>
+      <div class="st-inhalt">
+        <div id="dgFragenBox">
+          <h2 class="st-frage">Fragehilfen</h2>
+          <label class="feld"><span class="label">Thema der Stunde (optional, steht auf den Tablets)</span>
+            <input type="text" id="dgThema" maxlength="80" placeholder="z. B. Waagerechter Wurf"></label>
+          <p class="sub" style="margin-top:16px">Angehakte Satzanfänge stehen am Beamer und auf den Tablets.</p>
+          <div class="dghilfen" id="dgHilfen"></div>
+          <div class="katalogwahl" style="margin-top:16px; align-items:flex-end">
+            <label class="feld" style="flex:1 1 360px"><span class="label">Eigener Satzanfang</span>
+              <input type="text" id="dgEigenIn" maxlength="70" placeholder="z. B. Wie unterscheidet sich … von …?"></label>
+            <button class="btn" id="dgEigenBtn"></button>
+          </div>
+          <p class="note" id="dgHilfenInfo"></p>
+        </div>
+        <div id="dgSkalaBox" style="display:none">
+          <h2 class="st-frage">Skala</h2>
+          <div class="katalogwahl">
+            <label class="feld"><span class="label">Vorlage</span>
+              <select id="dgSkalaVorlage"></select></label>
+            <label class="feld"><span class="label">Stufen</span>
+              <select id="dgSkalaStufen">
+                <option value="3">3</option><option value="4">4</option><option value="5">5</option>
+                <option value="6">6</option><option value="7">7</option>
+              </select></label>
+          </div>
+          <label class="feld" style="margin-top:16px"><span class="label">Frage oder Aussage</span>
+            <input type="text" id="dgSkalaText" maxlength="120"></label>
+          <div class="katalogwahl" style="margin-top:16px">
+            <label class="feld" style="flex:1 1 240px"><span class="label">Beschriftung links</span>
+              <input type="text" id="dgSkalaLinks" maxlength="30"></label>
+            <label class="feld" style="flex:1 1 240px"><span class="label">Beschriftung rechts</span>
+              <input type="text" id="dgSkalaRechts" maxlength="30"></label>
+          </div>
+        </div>
+        <div id="dgMcBox" style="display:none">
+          <h2 class="st-frage">Frage und Antworten</h2>
+          <label class="feld"><span class="label">Frage</span>
+            <input type="text" id="dgMcText" maxlength="120" placeholder="z. B. Welcher Ansatz stimmt?"></label>
+          <label class="feld" style="margin-top:16px"><span class="label">Antworten, eine je Zeile (2 bis 6)</span>
+            <textarea id="dgMcOpt" rows="4" class="dgtext" placeholder="Ansatz A: …&#10;Ansatz B: …"></textarea></label>
+          <label class="qbereich" style="margin-top:12px; max-width:420px"><input type="checkbox" id="dgMcMehr"><span class="qbereich-name">Mehrere Antworten erlaubt</span></label>
+        </div>
+      </div>
+    </div>
+
+    <div class="st-schritt aktiv" id="dgVerbindung">
+      <div class="st-leitung" aria-hidden="true"><span class="st-nr">3</span></div>
+      <div class="st-inhalt">
+        <h2 class="st-frage">Verbindung</h2>
+        <p class="note" style="margin-top:0">Wie beim Live-Quiz: Beamer und Tablets brauchen Internet, alles ist verschlüsselt. Die Tablets bleiben anonym.</p>
+        <div class="katalogwahl" style="margin-top:12px; align-items:flex-end">
+          <label class="feld"><span class="label">Server</span>
+            <select id="dgServerSel"></select></label>
+          <label class="feld" id="dgEigenFeld" style="display:none"><span class="label">Adresse</span>
+            <input type="text" id="dgServerEigen" placeholder="wss://server:443/mqtt" style="min-width:320px"></label>
+          <button class="btn" id="dgTestBtn"></button>
+        </div>
+        <div id="dgTestErgebnis" style="margin-top:8px"></div>
+      </div>
+    </div>
+
+    <div class="ek-start">
+      <div class="row">
+        <button class="btn btn-primary" id="dgStartBtn"></button>
+        <button class="btn" id="dgOfflineBtn"></button>
+      </div>
+      <div class="qfehler" id="dgSetupFehler" style="display:none"></div>
+      <p class="note" id="dgStartInfo"></p>
+    </div>
+
+  </section>
+
+  <!-- ============ DIAGNOSE: AM BEAMER ============ -->
+  <section id="diagGame" style="display:none">
+
+    <div class="turnbar">
+      <div class="who">
+        <span class="label" id="dgPhaseLabel"></span>
+        <span id="dgPhaseInfo"></span>
+      </div>
+      <div class="row">
+        <span class="qnetz" id="dgNetz"></span>
+        <button class="btn btn-quiet" id="dgNeuBtn"></button>
+        <button class="btn btn-quiet" id="dgSchliessenBtn"></button>
+      </div>
+    </div>
+
+    <div id="dgLobby" class="qlobby" style="display:none">
+      <div class="card">
+        <span class="label" id="dgQrLabel">Mitmachen</span>
+        <div class="qqr" id="dgQr"></div>
+        <div class="qcode" id="dgCode"></div>
+        <p class="sub" style="text-align:center" id="dgQrHinweis"></p>
+      </div>
+      <div class="card">
+        <div class="row" style="justify-content:space-between; align-items:flex-start">
+          <span class="label" id="dgAufLabel"></span>
+          <span class="dgzahlen"><span><b class="qanzahl" id="dgTabZahl">0</b> <span id="dgTabWort">Tablets</span></span><span><b class="qanzahl" id="dgEinZahl">0</b> <span id="dgEinWort">Fragen</span></span></span>
+        </div>
+        <div id="dgAufgabe"></div>
+        <hr class="sep">
+        <div class="row">
+          <button class="btn btn-primary" id="dgZeigenBtn"></button>
+          <button class="btn" id="dgZuBtn"></button>
+          <button class="btn" id="dgScanBtn"></button>
+        </div>
+      </div>
+    </div>
+
+    <div id="dgScan" class="qscan" style="display:none">
+      <div class="card">
+        <div class="row" style="justify-content:space-between">
+          <span class="label">Kamera</span>
+          <label class="feld" style="min-width:0"><select id="dgKameraSel"><option value="">Standardkamera</option></select></label>
+        </div>
+        <div class="qvideo" id="dgVideoRahmen"><video id="dgVideo" playsinline muted></video></div>
+        <p class="sub" id="dgScanStatus"></p>
+      </div>
+      <div class="card">
+        <div class="row" style="justify-content:space-between">
+          <span class="label">Eingesammelt</span>
+          <span class="qanzahl" id="dgScanZahl">0</span>
+        </div>
+        <ol class="qscanliste" id="dgScanListe"></ol>
+        <p class="note">Tablets ruhig vor die Kamera halten, bis es piept. Bei mehreren Teilen wechselt der Code von selbst.</p>
+        <hr class="sep">
+        <div class="row">
+          <button class="btn btn-primary" id="dgScanEndeBtn"></button>
+          <button class="btn btn-quiet" id="dgScanZurueckBtn"></button>
+        </div>
+      </div>
+    </div>
+
+    <div id="dgErgebnis" style="display:none">
+      <div class="dgkopf">
+        <div>
+          <span class="label" id="dgErgLabel"></span>
+          <div class="dgfrage" id="dgErgTitel"></div>
+        </div>
+        <div class="row">
+          <button class="btn" id="dgQrBtn"></button>
+          <button class="btn" id="dgNochmalBtn"></button>
+        </div>
+      </div>
+      <div id="dgErgInhalt"></div>
+      <div class="row" style="margin-top:24px">
+        <button class="btn" id="dgKopierenBtn"></button>
+        <button class="btn" id="dgLadenBtn"></button>
+        <span class="note" id="dgExportInfo" style="margin:0"></span>
+      </div>
+    </div>
+
+  </section>
+
   <!-- ============ LIVE-QUIZ: TABLET ============ -->
   <section id="quizHandy" style="display:none">
     <div class="hwrap">
@@ -1980,6 +2265,19 @@
     <div class="row" style="justify-content:space-between; margin-top:24px">
       <button class="btn btn-quiet" id="bCheckReset"></button>
       <button class="btn btn-primary" id="bCheckClose">Schließen</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ DIAGNOSE: EINE FRAGE GROSS ============ -->
+<div class="overlay center" id="dgFokus">
+  <div class="dgfokus">
+    <span class="label" id="dgFokusHilfe"></span>
+    <div class="dgfokus-text" id="dgFokusText"></div>
+    <div class="row" style="justify-content:center; margin-top:32px">
+      <button class="btn" id="dgFokusZurueck"></button>
+      <button class="btn btn-primary" id="dgFokusZu">Schließen</button>
+      <button class="btn" id="dgFokusWeiter"></button>
     </div>
   </div>
 </div>
@@ -16009,7 +16307,9 @@ function qHashLesen(){
   if(h === "mitspielen") return {};
   if(h.indexOf("solo=") === 0) return {solo:h.slice(5).toUpperCase()};
   if(h.indexOf("fehler=") === 0) return {fehler:h.slice(7).toUpperCase()};
-  if(h.indexOf("quiz=") !== 0) return null;
+  if(h.indexOf("dsolo=") === 0) return {dsolo:h.slice(6).toUpperCase()};
+  var diag = h.indexOf("diag=") === 0;
+  if(!diag && h.indexOf("quiz=") !== 0) return null;
   var p = {};
   h.split("&").forEach(function(teil){
     var k = teil.indexOf("=");
@@ -16017,12 +16317,13 @@ function qHashLesen(){
       try{ p[teil.slice(0, k)] = decodeURIComponent(teil.slice(k + 1)); }catch(err){}
     }
   });
-  return {code:(p.quiz || "").toUpperCase(), s:p.s !== undefined ? +p.s : -1, u:p.u || ""};
+  return {code:(p.quiz || p.diag || "").toUpperCase(), s:p.s !== undefined ? +p.s : -1, u:p.u || "", diag:diag};
 }
 
 function hStart(param){
   param = param || {};
   if(param.fehler){ ftStart(param.fehler); return; }
+  if(param.dsolo){ dtSoloStart(param.dsolo); return; }
   /* Offline-Runde: angefangene oder fertige Runde mit demselben Code
      wieder aufnehmen, sonst Formular mit vorbelegtem Code. */
   if(param.solo){
@@ -16039,6 +16340,7 @@ function hStart(param){
   hstate.code = param.code || "";
   hstate.server = (param.s >= 0 && param.s < Q_SERVER.length) ? param.s : -1;
   hstate.eigen = /^wss?:\/\//.test(param.u || "") ? param.u : "";
+  if(param.diag && hstate.code){ dtLiveStart(); return; }
   zeigeSeite("quizHandy");
   /* Automatisch zurueck in den Raum nur, wenn der Link denselben Code
      traegt, also nach einem Neuladen. Sonst Formular mit Vorbelegung. */
@@ -16063,7 +16365,7 @@ function hFormular(){
     '<div class="hform">' +
       '<div class="hgross" style="text-align:center">Mitspielen</div>' +
       '<label class="feld"><span class="label">Raumcode</span>' +
-        '<input type="text" id="hCodeIn" maxlength="7" autocomplete="off" autocapitalize="characters" spellcheck="false"></label>' +
+        '<input type="text" id="hCodeIn" maxlength="8" autocomplete="off" autocapitalize="characters" spellcheck="false"></label>' +
       '<label class="feld"><span class="label">' + (fj ? "Name der Gruppe" : "Dein Spitzname") + '</span>' +
         '<input type="text" id="hNameIn" maxlength="16" autocomplete="off" spellcheck="false"></label>' +
       ((off || fj) ? '<div class="hinfo" id="hOffInfo"></div>' : '') +
@@ -16071,7 +16373,7 @@ function hFormular(){
         ? 'Ein Gruppenname, keine vollen Namen. Er steht auf eurer Endkarte und am Beamer.'
         : off
         ? 'Nimm einen Spitznamen, keinen vollen Namen. Er steht auf deiner Endkarte.'
-        : 'Nimm einen Spitznamen, keinen vollen Namen. Er steht nur am Beamer.') + '</p>' +
+        : 'Nimm einen Spitznamen, keinen vollen Namen. Er steht nur am Beamer. Bei Fragen und Abstimmungen zur Stunde bleibt das Feld leer.') + '</p>' +
       (hstate.fehler ? '<div class="hfehler"></div>' : '') +
       '<button class="btn btn-primary" id="hJoinBtn">' + ic("play") + 'Los geht’s</button>' +
       '<button class="btn btn-quiet" id="hAuswahlBtn">' + ic("left") + 'Zur Spielauswahl</button>' +
@@ -16093,8 +16395,12 @@ function hBeitreten(){
   var code = el("hCodeIn").value.toUpperCase().replace(/[^A-Z0-9]/g, "");
   var name = qNameSauber(el("hNameIn").value);
   hstate.code = code; hstate.name = name;
-  if(code.length < 4 || code.length > 7){ hstate.fehler = "Der Code hat vier bis sieben Zeichen. Er steht groß am Beamer."; hFormular(); return; }
-  if(!name){ hstate.fehler = code.length === 4 ? "Bitte gebt einen Gruppennamen ein." : "Bitte gib einen Spitznamen ein."; hFormular(); return; }
+  if(code.length < 4 || code.length > 8){ hstate.fehler = "Der Code hat vier bis acht Zeichen. Er steht groß am Beamer."; hFormular(); return; }
+  /* Diagnose ohne Server: acht Zeichen, anonym. Ein Code mit fuenf
+     Zeichen ohne Namen sucht den Raum trotzdem; ist es ein Quiz, fragt
+     hZustand nach dem Spitznamen. */
+  if(code.length === 8){ dtSoloStart(code); return; }
+  if(!name && code.length !== 5){ hstate.fehler = code.length === 4 ? "Bitte gebt einen Gruppennamen ein." : "Bitte gib einen Spitznamen ein."; hFormular(); return; }
   if(code.length === 4){
     var fj = fTabLesen(code);
     if(!fj){ hstate.fehler = "Diesen Code kennt die Seite nicht. Stimmt er?"; hFormular(); return; }
@@ -16218,6 +16524,7 @@ function hSenden(obj){
 function hNachhaken(){
   var z = hstate.z;
   if(!hstate.mqtt || !z) return;
+  if(z.d){ dtNachhaken(); return; }
   if(z.kick.indexOf(hstate.id) >= 0) return;
   if(z.sp.indexOf(hstate.id) < 0){
     if(z.ph !== "ende") hSenden({t:"j", id:hstate.id, g:hstate.g, n:hstate.name});
@@ -16229,7 +16536,10 @@ function hNachhaken(){
 }
 
 function hZustand(z){
+  if(z && z.d){ dtZustand(z); return; }
   if(!z || z.v !== 1 || !z.sp) return;
+  /* Code ohne Namen eingetippt, der Raum ist aber ein Quiz */
+  if(!hstate.name){ hstate.fehler = "Bitte gib einen Spitznamen ein."; hFormular(); return; }
   if(z.raum === hstate.raum && z.seq <= hstate.seq) return;
   var vorher = hstate.z;
   hstate.raum = z.raum; hstate.seq = z.seq; hstate.z = z;
@@ -16355,6 +16665,7 @@ el("hBody").addEventListener("click", function(ev){
   if(ev.target.closest("#hNeuBtn")){ hFormular(); return; }
   if(ev.target.closest("#sWeiterBtn")){ sWeiter(); return; }
   if(ftKlick(ev)) return;
+  if(dtKlick(ev)) return;
   var sk = ev.target.closest("[data-sw]");
   if(sk){ sAntwort(+sk.getAttribute("data-sw")); return; }
   if(ev.target.closest("#hAuswahlBtn")){
@@ -16887,6 +17198,1587 @@ el("fTTimerPlusBtn").addEventListener("click", function(){
 
 
 /* -----------------------------------------------------------------------
+   DIAGNOSE
+   Am Stundenende formuliert jede Person am Tablet eine bis drei Fragen
+   zur Stunde, mit Satzanfaengen (Question Shells) als Hilfe. Am Beamer
+   entsteht daraus eine Uebersicht nach Satzanfang, als Diagnose der
+   Stunde. Dazu Abstimmungen: Skala oder selbst eingetippte Antworten,
+   auf Wunsch zweimal hintereinander (abstimmen, diskutieren, noch einmal).
+
+   Alles anonym: Ein Tablet hat nur eine zufaellige Kennung. Verbindung,
+   Verschluesselung und Raumcode wie beim Live-Quiz (mqttNeu,
+   qRaumSchluessel, Q_SERVER). Der Zustand fuer die Tablets traegt d:1,
+   daran erkennt das Tablet einen Diagnose-Raum; ein von Hand
+   eingetippter Code mit fuenf Zeichen findet so beide Arten von Raum.
+
+   Ein Raum bleibt offen, waehrend nacheinander mehrere Aufgaben gestellt
+   werden. Jede Aufgabe (und jede zweite Abstimmungsrunde) hat eine
+   laufende Nummer nr; Eingaenge mit einer alten Nummer verfallen.
+
+   Nachrichten der Tablets an thema/t
+     {t:"j", id, g}                 Beitritt
+     {t:"f", id, g, nr, k, s, x}    k-te Frage (0..2), Satzanfang s, Text x
+     {t:"v", id, g, nr, w:[...]}    Stimme: Stellen der gewaehlten Antworten
+   Das Tablet wiederholt jede Nachricht, bis der Zustand vom Beamer sie in
+   sp (Beitritt) oder ok ("id.k" fuer Fragen, "id" fuer Stimmen) fuehrt.
+   s ist die Stelle in D_HILFEN, 100 + k fuer den k-ten eigenen
+   Satzanfang der Lehrkraft, -1 fuer eine Frage ohne Satzanfang.
+
+   Ohne Server (nur Fragen, nur Satzanfaenge aus D_HILFEN): Code mit 8
+   Zeichen (#dsolo=CODE), 40 Bit: 24 fuer die angehakten Satzanfaenge,
+   16 Zufallskeim. Am Ende zeigt jedes Tablet eine Endkarte mit
+     D1|CODE|KENNUNG|TEIL/VON|S.TEXT|S.TEXT|...
+   (S wie oben, "x" fuer ohne Satzanfang), in Teilen bis 213 Byte wie bei
+   der Fehlerjagd. Eingesammelt wird mit qKameraStarten.
+
+   D_HILFEN nur hinten erweitern und hoechstens 24 Eintraege: Die Stellen
+   stehen in Codes, gespeicherten Raeumen und Ergebnissen.
+   ----------------------------------------------------------------------- */
+
+var D_GRUPPEN = ["Klären", "Verstehen und begründen", "Anwenden und übertragen",
+                 "Physik", "Mathematik", "Offen geblieben", "Eigene und freie Fragen"];
+var D_HILFEN = [
+  {g:0, t:"Was bedeutet …?"},
+  {g:0, t:"Wie nennt man …?"},
+  {g:0, t:"Woran erkenne ich …?"},
+  {g:0, t:"Was ist der Unterschied zwischen … und …?"},
+  {g:0, t:"Welche Formel brauche ich für …?"},
+  {g:1, t:"Warum …?"},
+  {g:1, t:"Wie hängen … und … zusammen?"},
+  {g:1, t:"Was passiert mit …, wenn …?"},
+  {g:1, t:"Warum darf man bei … einfach …?"},
+  {g:1, t:"Was haben … und … gemeinsam?"},
+  {g:1, t:"Wie kann ich überprüfen, ob …?"},
+  {g:2, t:"Wie gehe ich vor, wenn …?"},
+  {g:2, t:"Gilt das auch, wenn …?"},
+  {g:2, t:"Was wäre, wenn …?"},
+  {g:2, t:"Wo begegnet mir … im Alltag?"},
+  {g:2, t:"Welcher Fehler passiert leicht bei …?"},
+  {g:3, t:"Wie kann man … messen?"},
+  {g:3, t:"Welche Einheit hat …?"},
+  {g:3, t:"Wie sieht das Diagramm aus, wenn …?"},
+  {g:4, t:"Wie verändert sich der Graph, wenn …?"},
+  {g:4, t:"Gibt es immer eine Lösung, wenn …?"},
+  {g:4, t:"Welcher Rechenweg ist bei … am einfachsten?"},
+  {g:5, t:"Ich habe noch nicht verstanden, warum …"},
+  {g:5, t:"Mir ist noch unklar, wie …"}
+];
+var D_STANDARD = [3, 5, 7, 12, 22];
+var D_MAX = 3;        /* Fragen je Tablet */
+var D_TEXT = 140;     /* Zeichen je Frage */
+var D_SKALEN = [
+  {name:"Sicherheit",  text:"Wie sicher fühlst du dich beim heutigen Thema?", links:"gar nicht sicher", rechts:"sehr sicher"},
+  {name:"Verständnis", text:"Wie gut hast du die heutige Stunde verstanden?", links:"kaum", rechts:"vollständig"},
+  {name:"Tempo",       text:"Wie war das Tempo heute?", links:"zu langsam", rechts:"zu schnell"},
+  {name:"Zustimmung",  text:"", links:"stimme nicht zu", rechts:"stimme voll zu"}
+];
+
+ICONS.frage = '<path d="M21 11.5a8.5 8.5 0 0 1-12.4 7.6L3 20.5l1.4-4.9A8.5 8.5 0 1 1 21 11.5z"/><path d="M10 9.2a2.2 2.2 0 1 1 3 2c-.6.3-1 .8-1 1.4v.5"/><path d="M12 16h.01"/>';
+ICONS.stern = '<path d="m12 3 2.7 5.6 6.1.8-4.5 4.2 1.1 6.1L12 16.8l-5.4 2.9 1.1-6.1-4.5-4.2 6.1-.8z"/>';
+ICONS.auge  = '<path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>';
+ICONS.kopie = '<rect x="8" y="8" width="13" height="13" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"/>';
+ICONS.laden = '<path d="M12 3v12M7 10l5 5 5-5M4 21h16"/>';
+ICONS.qr    = '<rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><path d="M14 14h3v3M21 14v7h-4M14 21v-3"/>';
+
+/* Was in Nachricht und QR-Code darf, wie fTabText. */
+function dText(s, max){
+  return String(s == null ? "" : s).replace(/[\u0000-\u001f\u007f|]/g, " ").replace(/[\uD800-\uDFFF]/g, "")
+    .replace(/\s+/g, " ").trim().slice(0, max || D_TEXT);
+}
+
+/* Bis zum ersten Auslassungszeichen: damit beginnt das Textfeld am Tablet. */
+function dStamm(t){ return t.indexOf("…") >= 0 ? t.slice(0, t.indexOf("…")) : t; }
+
+function dZahl(n, eins, mehr){ return n + " " + (n === 1 ? eins : mehr); }
+
+function dArtName(a){
+  return !a ? "" : a.art === "fragen" ? "Fragen zur Stunde" : a.art === "skala" ? "Abstimmung mit Skala" : "Abstimmung";
+}
+
+/* Antworten einer Abstimmung, fuer die Skala die Stufen als Zahlen. */
+function dOptionen(a){
+  if(a.art !== "skala") return a.opt;
+  var o = [];
+  for(var i = 1; i <= a.stufen; i++) o.push(String(i));
+  return o;
+}
+
+/* Satzanfang einer Frage: Text und Gruppe fuer Farbe und Verteilung. */
+function dHilfe(a, s){
+  if(s === -1) return {t:"Ohne Satzanfang", g:6};
+  var h = (a.h || []).filter(function(x){ return x.s === s; })[0];
+  return {t:h ? h.t : "?", g:s < 100 && D_HILFEN[s] ? D_HILFEN[s].g : 6};
+}
+
+/* Fragen nach Satzanfang, in der Reihenfolge der Aufgabe, freie Fragen zuletzt. */
+function dAbschnitte(a, fragen){
+  var liste = (a.h || []).map(function(h){ return h.s; }).concat([-1]);
+  return liste.map(function(s){
+    var h = dHilfe(a, s);
+    return {s:s, titel:s === -1 ? h.t : "„" + h.t + "“", g:h.g,
+            fragen:fragen.filter(function(f){ return f.s === s; })};
+  }).filter(function(ab){ return ab.fragen.length; });
+}
+
+/* Code ohne Server: 8 Zeichen aus Q_CODEZEICHEN, Aufbau im Kopfkommentar. */
+function dgSoloCode(maske){
+  var keim = crypto.getRandomValues(new Uint32Array(1))[0] % 65536;
+  var v = maske * 65536 + keim, s = "";
+  for(var i = 0; i < 8; i++){
+    s = Q_CODEZEICHEN.charAt(v % 32) + s;
+    v = Math.floor(v / 32);
+  }
+  return s;
+}
+
+function dgSoloLesen(code){
+  code = String(code || "").toUpperCase();
+  if(code.length !== 8) return null;
+  var v = 0;
+  for(var i = 0; i < 8; i++){
+    var k = Q_CODEZEICHEN.indexOf(code.charAt(i));
+    if(k < 0) return null;
+    v = v * 32 + k;
+  }
+  var keim = v % 65536, maske = (v - keim) / 65536, h = [];
+  if(!maske || maske >= 16777216) return null;
+  for(var b = 0; b < 24; b++){
+    if(Math.floor(maske / Math.pow(2, b)) % 2){
+      if(!D_HILFEN[b]) return null;
+      h.push({s:b, t:D_HILFEN[b].t});
+    }
+  }
+  return {code:code, maske:maske, keim:keim, h:h};
+}
+
+
+/* -----------------------------------------------------------------------
+   DIAGNOSE: Zustand am Beamer
+   dgwahl ist die Vorbereitung (bleibt fuer die naechste Stunde stehen,
+   ausser dem Thema), dstate der offene Raum oder die Runde ohne Server.
+   ----------------------------------------------------------------------- */
+
+var DG_KEY = "diagnose_v1";
+var DG_WAHL_KEY = "diagnose_wahl_v1";
+
+var dgwahl = {art:"fragen", hilfen:D_STANDARD.slice(), eigene:[], thema:"",
+              skala:{text:D_SKALEN[0].text, links:D_SKALEN[0].links, rechts:D_SKALEN[0].rechts, stufen:5},
+              mc:{text:"", opt:"", mehr:false}, server:0, eigen:""};
+
+var dstate = {code:"", raum:"", seq:0, server:0, eigen:"", solo:"", phase:"aus",
+              nr:0, runde:1, auf:null, zu:false, zeigen:false, tablets:[], geheim:{},
+              fragen:[], stimmen:{}, vorher:null, verlauf:[], ts:0, scan:{}};
+var DG_FELDER = ["code", "raum", "seq", "server", "eigen", "solo", "phase", "nr", "runde", "auf", "zu",
+                 "zeigen", "tablets", "geheim", "fragen", "stimmen", "vorher", "verlauf", "ts", "scan"];
+
+/* Was nicht in den Speicher gehoert: Verbindung, Schluessel, Uhr. */
+var dgnetz = {mqtt:null, thema:"", key:null, sendeTimer:null, verbunden:false};
+var dgreihe = [];     /* sichtbare Fragen in Anzeigereihenfolge, fuer die Grossansicht */
+var dgfokus = -1;
+
+function dgWahlLaden(){
+  try{
+    var s = JSON.parse(localStorage.getItem(DG_WAHL_KEY) || "null");
+    if(!s) return;
+    ["art", "hilfen", "eigene", "skala", "mc", "server", "eigen"].forEach(function(k){
+      if(s[k] !== undefined) dgwahl[k] = s[k];
+    });
+    dgwahl.hilfen = dgwahl.hilfen.filter(function(i){ return !!D_HILFEN[i]; });
+  }catch(err){}
+}
+function dgWahlMerken(){
+  try{
+    var s = {};
+    ["art", "hilfen", "eigene", "skala", "mc", "server", "eigen"].forEach(function(k){ s[k] = dgwahl[k]; });
+    localStorage.setItem(DG_WAHL_KEY, JSON.stringify(s));
+  }catch(err){}
+}
+
+function dgSpeichern(){
+  if(dstate.phase === "aus") return;
+  try{
+    var s = {};
+    DG_FELDER.forEach(function(k){ s[k] = dstate[k]; });
+    s.gespeichert = Date.now();
+    localStorage.setItem(DG_KEY, JSON.stringify(s));
+  }catch(err){}
+}
+function dgLaden(){
+  try{
+    var s = JSON.parse(localStorage.getItem(DG_KEY) || "null");
+    if(!s || !s.auf) return null;
+    if(s.phase === "offen" && s.code) return s;
+    if((s.phase === "offline" || s.phase === "scan") && dgSoloLesen(s.solo)) return s;
+    return null;
+  }catch(err){ return null; }
+}
+
+function dgServerUrl(){ return dstate.server < 0 ? dstate.eigen : (Q_SERVER[dstate.server] || Q_SERVER[0]).url; }
+function dgServerName(){ return dstate.server < 0 ? "eigenen Server" : (Q_SERVER[dstate.server] || Q_SERVER[0]).name; }
+
+function dgLink(){
+  if(dstate.phase === "offen"){
+    return qBasisUrl() + "#diag=" + dstate.code + "&s=" + dstate.server +
+      (dstate.server < 0 ? "&u=" + encodeURIComponent(dstate.eigen) : "");
+  }
+  return qBasisUrl() + "#dsolo=" + dstate.solo;
+}
+
+function dgHatFrage(id, k){
+  return dstate.fragen.some(function(f){ return f.id === id && f.k === k; });
+}
+function dgStimmen(){ return Object.keys(dstate.stimmen).length; }
+function dgFrageTablets(fragen){
+  var ids = {};
+  fragen.forEach(function(f){ ids[f.id] = true; });
+  return Object.keys(ids).length;
+}
+function dgVerteilung(){
+  var c = dOptionen(dstate.auf).map(function(){ return 0; });
+  Object.keys(dstate.stimmen).forEach(function(id){
+    dstate.stimmen[id].forEach(function(i){ if(i < c.length) c[i]++; });
+  });
+  return c;
+}
+function dgHatEingaenge(){ return !!dstate.auf && (dstate.fragen.length > 0 || dgStimmen() > 0); }
+
+/* Was von einer Aufgabe bleibt, fuer die Ausgabe am Ende der Stunde. */
+function dgSchnappschuss(){
+  var a = dstate.auf;
+  return {auf:a, t:dstate.ts, runde:dstate.runde,
+          fragen:dstate.fragen.map(function(f){ return {s:f.s, x:f.x, stern:!!f.stern, aus:!!f.aus, id:f.id}; }),
+          v:a.art === "fragen" ? null : dgVerteilung(), n:dgStimmen()};
+}
+function dgArchivieren(){
+  if(dgHatEingaenge()) dstate.verlauf.push(dgSchnappschuss());
+}
+
+function dgStimmePruefen(a, w){
+  if(!Array.isArray(w) || !w.length) return null;
+  var n = dOptionen(a).length, gesehen = {}, r = [];
+  for(var i = 0; i < w.length; i++){
+    var x = w[i];
+    if(typeof x !== "number" || x !== Math.floor(x) || x < 0 || x >= n || gesehen[x]) return null;
+    gesehen[x] = true; r.push(x);
+  }
+  if(r.length > 1 && !(a.art === "mc" && a.mehr)) return null;
+  return r.sort(function(p, q){ return p - q; });
+}
+
+
+/* -----------------------------------------------------------------------
+   DIAGNOSE: Raum und Nachrichten am Beamer
+   ----------------------------------------------------------------------- */
+
+function dgRaumOeffnen(){
+  dgNetzZeigen("warte");
+  return qRaumSchluessel(dstate.code).then(function(r){
+    dgnetz.thema = r.thema; dgnetz.key = r.key;
+    if(dgnetz.mqtt) dgnetz.mqtt.schliessen();
+    dgnetz.mqtt = mqttNeu(dgServerUrl(), {
+      status:function(ok){
+        dgnetz.verbunden = ok;
+        dgNetzZeigen(ok ? "ok" : "weg");
+        if(ok) dgSenden(true);
+      },
+      nachricht:dgEmpfangen
+    });
+    dgnetz.mqtt.abo(dgnetz.thema + "/t");
+  });
+}
+
+/* Leere, behaltene Nachricht loescht den Raum auf dem Server. */
+function dgRaumSchliessen(){
+  clearTimeout(dgnetz.sendeTimer); dgnetz.sendeTimer = null;
+  var m = dgnetz.mqtt;
+  if(m){
+    m.senden(dgnetz.thema + "/b", new Uint8Array(0), true);
+    setTimeout(function(){ m.schliessen(); }, 400);
+  }
+  dgnetz.mqtt = null; dgnetz.key = null; dgnetz.verbunden = false;
+}
+
+/* Raum eines gespeicherten Stands leeren, ohne ihn zu oeffnen. */
+function dgRaumLeeren(s){
+  var srv = s.server < 0 ? s.eigen : (Q_SERVER[s.server] || Q_SERVER[0]).url;
+  qRaumSchluessel(s.code).then(function(r){
+    var m = mqttNeu(srv, {status:function(ok){
+      if(!ok) return;
+      m.senden(r.thema + "/b", new Uint8Array(0), true);
+      setTimeout(function(){ m.schliessen(); }, 400);
+    }});
+    setTimeout(function(){ m.schliessen(); }, 10000);
+  }, function(){});
+}
+
+function dgAllesZu(){
+  qKameraStoppen();
+  if(dstate.phase === "offen") dgRaumSchliessen();
+  dstate.phase = "aus"; dstate.code = ""; dstate.solo = "";
+  dstate.auf = null; dstate.fragen = []; dstate.stimmen = {}; dstate.verlauf = []; dstate.scan = {};
+  try{ localStorage.removeItem(DG_KEY); }catch(err){}
+}
+
+function dgEmpfangen(thema, bytes){
+  if(thema !== dgnetz.thema + "/t" || !dgnetz.key) return;
+  qAuspacken(dgnetz.key, bytes).then(dgNachricht, function(){});
+}
+
+function dgNachricht(m){
+  if(!m || typeof m.id !== "string" || !/^[a-z0-9]{1,20}$/.test(m.id) || typeof m.g !== "string") return;
+  if(dstate.phase !== "offen") return;
+  var g = dstate.geheim[m.id];
+  if(m.t === "j"){
+    if(!g){
+      dstate.geheim[m.id] = m.g.slice(0, 24);
+      dstate.tablets.push(m.id);
+      dgSpeichern();
+      dgZahlenZeigen();
+    }
+    dgSenden();
+    return;
+  }
+  /* Das Geheimnis g kennt nur das Tablet selbst; ohne g kann niemand im
+     Namen eines anderen Tablets schreiben. */
+  if(!g || g !== m.g) return;
+  var a = dstate.auf, neu = false;
+  if(!a || m.nr !== dstate.nr || dstate.zu){ dgSenden(); return; }
+  if(m.t === "f" && a.art === "fragen"){
+    var k = m.k, s = m.s, x = dText(m.x);
+    var sOk = s === -1 || a.h.some(function(h){ return h.s === s; });
+    if(typeof k === "number" && k === Math.floor(k) && k >= 0 && k < D_MAX && x && sOk && !dgHatFrage(m.id, k)){
+      dstate.fragen.push({id:m.id, k:k, s:s, x:x, t:Date.now()});
+      neu = true;
+    }
+  } else if(m.t === "v" && a.art !== "fragen" && !dstate.stimmen[m.id]){
+    var w = dgStimmePruefen(a, m.w);
+    if(w){ dstate.stimmen[m.id] = w; neu = true; }
+  }
+  if(neu){
+    dgSpeichern();
+    dgZahlenZeigen();
+    if(dstate.zeigen) dgErgebnisRender();
+  }
+  dgSenden();
+}
+
+/* Wie beim Live-Quiz: kurze Wartezeit fasst viele Eingaenge zusammen. */
+function dgSenden(sofort){
+  if(dgnetz.sendeTimer) return;
+  dgnetz.sendeTimer = setTimeout(function(){
+    dgnetz.sendeTimer = null;
+    if(!dgnetz.mqtt || !dgnetz.key || dstate.phase !== "offen") return;
+    dstate.seq = Math.max(dstate.seq + 1, Date.now());
+    qVerpacken(dgnetz.key, dgZustandFuerTablets()).then(function(b){
+      if(dgnetz.mqtt) dgnetz.mqtt.senden(dgnetz.thema + "/b", b, true);
+    });
+  }, sofort ? 0 : 250);
+}
+
+function dgZustandFuerTablets(){
+  var ok = dstate.auf && dstate.auf.art === "fragen"
+    ? dstate.fragen.map(function(f){ return f.id + "." + f.k; })
+    : Object.keys(dstate.stimmen);
+  return {v:1, d:1, raum:dstate.raum, seq:dstate.seq, nr:dstate.nr, zu:dstate.zu, max:D_MAX,
+          sp:dstate.tablets.slice(), auf:dstate.auf, ok:ok};
+}
+
+
+/* -----------------------------------------------------------------------
+   DIAGNOSE: Ablauf am Beamer
+   ----------------------------------------------------------------------- */
+
+function dgAufgabeStellen(auf){
+  dgArchivieren();
+  dstate.nr++;
+  dstate.runde = 1;
+  dstate.auf = auf;
+  dstate.zu = false; dstate.zeigen = false;
+  dstate.fragen = []; dstate.stimmen = {}; dstate.vorher = null;
+  dstate.ts = Date.now();
+}
+
+/* Gleiche Abstimmung noch einmal, die erste Runde bleibt als Vergleich. */
+function dgNochmal(){
+  if(!dstate.auf || dstate.auf.art === "fragen") return;
+  var v = dgVerteilung(), n = dgStimmen();
+  dgArchivieren();
+  dstate.vorher = {v:v, n:n};
+  dstate.nr++;
+  dstate.runde++;
+  dstate.stimmen = {};
+  dstate.zu = false; dstate.zeigen = false;
+  dstate.ts = Date.now();
+  dgSpeichern(); dgRender(); dgSenden(true);
+}
+
+function dgAufgabeBauen(){
+  dgWahlLesen();
+  var w = dgwahl;
+  if(w.art === "fragen"){
+    var h = [];
+    D_HILFEN.forEach(function(x, i){ if(w.hilfen.indexOf(i) >= 0) h.push({s:i, t:x.t}); });
+    w.eigene.forEach(function(e, k){ if(e.an) h.push({s:100 + k, t:e.t}); });
+    if(!h.length) return "Bitte mindestens einen Satzanfang anhaken.";
+    return {art:"fragen", thema:w.thema, h:h};
+  }
+  if(w.art === "skala"){
+    if(!w.skala.text) return "Bitte eine Frage oder Aussage für die Skala eintragen.";
+    return {art:"skala", text:w.skala.text, stufen:w.skala.stufen,
+            links:w.skala.links || "", rechts:w.skala.rechts || ""};
+  }
+  var opt = String(w.mc.opt || "").split(/\n/).map(function(z){ return dText(z, 80); })
+    .filter(function(z){ return !!z; });
+  if(!w.mc.text) return "Bitte eine Frage eintragen.";
+  if(opt.length < 2) return "Bitte mindestens zwei Antworten eintragen, eine je Zeile.";
+  if(opt.length > 6) return "Höchstens sechs Antworten, eine je Zeile.";
+  return {art:"mc", text:w.mc.text, opt:opt, mehr:!!w.mc.mehr};
+}
+
+function dgSetupFehler(txt){
+  el("dgSetupFehler").textContent = txt;
+  el("dgSetupFehler").style.display = "block";
+}
+
+/* Wie qServerWaehlen: erst der gewaehlte Server, dann die uebrigen. */
+function dgServerWaehlen(){
+  var liste = [{i:dstate.server, url:dgServerUrl()}];
+  if(dstate.server >= 0){
+    Q_SERVER.forEach(function(sv, i){ if(i !== dstate.server) liste.push({i:i, url:sv.url}); });
+  }
+  return new Promise(function(ok, nein){
+    (function weiter(k){
+      if(k >= liste.length){ nein(); return; }
+      qEinzeltest(liste[k].url).then(function(){ ok(liste[k].i); }, function(){ weiter(k + 1); });
+    })(0);
+  });
+}
+
+function dgAnzeigen(){
+  dgKopf();
+  zeigeSeite("diagGame");
+  dgRender();
+}
+
+function dgStart(){
+  var auf = dgAufgabeBauen();
+  if(typeof auf === "string"){ dgSetupFehler(auf); return; }
+  el("dgSetupFehler").style.display = "none";
+
+  /* Raum steht schon: neue Aufgabe hinein, die Tablets bleiben drin. Nach
+     einem Neuladen des Beamers wird der gespeicherte Raum erst wieder
+     geoeffnet. */
+  if(dstate.phase === "offen" && dgnetz.mqtt){
+    dgAufgabeStellen(auf);
+    dgSpeichern(); dgAnzeigen(); dgSenden(true);
+    return;
+  }
+  var alt = dgLaden();
+  if(alt && alt.phase === "offen"){
+    DG_FELDER.forEach(function(k){ if(alt[k] !== undefined) dstate[k] = alt[k]; });
+    dgRaumOeffnen().then(function(){
+      dgAufgabeStellen(auf);
+      dgSpeichern(); dgAnzeigen(); dgSenden(true);
+    }, function(){
+      dgSetupFehler("Dieser Browser erlaubt hier keine Verschlüsselung.");
+    });
+    return;
+  }
+
+  dstate.server = +el("dgServerSel").value;
+  dstate.eigen = el("dgServerEigen").value.trim();
+  dgwahl.server = dstate.server; dgwahl.eigen = dstate.eigen; dgWahlMerken();
+  if(dstate.server < 0 && !/^wss?:\/\/\S+$/.test(dstate.eigen)){
+    dgSetupFehler("Der eigene Server braucht eine Adresse der Form wss://server:port/pfad.");
+    return;
+  }
+  var knopf = el("dgStartBtn");
+  knopf.disabled = true;
+  knopf.textContent = "Prüfe Server …";
+  dgServerWaehlen().then(function(i){
+    knopf.disabled = false;
+    dgStartKnopf();
+    if(dstate.phase === "offline" || dstate.phase === "scan") qKameraStoppen();
+    dstate.server = i;
+    el("dgServerSel").value = i;
+    dstate.code = qZufall(5, Q_CODEZEICHEN); dstate.raum = qZufall(6); dstate.seq = 0;
+    dstate.solo = ""; dstate.tablets = []; dstate.geheim = {}; dstate.verlauf = []; dstate.scan = {};
+    dstate.nr = 0; dstate.auf = null; dstate.fragen = []; dstate.stimmen = {};
+    dstate.phase = "offen";
+    dgAufgabeStellen(auf);
+    dgRaumOeffnen().then(function(){
+      dgSpeichern(); dgAnzeigen();
+    }, function(){
+      dstate.phase = "aus";
+      dgSetupFehler("Dieser Browser erlaubt hier keine Verschlüsselung. Öffne die Sammlung über " + Q_ONLINE + " oder in einem aktuellen Chrome, Edge oder Firefox.");
+    });
+  }, function(){
+    knopf.disabled = false;
+    dgStartKnopf();
+    dgSetupFehler("Kein Server nimmt den Raum an. Entweder fehlt das Internet, oder das Netz sperrt die Verbindung. Ohne Server gehen Fragen trotzdem: „Ohne Server (nur Fragen)“.");
+  });
+}
+
+function dgOfflineStarten(){
+  dgWahlLesen();
+  if(dgwahl.art !== "fragen") return;
+  var maske = 0;
+  dgwahl.hilfen.forEach(function(i){ if(i < 24) maske += Math.pow(2, i); });
+  if(!maske){ dgSetupFehler("Ohne Server gehen nur Satzanfänge aus der Liste. Bitte mindestens einen davon anhaken."); return; }
+  var aktiv = dstate.phase === "offen" && !!dgnetz.mqtt, alt = dgLaden();
+  if(!alt || alt.phase !== "offen") alt = null;
+  function los(){
+    if(aktiv) dgRaumSchliessen();
+    else if(alt) dgRaumLeeren(alt);
+    el("dgSetupFehler").style.display = "none";
+    dstate.solo = dgSoloCode(maske);
+    dstate.code = ""; dstate.phase = "offline";
+    dstate.verlauf = []; dstate.scan = {}; dstate.tablets = []; dstate.geheim = {};
+    dstate.nr = 0; dstate.auf = null;
+    dgAufgabeStellen({art:"fragen", thema:"", h:dgSoloLesen(dstate.solo).h});
+    dgSpeichern(); dgAnzeigen();
+  }
+  if(aktiv || alt){
+    askConfirm("Raum schließen", "Für die Runde ohne Server wird der offene Raum geschlossen. Was dort schon eingegangen ist, geht verloren.", los, "Schließen");
+    return;
+  }
+  los();
+}
+
+function dgFortsetzen(){
+  var aktiv = (dstate.phase === "offen" && dgnetz.mqtt) || dstate.phase === "offline" || dstate.phase === "scan";
+  if(!aktiv){
+    var s = dgLaden();
+    if(!s) return;
+    DG_FELDER.forEach(function(k){ if(s[k] !== undefined) dstate[k] = s[k]; });
+  }
+  if(dstate.phase === "scan") dstate.phase = "offline";
+  if(dstate.phase === "offen" && !dgnetz.mqtt){
+    dgRaumOeffnen().then(dgAnzeigen, function(){
+      dgSetupFehler("Dieser Browser erlaubt hier keine Verschlüsselung.");
+    });
+    return;
+  }
+  dgAnzeigen();
+}
+
+function dgBeenden(){
+  var live = dstate.phase === "offen";
+  askConfirm(live ? "Raum schließen" : "Runde beenden",
+    (live ? "Die Tablets verlieren die Verbindung. " : "") +
+    "Alle Fragen und Stimmen dieser Stunde werden gelöscht. Wer sie behalten will, nimmt vorher „Kopieren“ oder „Herunterladen“ bei den Ergebnissen.",
+    function(){
+      dgAllesZu();
+      dgSetupFuellen();
+      dgKopf();
+      zeigeSeite("diagSetup");
+    }, live ? "Schließen" : "Beenden");
+}
+
+
+/* -----------------------------------------------------------------------
+   DIAGNOSE: Anzeige am Beamer
+   Texte kommen von den Tablets und gehen nur ueber qEsc oder textContent
+   in die Seite.
+   ----------------------------------------------------------------------- */
+
+function dgKopf(){
+  el("kopfUnter").textContent = "Fragen und Abstimmungen zur Stunde";
+  document.title = "Diagnose";
+}
+
+function dgNetzZeigen(zustand){
+  var txt = {ok:"verbunden über " + dgServerName(), weg:"Verbindung unterbrochen, verbinde neu …",
+             warte:"verbinde mit " + dgServerName() + " …", ohne:"ohne Server"}[zustand];
+  el("dgNetz").innerHTML = '<span class="qpunkt ' + (zustand === "ohne" ? "" : zustand) + '"></span>';
+  el("dgNetz").appendChild(document.createTextNode(txt));
+}
+
+function dgKarten(){
+  return Object.keys(dstate.scan).filter(function(id){ return dstate.scan[id].fertig; }).length;
+}
+
+function dgZahlenZeigen(){
+  var live = dstate.phase === "offen", fragen = dstate.auf && dstate.auf.art === "fragen";
+  el("dgTabZahl").textContent = live ? dstate.tablets.length : dgKarten();
+  el("dgTabWort").textContent = live ? "Tablets" : "Karten";
+  el("dgEinZahl").textContent = fragen ? dstate.fragen.length : dgStimmen();
+  el("dgEinWort").textContent = fragen ? "Fragen" : "Stimmen";
+}
+
+function dgRender(){
+  var ph = dstate.phase, live = ph === "offen", a = dstate.auf;
+  var lobby = !dstate.zeigen && (live || ph === "offline");
+  el("dgLobby").style.display = lobby ? "grid" : "none";
+  el("dgScan").style.display = ph === "scan" ? "grid" : "none";
+  el("dgErgebnis").style.display = (dstate.zeigen && ph !== "scan") ? "block" : "none";
+  el("dgPhaseLabel").textContent = live ? "Raum offen" : ph === "scan" ? "Fragen einsammeln" : "Ohne Server";
+  el("dgPhaseInfo").textContent = "Code " + (live ? dstate.code : dstate.solo) + " · " + dArtName(a) +
+    (a && a.art !== "fragen" && dstate.runde > 1 ? ", Runde " + dstate.runde : "");
+  el("dgNeuBtn").style.display = live ? "" : "none";
+  el("dgSchliessenBtn").innerHTML = ic("cross") + (live ? "Raum schließen" : "Beenden");
+  if(live) dgNetzZeigen(dgnetz.verbunden ? "ok" : (dgnetz.mqtt ? "weg" : "warte"));
+  else dgNetzZeigen("ohne");
+  if(lobby) dgLobbyRender();
+  if(ph === "scan") dgScanListe();
+  if(dstate.zeigen && ph !== "scan") dgErgebnisRender();
+}
+
+function dgAufgabeHtml(a){
+  if(a.art === "fragen"){
+    return (a.thema ? '<div class="dgauf-thema">Thema: ' + qEsc(a.thema) + '</div>' : '') +
+      '<div class="dgauf-text">Stell eine bis drei Fragen zur heutigen Stunde.</div>' +
+      '<ul class="dgshells">' + a.h.map(function(h){ return '<li>' + qEsc(h.t) + '</li>'; }).join("") + '</ul>';
+  }
+  var s = '<div class="dgauf-text">' + qEsc(a.text) + '</div>';
+  if(a.art === "skala"){
+    s += '<div class="dgskala">' + dOptionen(a).map(function(o){ return '<span>' + o + '</span>'; }).join("") + '</div>' +
+      '<div class="dgskala-enden"><span>' + qEsc(a.links) + '</span><span>' + qEsc(a.rechts) + '</span></div>';
+  } else {
+    s += '<ol class="dgopt">' + a.opt.map(function(o, i){
+      return '<li><span class="dgopt-nr' + (i < 4 ? " qa" + i : "") + '">' + (i + 1) + '</span><span>' + qEsc(o) + '</span></li>';
+    }).join("") + '</ol>' + (a.mehr ? '<p class="note">Mehrere Antworten möglich.</p>' : '');
+  }
+  return s;
+}
+
+function dgLobbyRender(){
+  var live = dstate.phase === "offen", a = dstate.auf, fragen = a.art === "fragen";
+  var url = qBasisUrl().replace(/^https?:\/\//, "").replace(/\/$/, "");
+  el("dgQr").innerHTML = qrSvg(dgLink(), "QR-Code zum Mitmachen");
+  el("dgCode").textContent = live ? dstate.code : dstate.solo;
+  el("dgQrHinweis").innerHTML = 'QR-Code mit der Kamera scannen – oder <span class="qurl">' + qEsc(url) +
+    '</span> öffnen, „Am Tablet mitspielen“ tippen und den Code eingeben' + (live ? ', ohne Namen.' : '.');
+  el("dgAufLabel").textContent = dArtName(a) + (!fragen && dstate.runde > 1 ? " · Runde " + dstate.runde : "");
+  el("dgAufgabe").innerHTML = dgAufgabeHtml(a);
+  dgZahlenZeigen();
+  el("dgZeigenBtn").innerHTML = ic("auge") + (fragen ? "Fragen zeigen" : "Ergebnis zeigen");
+  el("dgZuBtn").style.display = live ? "" : "none";
+  el("dgZuBtn").innerHTML = dstate.zu ? ic("play") + "Abgabe wieder öffnen" : ic("cross") + "Abgabe schließen";
+  el("dgScanBtn").style.display = live ? "none" : "";
+  var k = dgKarten();
+  el("dgScanBtn").innerHTML = ic("search") + "Fragen einsammeln" + (k ? " (" + k + ")" : "");
+}
+
+function dgErgebnisRender(){
+  var a = dstate.auf, live = dstate.phase === "offen", box = el("dgErgInhalt");
+  el("dgQrBtn").innerHTML = ic("qr") + (live ? "QR-Code zeigen" : "Zurück zum Code");
+  el("dgNochmalBtn").style.display = (live && a.art !== "fragen") ? "" : "none";
+  el("dgNochmalBtn").innerHTML = ic("rotate") + "Noch einmal abstimmen";
+  el("dgExportInfo").textContent = dstate.verlauf.length
+    ? "Enthält auch die " + (dstate.verlauf.length === 1 ? "frühere Aufgabe" : dstate.verlauf.length + " früheren Aufgaben") + " dieser Stunde."
+    : "";
+
+  if(a.art === "fragen"){
+    var sichtbar = dstate.fragen.filter(function(f){ return !f.aus; });
+    el("dgErgLabel").textContent = "Fragen zur Stunde · " + dZahl(sichtbar.length, "Frage", "Fragen") +
+      (live ? " von " + dZahl(dgFrageTablets(dstate.fragen), "Tablet", "Tablets") : " auf " + dZahl(dgKarten(), "Karte", "Karten"));
+    el("dgErgTitel").textContent = a.thema || "Was die Klasse noch wissen will";
+    box.innerHTML = dgFragenHtml(a);
+    return;
+  }
+
+  var c = dgVerteilung(), n = dgStimmen();
+  el("dgErgLabel").textContent = dArtName(a) + " · " + dZahl(n, "Stimme", "Stimmen") +
+    (dstate.vorher ? " · Runde " + dstate.runde + ", grau darunter: Runde davor" : "");
+  el("dgErgTitel").textContent = a.text;
+  box.innerHTML = dgBalkenHtml(a, c, n, dstate.vorher);
+}
+
+function dgFragenHtml(a){
+  var alle = dstate.fragen.map(function(f, i){ f.i = i; return f; });
+  var sichtbar = alle.filter(function(f){ return !f.aus; });
+  dgreihe = [];
+  if(!alle.length) return '<div class="dgleer">Noch keine Fragen eingegangen.</div>';
+
+  /* Verteilung ueber die Gruppen der Satzanfaenge: die eigentliche Diagnose. */
+  var proG = D_GRUPPEN.map(function(){ return 0; });
+  sichtbar.forEach(function(f){ proG[dHilfe(a, f.s).g]++; });
+  var s = '<div class="dgverteilung">';
+  proG.forEach(function(n, g){
+    if(n) s += '<span class="dgg' + g + '" style="width:' + (100 * n / sichtbar.length) + '%" title="' + D_GRUPPEN[g] + '"></span>';
+  });
+  s += '</div><div class="dglegende">';
+  proG.forEach(function(n, g){
+    if(n) s += '<span><i class="dgg' + g + '"></i>' + D_GRUPPEN[g] + ' <b class="num">' + n + '</b></span>';
+  });
+  s += '</div>';
+
+  dAbschnitte(a, alle).forEach(function(ab){
+    var zahl = ab.fragen.filter(function(f){ return !f.aus; }).length;
+    s += '<div class="dgabschnitt"><div class="dgabschnitt-kopf"><i class="dgg' + ab.g + '"></i>' +
+      qEsc(ab.titel) + '<span class="num">' + zahl + '</span></div><div class="dgkarten">';
+    ab.fragen.forEach(function(f){
+      if(!f.aus) dgreihe.push(f.i);
+      s += '<div class="dgkarte' + (f.stern ? " stern" : "") + (f.aus ? " aus" : "") + '">' +
+        '<span class="dgkarte-text" data-fi="' + f.i + '" title="Groß zeigen">' + qEsc(f.x) + '</span>' +
+        '<button class="btn btn-quiet btn-icon dgstern" data-stern="' + f.i + '" title="Für die Besprechung markieren">' + ic("stern", 18) + '</button>' +
+        '<button class="btn btn-quiet btn-icon" data-aus="' + f.i + '" title="' + (f.aus ? "Wieder einblenden" : "Ausblenden") + '">' +
+          ic(f.aus ? "auge" : "cross", 18) + '</button></div>';
+    });
+    s += '</div></div>';
+  });
+  return s;
+}
+
+function dgProzent(z, n){ return n ? Math.round(100 * z / n) : 0; }
+function dgKomma(x){ return (Math.round(x * 10) / 10).toFixed(1).replace(".", ","); }
+
+function dgMittel(c){
+  var summe = 0, n = 0;
+  c.forEach(function(z, i){ summe += z * (i + 1); n += z; });
+  return n ? summe / n : 0;
+}
+
+function dgBalkenHtml(a, c, n, vorher){
+  var opt = dOptionen(a), skala = a.art === "skala";
+  var s = '<ul class="dgbalken">';
+  opt.forEach(function(o, i){
+    var name = skala
+      ? '<span class="dgopt-nr qa1">' + o + '</span>' + (i === 0 ? qEsc(a.links) : i === opt.length - 1 ? qEsc(a.rechts) : "")
+      : '<span class="dgopt-nr' + (i < 4 ? " qa" + i : "") + '">' + (i + 1) + '</span>' + qEsc(o);
+    var farbe = skala ? "qa1" : (i < 4 ? "qa" + i : "dgg5");
+    s += '<li><div class="dgb-name">' + name + '</div>' +
+      '<div class="dgb-spur"><span class="' + farbe + '" style="width:' + dgProzent(c[i], n) + '%"></span></div>' +
+      '<div class="dgb-zahl num">' + c[i] + '<small>' + dgProzent(c[i], n) + ' %</small></div>' +
+      (vorher ? '<div class="dgb-vorher" title="Runde davor: ' + vorher.v[i] + '"><span style="width:' +
+        dgProzent(vorher.v[i], vorher.n) + '%"></span></div>' : '') +
+      '</li>';
+  });
+  s += '</ul>';
+  if(a.mehr) s += '<p class="note">Mehrere Antworten möglich, die Prozente beziehen sich auf ' + dZahl(n, "Person", "Personen") + '.</p>';
+  if(skala && n){
+    s += '<div class="dgmittel">Mittelwert <b>' + dgKomma(dgMittel(c)) + '</b> auf der Skala von 1 bis ' + opt.length +
+      (vorher && vorher.n ? ', Runde davor ' + dgKomma(dgMittel(vorher.v)) : '') + '.</div>';
+  }
+  if(!n) s += '<div class="dgleer">Noch keine Stimmen.</div>';
+  return s;
+}
+
+function dgFokusZeigen(k){
+  if(!dgreihe.length) return;
+  dgfokus = (k + dgreihe.length) % dgreihe.length;
+  var f = dstate.fragen[dgreihe[dgfokus]];
+  el("dgFokusHilfe").textContent = dHilfe(dstate.auf, f.s).t + " · " + (dgfokus + 1) + " von " + dgreihe.length;
+  el("dgFokusText").textContent = f.x;
+  el("dgFokus").classList.add("open");
+}
+function dgFokusZu(){
+  el("dgFokus").classList.remove("open");
+  dgfokus = -1;
+}
+
+
+/* -----------------------------------------------------------------------
+   DIAGNOSE: Ausgabe als Text
+   Fuer die eigene Nachbereitung, etwa um die Fragen von einer KI ordnen
+   zu lassen. Ausgeblendete Fragen fehlen, markierte tragen einen Stern.
+   ----------------------------------------------------------------------- */
+
+function dgExportText(){
+  var teile = dstate.verlauf.slice();
+  if(dgHatEingaenge()) teile.push(dgSchnappschuss());
+  if(!teile.length) return "";
+  var jetzt = new Date();
+  var z = ["Diagnose · " + jetzt.toLocaleDateString("de-DE") + ", " +
+           jetzt.toLocaleTimeString("de-DE", {hour:"2-digit", minute:"2-digit"}) + " Uhr", ""];
+  teile.forEach(function(t){
+    var a = t.auf;
+    if(a.art === "fragen"){
+      var sichtbar = t.fragen.filter(function(f){ return !f.aus; });
+      z.push("== Fragen zur Stunde" + (a.thema ? ": " + a.thema : "") + " ==");
+      z.push(dZahl(sichtbar.length, "Frage", "Fragen") + " von " + dZahl(dgFrageTablets(sichtbar), "Person", "Personen"));
+      dAbschnitte(a, sichtbar).forEach(function(ab){
+        z.push("");
+        z.push(ab.titel + " (" + ab.fragen.length + ")");
+        ab.fragen.forEach(function(f){ z.push("- " + (f.stern ? "★ " : "") + f.x); });
+      });
+    } else {
+      z.push("== " + dArtName(a) + ": " + a.text + (t.runde > 1 ? " (Runde " + t.runde + ")" : "") + " ==");
+      z.push(dZahl(t.n, "Stimme", "Stimmen"));
+      dOptionen(a).forEach(function(o, i){
+        var name = a.art === "skala"
+          ? o + (i === 0 && a.links ? " (" + a.links + ")" : i === a.stufen - 1 && a.rechts ? " (" + a.rechts + ")" : "")
+          : o;
+        z.push("- " + name + ": " + t.v[i] + " (" + dgProzent(t.v[i], t.n) + " %)");
+      });
+      if(a.art === "skala" && t.n) z.push("Mittelwert " + dgKomma(dgMittel(t.v)));
+    }
+    z.push("");
+  });
+  return z.join("\n");
+}
+
+function dgExportInfo(txt){
+  el("dgExportInfo").textContent = txt;
+}
+
+function dgKopieren(){
+  var t = dgExportText();
+  if(!t){ dgExportInfo("Noch nichts eingegangen."); return; }
+  function ersatz(){
+    var ta = document.createElement("textarea");
+    ta.value = t;
+    ta.style.position = "fixed"; ta.style.opacity = "0";
+    document.body.appendChild(ta);
+    ta.select();
+    try{ document.execCommand("copy"); dgExportInfo("In die Zwischenablage kopiert."); }
+    catch(err){ dgExportInfo("Kopieren hat nicht geklappt, bitte „Herunterladen“ nehmen."); }
+    document.body.removeChild(ta);
+  }
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(t).then(function(){ dgExportInfo("In die Zwischenablage kopiert."); }, ersatz);
+  } else ersatz();
+}
+
+function dgHerunterladen(){
+  var t = dgExportText();
+  if(!t){ dgExportInfo("Noch nichts eingegangen."); return; }
+  var d = new Date();
+  function zw(x){ return (x < 10 ? "0" : "") + x; }
+  var name = "Diagnose_" + d.getFullYear() + "-" + zw(d.getMonth() + 1) + "-" + zw(d.getDate()) + "_" +
+             zw(d.getHours()) + zw(d.getMinutes()) + ".txt";
+  var url = URL.createObjectURL(new Blob(["﻿" + t], {type:"text/plain;charset=utf-8"}));
+  var link = document.createElement("a");
+  link.href = url; link.download = name;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  setTimeout(function(){ URL.revokeObjectURL(url); }, 1000);
+  dgExportInfo("Gespeichert als " + name + ".");
+}
+
+
+/* -----------------------------------------------------------------------
+   DIAGNOSE: Einsammeln ohne Server
+   ----------------------------------------------------------------------- */
+
+var DG_SCAN = {video:"dgVideo", sel:"dgKameraSel", status:"dgScanStatus", rahmen:"dgVideoRahmen",
+               aktiv:function(){ return dstate.phase === "scan"; },
+               nimm:function(text){ dgScanAufnehmen(text); }};
+
+function dgScanStarten(){
+  dstate.phase = "scan";
+  dstate.zeigen = false;
+  dgRender();
+  qoff.zuletzt = {};
+  qTonBereit();
+  qoff.ziel = DG_SCAN;
+  qKameraStarten();
+}
+
+function dgScanEnde(zeigen){
+  qKameraStoppen();
+  dstate.phase = "offline";
+  dstate.zeigen = zeigen;
+  dgSpeichern();
+  dgRender();
+}
+
+/* Einen Teil einer Endkarte lesen; null bei fremden Codes. */
+function dgTeilLesen(text){
+  var t = String(text).split("|");
+  if(t.length < 5 || t[0] !== "D1") return null;
+  var p = dgSoloLesen(t[1]);
+  if(!p || !/^[a-z0-9]{1,8}$/.test(t[2])) return null;
+  var tg = /^(\d+)\/(\d+)$/.exec(t[3]);
+  if(!tg) return null;
+  var teil = +tg[1], von = +tg[2];
+  if(von < 1 || von > 20 || teil < 1 || teil > von) return null;
+  var e = [];
+  for(var i = 4; i < t.length; i++){
+    var m = /^(x|\d+)\.([\s\S]*)$/.exec(t[i]);
+    if(!m) return null;
+    var s = m[1] === "x" ? -1 : +m[1], x = dText(m[2]);
+    if(s >= 0 && !p.h.some(function(h){ return h.s === s; })) return null;
+    if(x) e.push({s:s, x:x});
+  }
+  return {code:p.code, id:t[2], teil:teil, von:von, e:e};
+}
+
+function dgScanAufnehmen(text){
+  var e = dgTeilLesen(text);
+  if(!e){
+    if(!qoff.zuletzt.fremd || Date.now() - qoff.zuletzt.fremd > 3000){
+      qoff.zuletzt.fremd = Date.now();
+      qScanStatus("Ein QR-Code, der keine Fragenkarte ist – übersprungen.");
+    }
+    return;
+  }
+  if(e.code !== dstate.solo){
+    qScanStatus("Diese Karte gehört zu Code " + e.code + ", hier läuft " + dstate.solo + ".");
+    return;
+  }
+  var alt = dstate.scan[e.id];
+  if(!alt || alt.von !== e.von) alt = dstate.scan[e.id] = {von:e.von, teile:{}, t:Date.now(), fertig:false};
+  if(alt.teile[e.teil] || alt.fertig){
+    if(!qoff.zuletzt[e.id] || Date.now() - qoff.zuletzt[e.id] > 4000){
+      qoff.zuletzt[e.id] = Date.now();
+      qScanStatus(alt.fertig ? "Diese Karte ist schon eingesammelt."
+        : "Noch " + (alt.von - Object.keys(alt.teile).length) + " Teil(e) offen, Tablet weiter davorhalten.");
+    }
+    return;
+  }
+  alt.teile[e.teil] = e.e;
+  qoff.zuletzt[e.id] = Date.now();
+  if(Object.keys(alt.teile).length >= alt.von){
+    alt.fertig = true;
+    var k = 0;
+    for(var i = 1; i <= alt.von; i++){
+      alt.teile[i].forEach(function(f){
+        if(k < D_MAX) dstate.fragen.push({id:e.id, k:k++, s:f.s, x:f.x, t:Date.now()});
+      });
+    }
+    qPiep();
+    qScanTreffer();
+    qScanStatus("Eingesammelt: " + k + (k === 1 ? " Frage." : " Fragen."));
+  } else {
+    qScanStatus("Teil " + Object.keys(alt.teile).length + " von " + alt.von + " gelesen …");
+  }
+  dgSpeichern();
+  dgScanListe(e.id);
+}
+
+function dgScanListe(neu){
+  var ids = Object.keys(dstate.scan).sort(function(a, b){ return dstate.scan[a].t - dstate.scan[b].t; });
+  var ol = el("dgScanListe"), fertig = 0, zeilen = [];
+  ids.forEach(function(id, nr){
+    var e = dstate.scan[id], li = document.createElement("li");
+    if(id === neu && e.fertig) li.className = "neu";
+    li.innerHTML = '<span class="qs-name"></span><span class="qs-punkte num"></span><span class="qs-info"></span>';
+    li.querySelector(".qs-name").textContent = "Karte " + (nr + 1);
+    var info = li.querySelector(".qs-info");
+    if(e.fertig){
+      fertig++;
+      var n = dstate.fragen.filter(function(f){ return f.id === id; }).length;
+      li.querySelector(".qs-punkte").innerHTML = ic("check");
+      info.textContent = n + (n === 1 ? " Frage" : " Fragen");
+    } else {
+      info.textContent = "Teil " + Object.keys(e.teile).length + " von " + e.von + " – Tablet weiter davorhalten";
+      info.className = "qs-info warn";
+    }
+    zeilen.unshift(li);
+  });
+  ol.innerHTML = "";
+  zeilen.forEach(function(li){ ol.appendChild(li); });
+  if(!ids.length) ol.innerHTML = '<li class="sub" style="display:block">Noch keine Karte gescannt.</li>';
+  el("dgScanZahl").textContent = fertig;
+  el("dgScanEndeBtn").disabled = !fertig;
+}
+
+
+/* -----------------------------------------------------------------------
+   DIAGNOSE: Vorbereitung
+   ----------------------------------------------------------------------- */
+
+function dgWahlLesen(){
+  dgwahl.thema = dText(el("dgThema").value, 80);
+  dgwahl.skala = {text:dText(el("dgSkalaText").value, 120), links:dText(el("dgSkalaLinks").value, 30),
+                  rechts:dText(el("dgSkalaRechts").value, 30), stufen:+el("dgSkalaStufen").value || 5};
+  dgwahl.mc = {text:dText(el("dgMcText").value, 120), opt:el("dgMcOpt").value, mehr:el("dgMcMehr").checked};
+  dgWahlMerken();
+}
+
+function dgHilfenRender(){
+  var h = "";
+  D_GRUPPEN.forEach(function(name, g){
+    var teil = "";
+    D_HILFEN.forEach(function(x, i){
+      if(x.g !== g) return;
+      var an = dgwahl.hilfen.indexOf(i) >= 0;
+      teil += '<label class="qbereich' + (an ? " an" : "") + '"><input type="checkbox" data-h="' + i + '"' +
+        (an ? " checked" : "") + '><span class="qbereich-name">' + qEsc(x.t) + '</span></label>';
+    });
+    if(teil) h += '<span class="label dggruppe">' + name + '</span>' + teil;
+  });
+  if(dgwahl.eigene.length){
+    h += '<span class="label dggruppe">Eigene Satzanfänge</span>';
+    dgwahl.eigene.forEach(function(e, k){
+      h += '<label class="qbereich' + (e.an ? " an" : "") + '"><input type="checkbox" data-e="' + k + '"' +
+        (e.an ? " checked" : "") + '><span class="qbereich-name">' + qEsc(e.t) + '</span>' +
+        '<button type="button" class="btn btn-quiet btn-icon dgweg" data-weg="' + k + '" title="Entfernen">' + ic("cross", 16) + '</button></label>';
+    });
+  }
+  el("dgHilfen").innerHTML = h;
+  dgHilfenInfo();
+}
+
+function dgHilfenInfo(){
+  var n = dgwahl.hilfen.length + dgwahl.eigene.filter(function(e){ return e.an; }).length;
+  el("dgHilfenInfo").textContent = n
+    ? n + (n === 1 ? " Satzanfang angehakt." : " Satzanfänge angehakt.") + " Fünf bis sieben reichen meist; zu viele lenken ab."
+    : "Noch kein Satzanfang angehakt.";
+}
+
+function dgArtZeigen(){
+  var art = dgwahl.art;
+  [].forEach.call(el("dgArtWahl").children, function(b){
+    b.classList.toggle("selected", b.getAttribute("data-art") === art);
+  });
+  el("dgFragenBox").style.display = art === "fragen" ? "" : "none";
+  el("dgSkalaBox").style.display = art === "skala" ? "" : "none";
+  el("dgMcBox").style.display = art === "mc" ? "" : "none";
+  el("dgArtInfo").textContent = {
+    fragen:"Jede Person schreibt am Tablet eine bis drei Fragen, anonym. Am Beamer stehen sie gesammelt und nach Satzanfang sortiert.",
+    skala:"Alle wählen eine Stufe. Das Ergebnis bleibt verdeckt, bis du es zeigst; danach auf Wunsch eine zweite Runde zum Vergleich.",
+    mc:"Antworten selbst eintippen, etwa zwei gegensätzliche Schüleransätze. Verdeckt bis zum Zeigen, danach auf Wunsch eine zweite Runde."
+  }[art];
+  el("dgOfflineBtn").disabled = art !== "fragen";
+  el("dgStartInfo").textContent = art === "fragen"
+    ? "Ohne Server: nur die Satzanfänge aus der Liste, kein Thema. Am Ende zeigt jedes Tablet eine Karte, die du mit der Kamera einsammelst."
+    : "Abstimmungen gehen nur mit Server.";
+}
+
+function dgStartKnopf(){
+  var alt = dgLaden();
+  var offen = (dstate.phase === "offen" && !!dgnetz.mqtt) || (!!alt && alt.phase === "offen");
+  el("dgStartBtn").innerHTML = offen ? ic("right") + "Im offenen Raum stellen" : ic("tablet") + "Raum öffnen";
+  el("dgVerbindung").style.display = offen ? "none" : "";
+}
+
+function dgServerFuellen(){
+  var sel = el("dgServerSel");
+  sel.innerHTML = "";
+  Q_SERVER.forEach(function(s, i){
+    var o = document.createElement("option");
+    o.value = i; o.textContent = s.name;
+    sel.appendChild(o);
+  });
+  var o = document.createElement("option");
+  o.value = -1; o.textContent = "Eigener Server …";
+  sel.appendChild(o);
+  sel.value = dgwahl.server < Q_SERVER.length ? dgwahl.server : 0;
+  el("dgServerEigen").value = dgwahl.eigen || "";
+  el("dgEigenFeld").style.display = +sel.value < 0 ? "flex" : "none";
+}
+
+function dgResumeAnzeigen(){
+  var aktiv = (dstate.phase === "offen" && dgnetz.mqtt) || dstate.phase === "offline" || dstate.phase === "scan";
+  var s = aktiv ? dstate : dgLaden();
+  if(!s){ el("dgResumeCard").style.display = "none"; return; }
+  var live = s.phase === "offen", fragen = s.auf.art === "fragen";
+  var n = fragen ? s.fragen.length : Object.keys(s.stimmen || {}).length;
+  el("dgResumeTitel").textContent = live ? "Offener Raum" : "Runde ohne Server";
+  el("dgResumeInfo").textContent = (live ? "Raum " + s.code : "Code " + s.solo) + ": " + dArtName(s.auf) + ", " +
+    (fragen ? dZahl(n, "Frage", "Fragen") : dZahl(n, "Stimme", "Stimmen")) +
+    (live ? ", " + dZahl(s.tablets.length, "Tablet", "Tablets") : "") +
+    ", seit " + new Date(s.ts).toLocaleTimeString("de-DE", {hour:"2-digit", minute:"2-digit"}) + " Uhr." +
+    (live && !aktiv ? " Die Tablets verbinden sich von selbst wieder." : "");
+  el("dgResumeBtn").innerHTML = ic("right") + "Zurück zur Anzeige";
+  el("dgResumeCard").style.display = "block";
+}
+
+function dgSetupFuellen(){
+  if(!dgSetupFuellen.geladen){ dgWahlLaden(); dgSetupFuellen.geladen = true; }
+  var w = dgwahl;
+  el("dgThema").value = w.thema;
+  el("dgSkalaText").value = w.skala.text;
+  el("dgSkalaLinks").value = w.skala.links;
+  el("dgSkalaRechts").value = w.skala.rechts;
+  el("dgSkalaStufen").value = w.skala.stufen;
+  el("dgMcText").value = w.mc.text;
+  el("dgMcOpt").value = w.mc.opt;
+  el("dgMcMehr").checked = !!w.mc.mehr;
+  var vorlage = el("dgSkalaVorlage");
+  vorlage.innerHTML = '<option value="">Vorlage wählen …</option>' +
+    D_SKALEN.map(function(v, i){ return '<option value="' + i + '">' + v.name + '</option>'; }).join("");
+  dgHilfenRender();
+  dgArtZeigen();
+  dgServerFuellen();
+  dgStartKnopf();
+  dgResumeAnzeigen();
+  el("dgSetupFehler").style.display = "none";
+  el("dgTestErgebnis").innerHTML = "";
+}
+
+/* Wie qServerTest, nur mit den Feldern der Diagnose. */
+function dgServerTest(){
+  var liste = Q_SERVER.map(function(s, i){ return {name:s.name, url:s.url, i:i}; });
+  var eigen = el("dgServerEigen").value.trim();
+  if(/^wss?:\/\/\S+$/.test(eigen)) liste.push({name:"Eigener Server", url:eigen, i:-1});
+  var box = el("dgTestErgebnis");
+  box.innerHTML = "";
+  var offen = liste.length, gute = [];
+  liste.forEach(function(s){
+    var z = document.createElement("div");
+    z.className = "qtest";
+    z.innerHTML = '<span class="qpunkt warte"></span><b></b><span class="sub">wird geprüft …</span>';
+    z.querySelector("b").textContent = s.name;
+    box.appendChild(z);
+    qEinzeltest(s.url).then(function(ms){
+      z.querySelector(".qpunkt").className = "qpunkt ok";
+      z.querySelector(".sub").textContent = "erreichbar, Antwort nach " + ms + " ms";
+      gute.push(s.i);
+    }, function(grund){
+      z.querySelector(".qpunkt").className = "qpunkt weg";
+      z.querySelector(".sub").textContent = "nicht erreichbar (" + grund + ")";
+    }).then(function(){
+      if(--offen) return;
+      var fazit = document.createElement("p");
+      fazit.className = "note";
+      var gewaehlt = +el("dgServerSel").value;
+      var erster = liste.filter(function(x){ return gute.indexOf(x.i) >= 0; })[0];
+      if(!erster){
+        fazit.textContent = "Kein Server erreichbar. Dann geht nur „Ohne Server (nur Fragen)“.";
+      } else if(gute.indexOf(gewaehlt) < 0){
+        el("dgServerSel").value = erster.i;
+        el("dgEigenFeld").style.display = erster.i < 0 ? "flex" : "none";
+        fazit.textContent = "Der gewählte Server kommt nicht durch, deshalb ist jetzt ein erreichbarer eingestellt.";
+      } else {
+        fazit.textContent = "Der gewählte Server ist erreichbar. Am besten einmal mit einem Tablet im Schul-WLAN gegenprüfen.";
+      }
+      box.appendChild(fazit);
+    });
+  });
+}
+
+
+/* -----------------------------------------------------------------------
+   DIAGNOSE: Bedienung am Beamer
+   ----------------------------------------------------------------------- */
+
+el("dgZurueckBtn").innerHTML  = ic("left") + "Spielauswahl";
+el("dgEigenBtn").innerHTML    = ic("plus") + "Hinzufügen";
+el("dgTestBtn").innerHTML     = ic("wifi") + "Verbindung testen";
+el("dgOfflineBtn").innerHTML  = ic("play") + "Ohne Server (nur Fragen)";
+el("dgNeuBtn").innerHTML      = ic("plus") + "Neue Aufgabe";
+el("dgScanEndeBtn").innerHTML = ic("auge") + "Fragen zeigen";
+el("dgScanZurueckBtn").innerHTML = ic("left") + "Zurück zum Code";
+el("dgKopierenBtn").innerHTML = ic("kopie") + "Kopieren";
+el("dgLadenBtn").innerHTML    = ic("laden") + "Herunterladen";
+el("dgFokusZurueck").innerHTML = ic("left") + "Vorige";
+el("dgFokusWeiter").innerHTML  = "Nächste" + ic("right");
+
+el("dgZurueckBtn").addEventListener("click", function(){ dgWahlLesen(); zeigeSeite("startseite"); });
+el("dgArtWahl").addEventListener("click", function(ev){
+  var b = ev.target.closest("[data-art]");
+  if(!b) return;
+  dgwahl.art = b.getAttribute("data-art");
+  dgWahlMerken();
+  dgArtZeigen();
+  el("dgSetupFehler").style.display = "none";
+});
+el("dgHilfen").addEventListener("click", function(ev){
+  var weg = ev.target.closest("[data-weg]");
+  if(!weg) return;
+  ev.preventDefault();
+  dgwahl.eigene.splice(+weg.getAttribute("data-weg"), 1);
+  dgWahlMerken();
+  dgHilfenRender();
+});
+el("dgHilfen").addEventListener("change", function(ev){
+  var t = ev.target, i;
+  if(t.hasAttribute("data-h")){
+    i = +t.getAttribute("data-h");
+    dgwahl.hilfen = dgwahl.hilfen.filter(function(x){ return x !== i; });
+    if(t.checked) dgwahl.hilfen.push(i);
+    dgwahl.hilfen.sort(function(p, q){ return p - q; });
+  } else if(t.hasAttribute("data-e")){
+    dgwahl.eigene[+t.getAttribute("data-e")].an = t.checked;
+  } else return;
+  t.parentNode.classList.toggle("an", t.checked);
+  dgWahlMerken();
+  dgHilfenInfo();
+});
+function dgEigeneDazu(){
+  var t = dText(el("dgEigenIn").value, 70);
+  if(!t) return;
+  if(!dgwahl.eigene.some(function(e){ return e.t === t; })) dgwahl.eigene.push({t:t, an:true});
+  el("dgEigenIn").value = "";
+  dgWahlMerken();
+  dgHilfenRender();
+}
+el("dgEigenBtn").addEventListener("click", dgEigeneDazu);
+el("dgEigenIn").addEventListener("keydown", function(ev){ if(ev.key === "Enter") dgEigeneDazu(); });
+el("dgSkalaVorlage").addEventListener("change", function(){
+  var v = D_SKALEN[+el("dgSkalaVorlage").value];
+  if(!v) return;
+  if(v.text) el("dgSkalaText").value = v.text;
+  el("dgSkalaLinks").value = v.links;
+  el("dgSkalaRechts").value = v.rechts;
+  dgWahlLesen();
+});
+el("dgServerSel").addEventListener("change", function(){
+  el("dgEigenFeld").style.display = +el("dgServerSel").value < 0 ? "flex" : "none";
+});
+el("dgTestBtn").addEventListener("click", dgServerTest);
+el("dgStartBtn").addEventListener("click", dgStart);
+el("dgOfflineBtn").addEventListener("click", dgOfflineStarten);
+el("dgResumeBtn").addEventListener("click", dgFortsetzen);
+el("dgVerwerfenBtn").addEventListener("click", function(){
+  askConfirm("Schließen und verwerfen", "Alle Fragen und Stimmen dieser Runde werden gelöscht, ein offener Raum wird geschlossen.", function(){
+    var s = (dstate.phase === "offen" && dgnetz.mqtt) ? null : dgLaden();
+    if(s && s.phase === "offen") dgRaumLeeren(s);
+    dgAllesZu();
+    dgSetupFuellen();
+  }, "Verwerfen");
+});
+
+el("dgNeuBtn").addEventListener("click", function(){
+  dgSetupFuellen(); dgKopf(); zeigeSeite("diagSetup");
+});
+el("dgSchliessenBtn").addEventListener("click", dgBeenden);
+el("dgZeigenBtn").addEventListener("click", function(){
+  dstate.zeigen = true; dgSpeichern(); dgRender();
+});
+el("dgQrBtn").addEventListener("click", function(){
+  dstate.zeigen = false; dgSpeichern(); dgRender();
+});
+el("dgZuBtn").addEventListener("click", function(){
+  dstate.zu = !dstate.zu; dgSpeichern(); dgRender(); dgSenden(true);
+});
+el("dgNochmalBtn").addEventListener("click", dgNochmal);
+el("dgScanBtn").addEventListener("click", dgScanStarten);
+el("dgScanEndeBtn").addEventListener("click", function(){ dgScanEnde(true); });
+el("dgScanZurueckBtn").addEventListener("click", function(){ dgScanEnde(false); });
+el("dgKameraSel").addEventListener("change", function(){
+  if(dstate.phase === "scan"){ qoff.ziel = DG_SCAN; qKameraStarten(); }
+});
+el("dgKopierenBtn").addEventListener("click", dgKopieren);
+el("dgLadenBtn").addEventListener("click", dgHerunterladen);
+el("dgErgInhalt").addEventListener("click", function(ev){
+  var b = ev.target.closest("[data-stern]");
+  if(b){ var f = dstate.fragen[+b.getAttribute("data-stern")]; f.stern = !f.stern; dgSpeichern(); dgErgebnisRender(); return; }
+  b = ev.target.closest("[data-aus]");
+  if(b){ var g = dstate.fragen[+b.getAttribute("data-aus")]; g.aus = !g.aus; dgSpeichern(); dgErgebnisRender(); return; }
+  b = ev.target.closest("[data-fi]");
+  if(b) dgFokusZeigen(dgreihe.indexOf(+b.getAttribute("data-fi")));
+});
+el("dgFokusZu").addEventListener("click", dgFokusZu);
+el("dgFokusZurueck").addEventListener("click", function(){ dgFokusZeigen(dgfokus - 1); });
+el("dgFokusWeiter").addEventListener("click", function(){ dgFokusZeigen(dgfokus + 1); });
+document.addEventListener("keydown", function(ev){
+  if(dgfokus < 0) return;
+  if(ev.key === "Escape") dgFokusZu();
+  else if(ev.key === "ArrowRight") dgFokusZeigen(dgfokus + 1);
+  else if(ev.key === "ArrowLeft") dgFokusZeigen(dgfokus - 1);
+});
+document.addEventListener("visibilitychange", function(){
+  if(!document.hidden && dgnetz.mqtt) dgnetz.mqtt.wecken();
+});
+
+
+/* -----------------------------------------------------------------------
+   DIAGNOSE: Tablet
+   Live laeuft ueber hstate (Kennung, Verbindung, Nachhaken) wie beim
+   Live-Quiz; hZustand und hNachhaken reichen Diagnose-Raeume hierher
+   weiter. Ohne Server (dtstate.solo) gibt es keine Verbindung, nur die
+   Endkarte. Der Stand liegt im localStorage, damit ein Neuladen keine
+   Frage kostet.
+   ----------------------------------------------------------------------- */
+
+var DT_KEY = "diagnose_tablet_v1";
+var dtstate = {code:"", raum:"", nr:-1, solo:false, id:"", fr:[], w:null, wahl:[], entwurf:null, fertig:0, sig:""};
+var dtUhr = {qr:null, teil:0};
+
+function dtNeu(code, raum, nr){
+  return {code:code, raum:raum, nr:nr, solo:false, id:"", fr:[], w:null, wahl:[], entwurf:null, fertig:0, sig:""};
+}
+function dtSpeichern(){
+  try{ localStorage.setItem(DT_KEY, JSON.stringify(dtstate)); }catch(err){}
+}
+function dtLaden(){
+  try{
+    var s = JSON.parse(localStorage.getItem(DT_KEY) || "null");
+    return (s && s.code && s.fr) ? s : null;
+  }catch(err){ return null; }
+}
+
+function dtAufgabe(){
+  if(dtstate.solo) return {art:"fragen", thema:"", h:dgSoloLesen(dtstate.code).h};
+  return hstate.z.auf;
+}
+
+/* Mit Code vom Beamer (#diag=CODE): ohne Formular und ohne Namen hinein. */
+function dtLiveStart(){
+  zeigeSeite("quizHandy");
+  document.title = "Diagnose";
+  var alt = hLaden();
+  if(alt && alt.id && alt.code === hstate.code){ hstate.id = alt.id; hstate.g = alt.g; }
+  else { hstate.id = qZufall(10); hstate.g = qZufall(12); }
+  hstate.name = alt ? alt.name || "" : "";
+  hstate.raum = ""; hstate.seq = -1; hstate.z = null; hstate.antwort = null;
+  hSpeichern();
+  hVerbinden();
+  hKopfSetzen("Diagnose", "");
+}
+
+function dtSoloStart(code){
+  hTrennen();
+  clearInterval(sstate.uhr);
+  clearInterval(ftUhr.qr);
+  var p = dgSoloLesen(code);
+  zeigeSeite("quizHandy");
+  document.title = "Diagnose";
+  if(!p){
+    hstate.code = "";
+    hstate.fehler = "Diesen Code kennt die Seite nicht. Bitte den Code vom Beamer abtippen.";
+    hFormular();
+    return;
+  }
+  var alt = dtLaden();
+  if(alt && alt.solo && alt.code === p.code) dtstate = alt;
+  else {
+    dtstate = dtNeu(p.code, "", 1);
+    dtstate.solo = true;
+    dtstate.id = qZufall(4);
+  }
+  try{ history.replaceState(null, "", "#dsolo=" + p.code); }catch(err){}
+  dtSpeichern();
+  dtRender();
+}
+
+function dtZustand(z){
+  if(!z || z.v !== 1 || !z.sp || !z.auf || !z.ok) return;
+  if(z.raum === hstate.raum && z.seq <= hstate.seq) return;
+  hstate.raum = z.raum; hstate.seq = z.seq; hstate.z = z;
+  if(dtstate.solo || dtstate.code !== hstate.code || dtstate.raum !== z.raum || dtstate.nr !== z.nr){
+    var alt = dtLaden();
+    dtstate = (alt && !alt.solo && alt.code === hstate.code && alt.raum === z.raum && alt.nr === z.nr)
+      ? alt : dtNeu(hstate.code, z.raum, z.nr);
+    dtstate.sig = "";
+    dtSpeichern();
+  }
+  var ich = hstate.id;
+  var sig = JSON.stringify([z.nr, z.zu, z.sp.indexOf(ich) >= 0, z.auf,
+    z.ok.filter(function(k){ return k === ich || k.indexOf(ich + ".") === 0; })]);
+  if(sig === dtstate.sig) return;
+  dtstate.sig = sig;
+  /* Waehrend getippt wird, nicht neu aufbauen; Text und Tastatur bleiben. */
+  if(dtstate.entwurf && !z.zu && el("dtText")) return;
+  dtRender();
+}
+
+function dtNachhaken(){
+  var z = hstate.z;
+  if(!hstate.mqtt || !z) return;
+  if(z.sp.indexOf(hstate.id) < 0){ hSenden({t:"j", id:hstate.id, g:hstate.g}); return; }
+  if(z.zu || z.nr !== dtstate.nr) return;
+  dtstate.fr.forEach(function(f){
+    if(z.ok.indexOf(hstate.id + "." + f.k) < 0){
+      hSenden({t:"f", id:hstate.id, g:hstate.g, nr:z.nr, k:f.k, s:f.s, x:f.x});
+    }
+  });
+  if(dtstate.w && z.ok.indexOf(hstate.id) < 0){
+    hSenden({t:"v", id:hstate.id, g:hstate.g, nr:z.nr, w:dtstate.w});
+  }
+}
+
+function dtAngekommen(k){
+  var z = hstate.z;
+  return !!z && z.nr === dtstate.nr && z.ok.indexOf(k === undefined ? hstate.id : hstate.id + "." + k) >= 0;
+}
+
+function dtRender(){
+  clearInterval(dtUhr.qr);
+  document.title = "Diagnose";
+  var body = el("hBody"), solo = dtstate.solo, z = solo ? null : hstate.z;
+  if(!solo && z.sp.indexOf(hstate.id) < 0){
+    hKopfSetzen("Diagnose", "");
+    hMeldung("Du wirst angemeldet …", "Raum " + hstate.code);
+    return;
+  }
+  if(solo && dtstate.fertig){ dtEndkarte(); return; }
+  var a = dtAufgabe(), zu = !solo && z.zu;
+  hKopfSetzen(a.art === "fragen" ? "Fragen zur Stunde" : "Abstimmung", solo ? "ohne Server" : "anonym");
+
+  if(a.art === "fragen"){
+    if(dtstate.entwurf && !zu){ dtEditor(a); return; }
+    var n = dtstate.fr.length, s = '<div class="dtab">';
+    if(a.thema) s += '<div class="dt-thema">Thema: ' + qEsc(a.thema) + '</div>';
+    if(n){
+      s += '<span class="label">Deine Fragen</span><ol class="dt-meine">' + dtstate.fr.map(function(f){
+        var ok = solo || dtAngekommen(f.k);
+        return '<li><span>' + qEsc(f.x) + '</span><span class="dt-status' + (ok ? " ok" : "") + '">' +
+          (solo ? "gespeichert" : ok ? "angekommen" : "wird gesendet …") + '</span></li>';
+      }).join("") + '</ol>';
+    }
+    if(zu){
+      s += '<div class="hinfo">Die Abgabe ist geschlossen. Schau nach vorn.</div>';
+    } else if(n < D_MAX){
+      s += '<div class="dt-auftrag">' + (n ? "Noch eine Frage? Wähle einen Satzanfang." :
+        "Stell eine Frage zur heutigen Stunde. Wähle dafür einen Satzanfang.") + '</div>' +
+        '<div class="dt-hilfen">' + a.h.map(function(h){
+          return '<button class="dt-hilfe" data-dts="' + h.s + '">' + qEsc(h.t) + '</button>';
+        }).join("") + '<button class="dt-hilfe eigen" data-dts="-1">Eigene Frage ohne Satzanfang</button></div>' +
+        '<p class="note" style="margin:0">Anonym: Am Beamer steht kein Name. Höchstens ' + D_MAX + ' Fragen.</p>';
+    } else {
+      s += '<div class="hinfo">Danke! Mehr als ' + D_MAX + ' Fragen gehen nicht.</div>';
+    }
+    if(solo && n) s += '<button class="btn btn-primary" id="dtFertigBtn">' + ic("check") + 'Fertig – Karte zeigen</button>';
+    body.innerHTML = s + '</div>';
+    return;
+  }
+
+  var opt = dOptionen(a);
+  if(dtstate.w){
+    var ok = dtAngekommen();
+    body.innerHTML = '<div class="hmitte">' + ic("check", 64) +
+      '<div class="hgross">' + (ok ? "Deine Stimme ist angekommen." : "Stimme wird gesendet …") + '</div>' +
+      '<div class="hklein"></div></div>';
+    body.querySelector(".hklein").textContent = "Gewählt: " + dtstate.w.map(function(i){ return opt[i]; }).join(", ") + ". Schau nach vorn.";
+    return;
+  }
+  if(zu){ hMeldung("Die Abstimmung ist geschlossen.", "Schau nach vorn."); return; }
+  var s2 = '<div class="dtab"><div class="dt-auftrag">' + qEsc(a.text) + '</div>';
+  if(a.art === "skala"){
+    s2 += '<div class="dt-skala">' + opt.map(function(o, i){
+      return '<button class="dt-opt' + (dtstate.wahl.indexOf(i) >= 0 ? " an" : "") + '" data-dtw="' + i + '">' + o + '</button>';
+    }).join("") + '</div><div class="dt-enden"><span>' + qEsc(a.links) + '</span><span>' + qEsc(a.rechts) + '</span></div>';
+  } else {
+    s2 += '<div class="dt-wahl">' + opt.map(function(o, i){
+      return '<button class="dt-opt' + (dtstate.wahl.indexOf(i) >= 0 ? " an" : "") + '" data-dtw="' + i + '">' +
+        '<span class="dgopt-nr' + (i < 4 ? " qa" + i : "") + '">' + (i + 1) + '</span><span>' + qEsc(o) + '</span></button>';
+    }).join("") + '</div>' + (a.mehr ? '<p class="note" style="margin:0">Mehrere Antworten möglich.</p>' : '');
+  }
+  s2 += '<button class="btn btn-primary" id="dtStimmeBtn"' + (dtstate.wahl.length ? "" : " disabled") + '>' +
+    ic("check") + 'Abstimmen</button></div>';
+  body.innerHTML = s2;
+}
+
+function dtEditor(a){
+  var e = dtstate.entwurf, h = e.s === -1 ? null : a.h.filter(function(x){ return x.s === e.s; })[0];
+  el("hBody").innerHTML = '<div class="dtab">' +
+    '<span class="label">Frage ' + (dtstate.fr.length + 1) + ' von höchstens ' + D_MAX + '</span>' +
+    '<div class="dt-leit">' + (h ? 'Satzanfang: <b>' + qEsc(h.t) + '</b>' : 'Eigene Frage ohne Satzanfang') + '</div>' +
+    '<label class="feld ft-feld"><span class="label">Deine Frage</span>' +
+      '<textarea id="dtText" rows="3" maxlength="' + D_TEXT + '"></textarea></label>' +
+    '<div class="ft-rest" id="dtRest"></div>' +
+    '<div class="hfehler" id="dtFehler" style="display:none"></div>' +
+    '<div class="ft-nav"><button class="btn btn-quiet" id="dtAbbrechenBtn">' + ic("left") + 'Anderer Satzanfang</button>' +
+    '<button class="btn btn-primary" id="dtSendenBtn">' + ic("check") + (dtstate.solo ? "Speichern" : "Absenden") + '</button></div>' +
+    '</div>';
+  var t = el("dtText");
+  t.value = e.x;
+  dtRestZeigen();
+  try{ t.focus(); t.setSelectionRange(t.value.length, t.value.length); }catch(err){}
+}
+
+function dtRestZeigen(){
+  var t = el("dtText");
+  if(t) el("dtRest").textContent = "noch " + (D_TEXT - t.value.length) + " Zeichen";
+}
+
+function dtFrageSenden(){
+  var e = dtstate.entwurf, x = dText(el("dtText").value);
+  if(x.length < 8 || x === dText(e.stamm)){
+    el("dtFehler").textContent = "Schreib deine Frage zu Ende.";
+    el("dtFehler").style.display = "block";
+    return;
+  }
+  if(dtstate.fr.length >= D_MAX) return;
+  dtstate.fr.push({k:dtstate.fr.length, s:e.s, x:x});
+  dtstate.entwurf = null;
+  dtSpeichern();
+  dtRender();
+  if(!dtstate.solo) dtNachhaken();
+}
+
+/* Inhalt der QR-Codes, Aufbau im Kopfkommentar; wie ftTeile. */
+function dtTeile(){
+  var teile = [], akt = [], laenge = 0;
+  var kopf = qrUtf8("D1|" + dtstate.code + "|" + dtstate.id + "|10/10|").length;
+  dtstate.fr.forEach(function(f){
+    var t = dText(f.x), pre = (f.s < 0 ? "x" : f.s) + ".";
+    while(kopf + qrUtf8(pre + t).length > 200) t = t.slice(0, -1);
+    var b = qrUtf8(pre + t).length + 1;
+    if(akt.length && kopf + laenge + b > F_TAB_TEIL){ teile.push(akt); akt = []; laenge = 0; }
+    akt.push(pre + t); laenge += b;
+  });
+  if(akt.length || !teile.length) teile.push(akt);
+  return teile.map(function(t, i){
+    return ["D1", dtstate.code, dtstate.id, (i + 1) + "/" + teile.length].concat(t).join("|");
+  });
+}
+
+function dtEndkarte(){
+  var n = dtstate.fr.length;
+  hKopfSetzen("Fragen zur Stunde", "abgegeben");
+  var uhrzeit = new Date(dtstate.fertig).toLocaleTimeString("de-DE", {hour:"2-digit", minute:"2-digit"});
+  var codes = dtTeile().map(function(t, i, alle){
+    return qrSvg(t, "QR-Code mit deinen Fragen, Teil " + (i + 1) + " von " + alle.length);
+  });
+  el("hBody").innerHTML = '<div class="sendcard"><div class="sinfo">' +
+    '<div class="hpokal">' + ic("check", 48) + '</div>' +
+    '<span class="label">Fragen zur Stunde</span>' +
+    '<div class="hgross">' + n + (n === 1 ? " Frage" : " Fragen") + '</div>' +
+    '<div class="sfuss">Code ' + dtstate.code + ' · fertig um ' + uhrzeit + '</div>' +
+    '<div class="hklein">Zum Einsammeln das Tablet ruhig vor die Kamera am Beamer halten' +
+      (codes.length > 1 ? ', bis alle ' + codes.length + ' Teile gelesen sind' : '') + '.</div>' +
+    '</div><div class="sqr"><div id="dtQr"></div>' +
+    (codes.length > 1 ? '<div class="ft-teile" id="dtTeile">' + codes.map(function(){ return '<span></span>'; }).join("") + '</div>' : '') +
+    '</div></div>';
+  dtUhr.teil = 0;
+  var zeige = function(){
+    el("dtQr").innerHTML = codes[dtUhr.teil];
+    var punkte = el("dtTeile");
+    if(punkte) [].forEach.call(punkte.children, function(s, i){ s.className = i === dtUhr.teil ? "an" : ""; });
+  };
+  zeige();
+  if(codes.length > 1){
+    dtUhr.qr = setInterval(function(){
+      if(!el("dtQr")){ clearInterval(dtUhr.qr); return; }
+      dtUhr.teil = (dtUhr.teil + 1) % codes.length;
+      zeige();
+    }, 1600);
+  }
+}
+
+/* Klicks im Tablet-Bereich; true, wenn die Diagnose zustaendig war. */
+function dtKlick(ev){
+  if(!el("hBody").querySelector(".dtab")) return false;
+  var b = ev.target.closest("[data-dts]");
+  if(b){
+    var s = +b.getAttribute("data-dts"), h = dtAufgabe().h.filter(function(x){ return x.s === s; })[0];
+    var stamm = h ? dStamm(h.t) : "";
+    dtstate.entwurf = {s:s, x:stamm, stamm:stamm};
+    dtSpeichern();
+    dtRender();
+    return true;
+  }
+  if(ev.target.closest("#dtAbbrechenBtn")){ dtstate.entwurf = null; dtSpeichern(); dtRender(); return true; }
+  if(ev.target.closest("#dtSendenBtn")){ dtFrageSenden(); return true; }
+  if(ev.target.closest("#dtFertigBtn")){
+    askConfirm("Fertig?", "Danach lassen sich die Fragen nicht mehr ändern, und das Tablet zeigt die Karte zum Einsammeln.", function(){
+      dtstate.fertig = Date.now();
+      dtstate.entwurf = null;
+      dtSpeichern();
+      dtRender();
+    }, "Fertig");
+    return true;
+  }
+  b = ev.target.closest("[data-dtw]");
+  if(b){
+    var i = +b.getAttribute("data-dtw"), a = dtAufgabe();
+    if(a.art === "mc" && a.mehr){
+      var k = dtstate.wahl.indexOf(i);
+      if(k >= 0) dtstate.wahl.splice(k, 1); else dtstate.wahl.push(i);
+    } else dtstate.wahl = [i];
+    dtSpeichern();
+    dtRender();
+    return true;
+  }
+  if(ev.target.closest("#dtStimmeBtn")){
+    if(!dtstate.wahl.length) return true;
+    dtstate.w = dtstate.wahl.slice().sort(function(p, q){ return p - q; });
+    dtSpeichern();
+    dtRender();
+    dtNachhaken();
+    return true;
+  }
+  return false;
+}
+
+el("hBody").addEventListener("input", function(ev){
+  if(ev.target.id !== "dtText" || !dtstate.entwurf) return;
+  dtstate.entwurf.x = ev.target.value.slice(0, D_TEXT);
+  dtRestZeigen();
+  el("dtFehler").style.display = "none";
+  dtSpeichern();
+});
+
+
+/* -----------------------------------------------------------------------
    STARTSEITE
    Die Spiele stehen in SPIELE. Ein weiteres Spiel braucht dort einen
    Eintrag mit Vorschaubild und Startfunktion, sonst nichts.
@@ -16969,6 +18861,22 @@ function thumbQuiz(){
   return '<svg viewBox="0 0 160 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">' + s + '</svg>';
 }
 
+function thumbDiagnose(){
+  /* Links drei Fragekarten mit Satzanfang, rechts die Verteilung der Fragen. */
+  var breite = [52, 40, 60], s = "", i;
+  for(i = 0; i < 3; i++){
+    var y = 12 + i * 27;
+    s += '<rect x="12" y="' + y + '" width="84" height="21" rx="3" fill="var(--surface-page)" stroke="var(--line-2)" stroke-width="1.5"/>' +
+         '<rect x="12" y="' + y + '" width="4" height="21" fill="var(--mathe)"/>' +
+         '<rect x="23" y="' + (y + 8.5) + '" width="' + breite[i] + '" height="4" rx="2" fill="var(--line-2)"/>';
+  }
+  var hoehe = [56, 36, 20], farbe = ["var(--qa1)", "var(--qa0)", "var(--qa2)"];
+  for(i = 0; i < 3; i++){
+    s += '<rect x="' + (108 + i * 15) + '" y="' + (87 - hoehe[i]) + '" width="11" height="' + hoehe[i] + '" rx="2" fill="' + farbe[i] + '"/>';
+  }
+  return '<svg viewBox="0 0 160 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">' + s + '</svg>';
+}
+
 var SPIELE = [
   {
     id:"jeopardy", name:"Jeopardy", icon:"layers", bild:thumbJeopardy,
@@ -16993,6 +18901,13 @@ var SPIELE = [
     text:"Frage am Beamer, alle tippen ihre Antwort auf dem Tablet. Schnelle richtige Antworten bringen mehr Punkte, am Ende gibt es ein Podest. Braucht Internet.",
     badge:function(){ return qLoad() ? "Offener Raum" : ""; },
     start:function(){ qSetupFuellen(); qKopf(); zeigeSeite("quizSetup"); }
+  },
+  {
+    id:"diagnose", name:"Diagnose", icon:"frage", bild:thumbDiagnose,
+    text:"Am Stundenende stellt jede Person am Tablet eine bis drei Fragen zur Stunde, mit Satzanfängen als Hilfe. Dazu Abstimmungen mit Skala oder eigenen Antworten. Anonym, braucht Internet.",
+    anz:"Für jede Stunde, ohne vorbereitete Sätze",
+    badge:function(){ return dgLaden() ? "Offener Raum" : ""; },
+    start:function(){ dgSetupFuellen(); dgKopf(); zeigeSeite("diagSetup"); }
   }
 ];
 
@@ -17033,6 +18948,7 @@ function stOhneTrenner(t){ return String(t).replace(/­/g, ""); }
 
 /* Indizes der Saetze eines Spiels fuer Stufe und (optional) Fach. */
 function stSaetze(spiel, stufe, fach){
+  if(spiel === "diagnose") return [0];   /* braucht keine Saetze, passt zu jeder Stunde */
   var liste = spiel === "jeopardy" ? KATALOGE : spiel === "bingo" ? B_SAETZE :
               spiel === "fehlerjagd" ? F_SAETZE : Q_SAETZE;
   var fachName = fach === "physik" ? "Physik" : "Mathematik";
@@ -17204,7 +19120,7 @@ function renderKacheln(stufe, fach){
       '<span class="kachel-text">' +
         '<span class="kachel-name">' + ic(sp.icon, 22) + sp.name + '</span>' +
         '<span class="kachel-sub">' + sp.text + '</span>' +
-        '<span class="kachel-anz">' + (n ? n + " " + einheit[n === 1 ? 0 : 1] : "Für diese Auswahl noch nichts da") + '</span>' +
+        '<span class="kachel-anz">' + (sp.anz || (n ? n + " " + einheit[n === 1 ? 0 : 1] : "Für diese Auswahl noch nichts da")) + '</span>' +
         (abzeichen ? '<span class="kachel-badge">' + abzeichen + '</span>' : '') +
       '</span>';
     if(n) k.addEventListener("click", function(){ stStarte(sp, stufe, fach); });
@@ -17218,7 +19134,8 @@ function renderKacheln(stufe, fach){
    ----------------------------------------------------------------------- */
 
 var SEITEN = ["startseite", "setup", "bingoSetup", "game", "bingoGame",
-              "fehlerSetup", "fehlerGame", "quizSetup", "quizGame", "quizHandy"];
+              "fehlerSetup", "fehlerGame", "quizSetup", "quizGame", "quizHandy",
+              "diagSetup", "diagGame"];
 
 function zeigeSeite(name){
   SEITEN.forEach(function(id){
@@ -17227,11 +19144,11 @@ function zeigeSeite(name){
   document.body.classList.toggle("handy", name === "quizHandy");
   document.body.classList.toggle("start", name === "startseite");
   document.body.classList.toggle("einstellung",
-    ["setup", "bingoSetup", "fehlerSetup", "quizSetup"].indexOf(name) >= 0);
+    ["setup", "bingoSetup", "fehlerSetup", "quizSetup", "diagSetup"].indexOf(name) >= 0);
   el("hStartBtn").style.display = (name === "startseite") ? "inline-flex" : "none";
   /* Wer waehrend des Einsammelns die Seite verlaesst, soll keine Kamera
      im Hintergrund laufen lassen. */
-  if(qoff.stream && name !== "quizGame" && name !== "fehlerGame") qKameraStoppen();
+  if(qoff.stream && name !== "quizGame" && name !== "fehlerGame" && name !== "diagGame") qKameraStoppen();
   if(name === "startseite"){
     el("kopfTitel").textContent = "Spielesammlung";
     el("kopfUnter").textContent = "Mathematik und Physik am Beamer";
@@ -17247,6 +19164,8 @@ function zeigeSeite(name){
     el("kopfTitel").textContent = "Bingo";
   } else if(name === "fehlerSetup" || name === "fehlerGame"){
     el("kopfTitel").textContent = "Fehlerjagd";
+  } else if(name === "diagSetup" || name === "diagGame"){
+    el("kopfTitel").textContent = "Diagnose";
   } else if(name === "quizSetup" || name === "quizGame"){
     el("kopfTitel").textContent = "Live-Quiz";
   } else if(name === "quizHandy"){
