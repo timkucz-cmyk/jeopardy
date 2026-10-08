@@ -856,6 +856,7 @@
     font-family:var(--mono); font-size:44px; font-weight:700; font-variant-numeric:tabular-nums;
     transition:border-color 200ms var(--ease), color 200ms var(--ease);
   }
+  .quhr.lang{font-size:32px;}
   .quhr.knapp{border-color:var(--mathe); color:var(--mathe);}
   .quhr.aus{border-color:var(--ok); color:var(--ok);}
   .qfragetext{font-size:clamp(28px, 3.2vw, 46px); font-weight:600; line-height:1.3; text-align:center; color:var(--fg-1);}
@@ -1706,15 +1707,8 @@
       <div class="st-inhalt">
         <h2 class="st-frage">Runde einstellen</h2>
         <div class="katalogwahl">
-          <label class="feld"><span class="label">Zeit je Frage</span>
-            <select id="qZeit">
-              <option value="0" selected>wie im Fragensatz</option>
-              <option value="10">10 Sekunden</option>
-              <option value="20">20 Sekunden</option>
-              <option value="30">30 Sekunden</option>
-              <option value="45">45 Sekunden</option>
-              <option value="60">1 Minute</option>
-            </select></label>
+          <label class="feld"><span class="label">Sekunden je Frage</span>
+            <input type="number" id="qZeit" min="1" max="1023" step="1" placeholder="300"></label>
           <label class="feld"><span class="label">Fragen</span>
             <select id="qAnzahl">
               <option value="10">10 Fragen</option>
@@ -14306,8 +14300,24 @@ function qIndizes(satz, maske){
 function qAufgabe(){ return qsatz().fragen[qstate.reihenfolge[qstate.pos]]; }
 function qFid(){ return qstate.raum + "." + qstate.runde + "." + qstate.pos; }
 
+/* Zeit je Frage frei in Sekunden, gilt fuer alle Fragen der Runde. Ein
+   leeres oder unlesbares Feld gibt grosszuegige 5 Minuten; nach oben
+   begrenzt der Offline-Code (10 Bit). Die Live-Runde loest ohnehin auf,
+   sobald alle geantwortet haben. */
+var Q_ZEIT_STANDARD = 300, Q_ZEIT_MAX = 1023;
+function qZeitSek(){
+  var n = Math.round(parseFloat(el("qZeit").value));
+  return isNaN(n) ? Q_ZEIT_STANDARD : Math.max(1, Math.min(Q_ZEIT_MAX, n));
+}
+
+/* Restzeit fuer die Uhr: ab einer Minute als m:ss */
+function qRestText(ms){
+  var t = Math.max(0, Math.ceil(ms / 1000)), m = Math.floor(t / 60), r = t % 60;
+  return m ? m + ":" + (r < 10 ? "0" : "") + r : String(t);
+}
+
 function qZeitMs(a){
-  return (qstate.sekunden || a.zeit || qsatz().sekunden || 20) * 1000;
+  return (qstate.sekunden || Q_ZEIT_STANDARD) * 1000;
 }
 
 function qServerUrl(){
@@ -14524,8 +14534,8 @@ function qFrageStarten(){
 function qUhrTick(){
   if(qstate.phase !== "frage"){ clearInterval(qnetz.uhr); return; }
   var rest = qstate.t0 + qstate.dauerMs - Date.now();
-  el("qUhr").textContent = Math.max(0, Math.ceil(rest / 1000));
-  el("qUhr").className = "quhr" + (rest < 5500 ? " knapp" : "");
+  el("qUhr").textContent = qRestText(rest);
+  el("qUhr").className = "quhr" + (rest >= 59000 ? " lang" : "") + (rest < 5500 ? " knapp" : "");
   if(rest <= 0){
     clearInterval(qnetz.uhr);
     beep();
@@ -14943,8 +14953,7 @@ function qSatzInfoText(){
     return !a.a || a.a.length < 2 || a.a.length > 4 || !(a.r >= 0 && a.r < a.a.length);
   }).length;
   var ohneText = s.fragen.filter(function(a){ return !a.q || !a.s; }).length;
-  var eigen = s.fragen.filter(function(a){ return !!a.zeit; }).length;
-  var txt = s.unter + " · " + s.fragen.length + " Fragen" + (eigen ? ", " + eigen + " davon mit längerer Zeit" : "");
+  var txt = s.unter + " · " + s.fragen.length + " Fragen";
   if(kaputt)   txt += " · Achtung: " + kaputt + " Frage(n) ohne gültige richtige Antwort oder mit falscher Antwortzahl";
   if(ohneText) txt += " · Achtung: " + ohneText + " Frage(n) ohne Fragetext oder Erklärung";
   el("qSatzInfo").textContent = txt;
@@ -14954,12 +14963,13 @@ function qSchaetzungText(){
   var alle = qIndizes(qstate.satz, qstate.maske).length;
   var n = +el("qAnzahl").value;
   n = n ? Math.min(n, alle) : alle;
-  var sek = +el("qZeit").value || qsatz().sekunden || 20;
+  var sek = qZeitSek();
   /* Aufloesung, Erklaerung und Zwischenstand brauchen erfahrungsgemaess
-     noch einmal eine halbe Minute je Frage. */
-  var min = Math.round(n * (sek + 35) / 60);
+     noch einmal eine halbe Minute je Frage. Lange Zeiten schoepft kaum
+     jemand aus, dort schaetzt die Zeile mit einer Minute je Frage. */
+  var min = Math.round(n * (Math.min(sek, 60) + 35) / 60);
   el("qSchaetzung").textContent = (qsatz().bereiche ? alle + " Fragen angehakt, davon " + n + " in der Runde. " : "") +
-    "Rund " + min + " Minuten mit Auflösung.";
+    "Rund " + min + " Minuten mit Auflösung" + (sek > 60 ? ", wenn alle zügig antworten." : ".");
 }
 
 function qBereicheFuellen(){
@@ -15025,7 +15035,7 @@ function qSetupFuellen(){
   qstate.maske = qMaskeLaden(qstate.satz);
   qBereicheFuellen();
 
-  el("qZeit").value = qstate.sekunden;
+  el("qZeit").value = qstate.sekunden && qstate.sekunden !== Q_ZEIT_STANDARD ? qstate.sekunden : "";
   el("qAnzahl").value = qstate.anzahl;
   el("qReihenfolge").value = qstate.mischen ? "1" : "0";
   qServerFuellen();
@@ -15038,7 +15048,7 @@ function qSetupFuellen(){
 
 function qEinstellungenLesen(){
   qstate.satz     = +el("qSatzSel").value;
-  qstate.sekunden = +el("qZeit").value;
+  qstate.sekunden = qZeitSek();
   qstate.anzahl   = +el("qAnzahl").value;
   qstate.mischen  = el("qReihenfolge").value === "1";
   qstate.server   = +el("qServerSel").value;
@@ -15258,7 +15268,12 @@ el("qBereiche").addEventListener("change", function(e){
   e.target.parentNode.className = "qbereich" + (e.target.checked ? " an" : "");
   qSchaetzungText();
 });
-["qZeit", "qAnzahl"].forEach(function(id){ el(id).addEventListener("change", qSchaetzungText); });
+el("qZeit").addEventListener("input", qSchaetzungText);
+el("qZeit").addEventListener("change", function(){
+  if(el("qZeit").value !== "") el("qZeit").value = qZeitSek();
+  qSchaetzungText();
+});
+el("qAnzahl").addEventListener("change", qSchaetzungText);
 el("qServerSel").addEventListener("change", function(){
   el("qEigenFeld").style.display = +el("qServerSel").value < 0 ? "flex" : "none";
 });
@@ -15364,11 +15379,14 @@ el("qEndeBackBtn").addEventListener("click", qSchliessenFragen);
    und rechnet die Punkte wie im Live-Quiz. Am Ende steht eine Endkarte
    mit Name und Punkten, die die Klasse vorzeigt.
 
-   Der Code traegt alles, was das Tablet braucht: 6 Zeichen aus
-   Q_CODEZEICHEN sind 30 Bit, davon Satz 7, Bereiche 7 (Bitmaske, 0 fuer
-   alle), Anzahl 2, Zeit 3, Mischen 1 und ein Zufallskeim 10. Live-Codes
-   haben 5 Zeichen, daran erkennt das Formular am Tablet den Unterschied.
-   Mehr als 128 Saetze und mehr als 7 Bereiche je Satz passen nicht.
+   Der Code traegt alles, was das Tablet braucht: 7 Zeichen aus
+   Q_CODEZEICHEN sind 35 Bit, davon Satz 7, Bereiche 7 (Bitmaske, 0 fuer
+   alle), Anzahl 2, Zeit 10 (Sekunden, 0 fuer die Zeiten im Fragensatz),
+   Mischen 1 und ein Zufallskeim 8. Live-Codes haben 5 Zeichen,
+   Fehlerjagd-Codes 4, daran erkennt das Formular am Tablet den
+   Unterschied. Mehr als 128 Saetze und mehr als 7 Bereiche je Satz
+   passen nicht. Alte Codes mit 6 Zeichen (Zeit 3 Bit aus Q_OFF_ZEIT,
+   Keim 10) liest qOffLesen weiter, damit angefangene Runden halten.
 
    Der Keim legt fest, welche Fragen drankommen; alle Tablets bekommen
    also dieselben. Reihenfolge und Antworten mischt jedes Tablet selbst,
@@ -15385,14 +15403,15 @@ el("qEndeBackBtn").addEventListener("click", qSchliessenFragen);
    ----------------------------------------------------------------------- */
 
 var Q_OFF_ANZAHL = [10, 15, 20, 0];
-var Q_OFF_ZEIT = [0, 10, 20, 30, 45, 60];
+var Q_OFF_ZEIT = [0, 10, 20, 30, 45, 60];   /* nur noch fuer alte 6er-Codes */
 
 function qOffCode(satz, maske, anzahl, sek, mischen){
-  var ai = Math.max(0, Q_OFF_ANZAHL.indexOf(anzahl)), zi = Math.max(0, Q_OFF_ZEIT.indexOf(sek));
-  var keim = crypto.getRandomValues(new Uint32Array(1))[0] % 1024;
-  var v = ((((satz * 128 + (maske & 127)) * 4 + ai) * 8 + zi) * 2 + (mischen ? 1 : 0)) * 1024 + keim;
+  var ai = Math.max(0, Q_OFF_ANZAHL.indexOf(anzahl));
+  var zs = Math.max(0, Math.min(Q_ZEIT_MAX, Math.round(sek) || 0));
+  var keim = crypto.getRandomValues(new Uint32Array(1))[0] % 256;
+  var v = ((((satz * 128 + (maske & 127)) * 4 + ai) * 1024 + zs) * 2 + (mischen ? 1 : 0)) * 256 + keim;
   var s = "";
-  for(var i = 0; i < 6; i++){
+  for(var i = 0; i < 7; i++){
     s = Q_CODEZEICHEN.charAt(v % 32) + s;
     v = Math.floor(v / 32);
   }
@@ -15401,20 +15420,23 @@ function qOffCode(satz, maske, anzahl, sek, mischen){
 
 function qOffLesen(code){
   code = String(code || "").toUpperCase();
-  if(code.length !== 6) return null;
+  var alt = code.length === 6;
+  if(!alt && code.length !== 7) return null;
   var v = 0;
-  for(var i = 0; i < 6; i++){
+  for(var i = 0; i < code.length; i++){
     var k = Q_CODEZEICHEN.indexOf(code.charAt(i));
     if(k < 0) return null;
     v = v * 32 + k;
   }
-  var keim = v % 1024;    v = (v - keim) / 1024;
+  var kb = alt ? 1024 : 256, zb = alt ? 8 : 1024;
+  var keim = v % kb;     v = (v - keim) / kb;
   var m = v % 2;         v = (v - m) / 2;
-  var zi = v % 8;        v = (v - zi) / 8;
+  var zi = v % zb;       v = (v - zi) / zb;
   var ai = v % 4;        v = (v - ai) / 4;
   var maske = v % 128;   v = (v - maske) / 128;
-  if(!Q_SAETZE[v] || zi >= Q_OFF_ZEIT.length || !qIndizes(v, maske).length) return null;
-  return {code:code, satz:v, maske:maske, anzahl:Q_OFF_ANZAHL[ai], sekunden:Q_OFF_ZEIT[zi], mischen:m === 1, keim:keim};
+  if(alt && zi >= Q_OFF_ZEIT.length) return null;
+  if(!Q_SAETZE[v] || !qIndizes(v, maske).length) return null;
+  return {code:code, satz:v, maske:maske, anzahl:Q_OFF_ANZAHL[ai], sekunden:alt ? Q_OFF_ZEIT[zi] : zi, mischen:m === 1, keim:keim};
 }
 
 /* Kleiner Zufallsgenerator mit Keim (mulberry32), damit alle Tablets aus
@@ -15537,7 +15559,7 @@ function qOfflineZeigen(){
   el("qOffCode").textContent = p.code;
   el("qOffUrl").textContent = qBasisUrl().replace(/^https?:\/\//, "").replace(/\/$/, "");
   el("qOffTitel").textContent = fTitelLang(Q_SAETZE[p.satz]) + " · " + n + " Fragen, " +
-    (p.sekunden ? p.sekunden + " Sekunden je Frage" : "Zeit wie im Fragensatz");
+    (p.sekunden ? (p.sekunden % 60 ? p.sekunden + " Sekunden" : p.sekunden / 60 + (p.sekunden === 60 ? " Minute" : " Minuten")) + " je Frage" : "Zeit wie im Fragensatz");
   var k = Object.keys(qoff.erg).length;
   el("qOffScanBtn").innerHTML = ic("search") + "Ergebnisse einsammeln" + (k ? " (" + k + ")" : "");
 }
@@ -15884,7 +15906,7 @@ function sUhrTick(){
   var rest = sstate.t0 + sstate.dauer - Date.now();
   var u = el("sUhr");
   if(u){
-    u.textContent = Math.max(0, Math.ceil(rest / 1000)) + " s";
+    u.textContent = qRestText(rest) + (rest > 59000 ? " min" : " s");
     u.className = "suhr" + (rest < 5500 ? " knapp" : "");
   }
   if(rest <= 0) sAntwort(-1);
@@ -16041,7 +16063,7 @@ function hFormular(){
     '<div class="hform">' +
       '<div class="hgross" style="text-align:center">Mitspielen</div>' +
       '<label class="feld"><span class="label">Raumcode</span>' +
-        '<input type="text" id="hCodeIn" maxlength="6" autocomplete="off" autocapitalize="characters" spellcheck="false"></label>' +
+        '<input type="text" id="hCodeIn" maxlength="7" autocomplete="off" autocapitalize="characters" spellcheck="false"></label>' +
       '<label class="feld"><span class="label">' + (fj ? "Name der Gruppe" : "Dein Spitzname") + '</span>' +
         '<input type="text" id="hNameIn" maxlength="16" autocomplete="off" spellcheck="false"></label>' +
       ((off || fj) ? '<div class="hinfo" id="hOffInfo"></div>' : '') +
@@ -16071,7 +16093,7 @@ function hBeitreten(){
   var code = el("hCodeIn").value.toUpperCase().replace(/[^A-Z0-9]/g, "");
   var name = qNameSauber(el("hNameIn").value);
   hstate.code = code; hstate.name = name;
-  if(code.length < 4 || code.length > 6){ hstate.fehler = "Der Code hat vier bis sechs Zeichen. Er steht groß am Beamer."; hFormular(); return; }
+  if(code.length < 4 || code.length > 7){ hstate.fehler = "Der Code hat vier bis sieben Zeichen. Er steht groß am Beamer."; hFormular(); return; }
   if(!name){ hstate.fehler = code.length === 4 ? "Bitte gebt einen Gruppennamen ein." : "Bitte gib einen Spitznamen ein."; hFormular(); return; }
   if(code.length === 4){
     var fj = fTabLesen(code);
@@ -16081,7 +16103,7 @@ function hBeitreten(){
     ftBeginnen(fj, name);
     return;
   }
-  if(code.length === 6){
+  if(code.length === 6 || code.length === 7){
     var off = qOffLesen(code);
     if(!off){ hstate.fehler = "Diesen Code kennt die Seite nicht. Stimmt er?"; hFormular(); return; }
     /* Derselbe Code ein zweites Mal: keine neue Runde, sondern die alte. */

@@ -191,7 +191,11 @@ Sorgfaltsstelle beim Schreiben neuer Sätze.
 **Live-Quiz-Fragensatz.** Objekt mit `fach`, `stufe`, `titel`, `unter`,
 `sekunden` (Standardzeit) und `fragen`, **hinten** an `Q_SAETZE` anhängen. Jede
 Frage: `q` (HTML), `a` (zwei bis vier Antworten), `r` (Index der richtigen),
-`s` (Erklärung), optional `zeit` und `fest` (Antworten nicht mischen). Antworten
+`s` (Erklärung), optional `zeit` und `fest` (Antworten nicht mischen).
+`sekunden` und `zeit` greifen seit Oktober 2026 nur noch bei alten
+Offline-Codes: Die Zeit je Frage stellt die Lehrkraft frei in Sekunden ein
+(`qZeit`, `qZeitSek()`), ein leeres Feld gibt 300 s (`Q_ZEIT_STANDARD`),
+höchstens 1023 s. Ab einer Minute zeigen die Uhren `m:ss`. Antworten
 kurz halten, sie stehen auch auf dem Tablet; dort filtert `qSauber()` alles
 außer `span`, `i`, `b`, `sub`, `sup` heraus, `M()` und `f()` passen also.
 Falsche Antworten aus typischen Fehlern bauen, die Auswertung nach der Runde
@@ -295,14 +299,15 @@ Beamer lokal läuft. Neue Fragensätze wirken deshalb auf den Tablets erst nach
 dem Push; die Antworttexte kommen aber ohnehin vom Beamer.
 
 **Offline-Runde.** Der Knopf neben „Raum öffnen“ braucht keinen Server: Der
-Beamer zeigt nur einen sechsstelligen Code (`#solo=CODE`), jedes Tablet spielt
+Beamer zeigt nur einen siebenstelligen Code (`#solo=CODE`), jedes Tablet spielt
 die Fragen allein und endet mit einer Endkarte (Name, Punkte, Code). Der Code
-trägt Satzindex, Bereichsmaske, Anzahl, Zeit, Mischen und einen Zufallskeim —
-deshalb müssen die Optionen in `qAnzahl`/`qZeit` zu `Q_OFF_ANZAHL`/`Q_OFF_ZEIT`
-passen, und mehr als 128 Sätze passen nicht hinein. Seit der Bereichsmaske
-(Oktober 2026) ist das Bitlayout ein anderes; Beamer und Tablets müssen also
-denselben Stand haben, ein lokal geänderter Beamer braucht den Push. Live-Codes haben fünf Zeichen, Fehlerjagd-Codes
-vier, daran unterscheidet das Tablet-Formular. Zum Testen reicht ein Tab mit `#solo=CODE`.
+trägt Satzindex, Bereichsmaske, Anzahl, Zeit in Sekunden (10 Bit), Mischen und
+einen Zufallskeim (8 Bit) — deshalb müssen die Optionen in `qAnzahl` zu
+`Q_OFF_ANZAHL` passen, und mehr als 128 Sätze passen nicht hinein. Alte
+sechsstellige Codes (Zeit als Index in `Q_OFF_ZEIT`) liest `qOffLesen` weiter.
+Beamer und Tablets müssen denselben Stand haben, ein lokal geänderter Beamer
+braucht den Push. Live-Codes haben fünf Zeichen, Fehlerjagd-Codes vier, daran
+unterscheidet das Tablet-Formular. Zum Testen reicht ein Tab mit `#solo=CODE`.
 
 Die Endkarte trägt einen QR-Code `Q1|CODE|KENNUNG|PUNKTE|ANTWORTEN|NAME`,
 den „Ergebnisse einsammeln“ am Beamer mit der Kamera liest und daraus Podest
