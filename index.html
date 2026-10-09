@@ -7329,7 +7329,9 @@ if(saved){
                So kommt jede Zahl genau einmal dran, die Aufgabe dazu
                ist aber jedes Mal eine andere.
                Optional auftrag, z. B. "klammere aus": ersetzt das Wort
-               "berechne" in der Zeile ueber dem Term.
+               "berechne" in der Zeile ueber dem Term. Endet er auf "?"
+               ("welche Zahl fehlt?"), steht in der Aufloesung ein Pfeil
+               statt "=" vor dem Ergebnis.
      Variablen immer x, dann y, dann z. Sonst liesse sich eine Aufgabe mit
      a und b schon am Buchstaben den passenden Poolzahlen zuordnen.
 
@@ -8098,6 +8100,69 @@ var B6_BRUECHE = {
   ]
 };
 
+/* Klasse 6 ohne Punktrechnung: Vergleichen, Erweitern, Kuerzen, Addieren,
+   Subtrahieren. Im Pool zehn vollstaendig gekuerzte Brueche und sechs
+   natuerliche Zahlen; die natuerlichen Zahlen sind die fehlenden Zaehler,
+   Nenner und Faktoren der Erweitern- und Kuerzen-Aufgaben. Beim Vergleichen
+   stehen beide Brueche im Pool, sonst liesse sich die Antwort am Pool
+   ablesen. Das Kaestchen ist U+25A1. */
+var B6_GROESSER = "welcher Bruch ist größer?";
+var B6_KLEINER  = "welcher Bruch ist kleiner?";
+var B6_FEHLT    = "welche Zahl fehlt?";
+
+var B6_ERWEITERN = {
+  stufe:"6",
+  titel:"Brüche vergleichen, erweitern, kürzen, addieren und subtrahieren",
+  unter:"Klasse 6, ohne Punktrechnung, im Pool auch fehlende Zähler und Nenner",
+  pool:[
+    {k:"1/6",  h:f(1,6)},
+    {k:"1/4",  h:f(1,4)},
+    {k:"1/3",  h:f(1,3)},
+    {k:"2/5",  h:f(2,5)},
+    {k:"1/2",  h:f(1,2)},
+    {k:"3/5",  h:f(3,5)},
+    {k:"2/3",  h:f(2,3)},
+    {k:"7/10", h:f(7,10)},
+    {k:"3/4",  h:f(3,4)},
+    {k:"5/6",  h:f(5,6)},
+    "2", "3", "4", "5", "8", "12"
+  ],
+  aufgaben:[
+    {e:"1/6",  q:f(1,2)+" − "+f(1,3),    s:"Hauptnenner 6: "+f(3,6)+" − "+f(2,6)+"."},
+    {e:"1/6",  auftrag:KUERZE, q:f(4,24), s:"Zähler und Nenner durch 4 teilen."},
+    {e:"1/4",  q:f(5,8)+" − "+f(3,8),    s:"Gleicher Nenner: "+f(2,8)+", gekürzt "+f(1,4)+"."},
+    {e:"1/4",  q:f(1,6)+" + "+f(1,12),   s:"Hauptnenner 12: "+f(2,12)+" + "+f(1,12)+" = "+f(3,12)+", gekürzt "+f(1,4)+"."},
+    {e:"1/3",  q:f(1,4)+" + "+f(1,12),   s:"Hauptnenner 12: "+f(3,12)+" + "+f(1,12)+" = "+f(4,12)+", gekürzt "+f(1,3)+"."},
+    {e:"1/3",  q:f(5,6)+" − "+f(1,2),    s:"Hauptnenner 6: "+f(5,6)+" − "+f(3,6)+" = "+f(2,6)+", gekürzt "+f(1,3)+"."},
+    {e:"2/5",  auftrag:B6_GROESSER, q:f(2,5)+" oder "+f(1,3), s:"Hauptnenner 15: "+f(6,15)+" ist größer als "+f(5,15)+"."},
+    {e:"2/5",  q:f(1,10)+" + "+f(3,10),  s:"Gleicher Nenner: "+f(4,10)+", gekürzt "+f(2,5)+"."},
+    {e:"1/2",  q:f(3,10)+" + "+f(1,5),   s:"Hauptnenner 10: "+f(3,10)+" + "+f(2,10)+" = "+f(5,10)+", gekürzt "+f(1,2)+"."},
+    {e:"1/2",  q:f(3,4)+" − "+f(1,4),    s:"Gleicher Nenner: "+f(2,4)+", gekürzt "+f(1,2)+"."},
+    {e:"3/5",  auftrag:B6_GROESSER, q:f(1,2)+" oder "+f(3,5), s:"Hauptnenner 10: "+f(6,10)+" ist größer als "+f(5,10)+"."},
+    {e:"3/5",  auftrag:KUERZE, q:f(15,25), s:"Zähler und Nenner durch 5 teilen."},
+    {e:"2/3",  auftrag:B6_GROESSER, q:f(3,5)+" oder "+f(2,3), s:"Hauptnenner 15: "+f(10,15)+" ist größer als "+f(9,15)+"."},
+    {e:"2/3",  q:f(1,2)+" + "+f(1,6),    s:"Hauptnenner 6: "+f(3,6)+" + "+f(1,6)+" = "+f(4,6)+", gekürzt "+f(2,3)+"."},
+    {e:"7/10", auftrag:B6_KLEINER, q:f(3,4)+" oder "+f(7,10), s:"Hauptnenner 20: "+f(14,20)+" ist kleiner als "+f(15,20)+"."},
+    {e:"7/10", q:f(9,10)+" − "+f(1,5),   s:"Hauptnenner 10: "+f(9,10)+" − "+f(2,10)+"."},
+    {e:"3/4",  auftrag:KUERZE, q:f(18,24), s:"Durch 6 teilen, oder schrittweise durch 2 und dann durch 3."},
+    {e:"3/4",  auftrag:B6_KLEINER, q:f(5,6)+" oder "+f(3,4), s:"Hauptnenner 12: "+f(9,12)+" ist kleiner als "+f(10,12)+"."},
+    {e:"5/6",  q:f(1,2)+" + "+f(1,3),    s:"Hauptnenner 6: "+f(3,6)+" + "+f(2,6)+"."},
+    {e:"5/6",  q:"1 − "+f(1,6),          s:"1 = "+f(6,6)+", also "+f(6,6)+" − "+f(1,6)+"."},
+    {e:"2",    auftrag:"welche Zahl ist die größte, die passt?", q:f("□",10)+" &lt; "+f(1,4), s:"Hauptnenner 20: "+f(2,10)+" = "+f(4,20)+" ist kleiner als "+f(5,20)+", aber "+f(3,10)+" = "+f(6,20)+" ist schon größer."},
+    {e:"2",    auftrag:B6_FEHLT, q:f(18,27)+" = "+f("□",3), s:"Gekürzt durch 9: 18 : 9 = 2."},
+    {e:"3",    auftrag:"mit welcher Zahl wurde erweitert?", q:f(2,7)+" = "+f(6,21), s:"2 · 3 = 6 und 7 · 3 = 21."},
+    {e:"3",    auftrag:B6_FEHLT, q:f(1,4)+" = "+f("□",12), s:"Der Nenner wird mit 3 multipliziert, also auch der Zähler: 1 · 3 = 3."},
+    {e:"4",    auftrag:"durch welche Zahl wurde gekürzt?", q:f(16,20)+" = "+f(4,5), s:"16 : 4 = 4 und 20 : 4 = 5."},
+    {e:"4",    auftrag:B6_FEHLT, q:f(2,3)+" = "+f("□",6), s:"Mit 2 erweitert: 2 · 2 = 4."},
+    {e:"5",    auftrag:B6_FEHLT, q:f(1,3)+" &lt; "+f("□",12)+" &lt; "+f(1,2), s:f(1,3)+" = "+f(4,12)+" und "+f(1,2)+" = "+f(6,12)+", dazwischen liegt nur "+f(5,12)+"."},
+    {e:"5",    auftrag:B6_FEHLT, q:f(9,15)+" = "+f(3,"□"), s:"Gekürzt durch 3: 15 : 3 = 5."},
+    {e:"8",    auftrag:"mit welcher Zahl wurde erweitert?", q:f(3,5)+" = "+f(24,40), s:"3 · 8 = 24 und 5 · 8 = 40."},
+    {e:"8",    auftrag:B6_FEHLT, q:f(2,5)+" = "+f("□",20), s:"Mit 4 erweitert: 2 · 4 = 8."},
+    {e:"12",   auftrag:B6_FEHLT, q:f(3,4)+" = "+f("□",16), s:"Mit 4 erweitert: 3 · 4 = 12."},
+    {e:"12",   auftrag:B6_FEHLT, q:f(2,3)+" = "+f(8,"□"), s:"Der Zähler wurde mit 4 multipliziert (2 · 4 = 8), also auch der Nenner: 3 · 4 = 12."}
+  ]
+};
+
 /* Neue Saetze kommen ans Ende, damit gespeicherte Runden ihren Index
    behalten. Die Reihenfolge der Dropdowns entsteht ohnehin erst in
    bSetupFuellen aus dem Feld stufe. */
@@ -8105,7 +8170,7 @@ var B_SAETZE = [B_GANZE, B_DEZIMAL, B_BRUECHE, B_GEMISCHT,
                 B5_LEICHT, B5_MITTEL, B5_SCHWER,
                 B8_LEICHT, B8_MITTEL, B8_SCHWER,
                 B8_DIST_LEICHT, B8_DIST_MITTEL, B8_DIST_SCHWER,
-                B6_BRUECHE];
+                B6_BRUECHE, B6_ERWEITERN];
 
 
 /* -----------------------------------------------------------------------
@@ -8428,8 +8493,10 @@ function bAuswertungAufbauen(){
   bstate.verlauf.forEach(function(a){
     var e = bfind(a.e);
     var li = document.createElement("li");
+    /* Frage-Auftraege (Vergleich, Luecke) haben kein Ergebnis im Sinne von "=". */
+    var zeichen = /\?$/.test(a.auftrag || "") ? " → " : " = ";
     li.innerHTML =
-      '<div class="auf-rechnung">' + a.q + ' = <span class="erg">' + (e ? e.h : a.e) + '</span></div>' +
+      '<div class="auf-rechnung">' + a.q + zeichen + '<span class="erg">' + (e ? e.h : a.e) + '</span></div>' +
       '<div class="auf-wort">' + a.s + '</div>';
     ol.appendChild(li);
   });
