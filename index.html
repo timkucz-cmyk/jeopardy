@@ -396,7 +396,10 @@
 
   /* ---------- Brueche ---------- */
   /* Zaehler ueber Nenner, damit die Klasse den Bruch vom Beamer sicher liest. */
-  .fr{display:inline-flex; flex-direction:column; align-items:center; vertical-align:-0.44em;
+  /* Bruchstrich auf Hoehe von Plus und Minus: middle bringt ihn fast dorthin,
+     top gleicht den Rest aus (in Cambria Math gemessen, Abweichung unter 1 px). */
+  .fr{display:inline-flex; flex-direction:column; align-items:center; vertical-align:middle;
+      position:relative; top:-.06em;
       font-family:var(--math); line-height:1.06; margin:0 .1em;}
   .fr .fz{padding:0 .3em;}
   .fr .fn{padding:0 .3em; border-top:1.5px solid currentColor; margin-top:2px;}
