@@ -14380,7 +14380,356 @@ var Q8_FLAECHE = {
   ]
 };
 
-var Q_SAETZE = [Q7_RATIONAL, Q7_BASAL, Q2_QUANTEN, QE_KINEMATIK, Q8_TERME, Q6_BRUECHE, Q8_FLAECHE];
+/* Formelsatz fuer Exponentialfunktionen: Buchstaben kursiv, "log" aufrecht,
+   ^{...} hoch, _{...} tief. Beispiel: eM("f(x) = 2 · 3^{x} + 1"), eM("log_{2}(8)") */
+function eM(s){
+  function teil(t){
+    var o = "", i = 0, j, tiefe, art;
+    while(i < t.length){
+      if(t.substr(i, 3) === "log"){ o += "log"; i += 3; continue; }
+      /* eingebettetes HTML (etwa f(1, 3)) unveraendert uebernehmen, "<" als Vergleich maskieren */
+      if(t[i] === "<"){
+        if(/[A-Za-z\/]/.test(t[i + 1] || "")){ j = t.indexOf(">", i); o += t.substring(i, j + 1); i = j + 1; }
+        else { o += "&lt;"; i++; }
+        continue;
+      }
+      if(t[i] === ">"){ o += "&gt;"; i++; continue; }
+      art = t.substr(i, 2);
+      if(art === "^{" || art === "_{"){
+        tiefe = 1; j = i + 2;
+        while(j < t.length && tiefe){ if(t[j] === "{") tiefe++; if(t[j] === "}") tiefe--; j++; }
+        o += (art === "^{" ? "<sup>" : "<sub>") + teil(t.substring(i + 2, j - 1)) + (art === "^{" ? "</sup>" : "</sub>");
+        i = j; continue;
+      }
+      o += /[A-Za-z]/.test(t[i]) ? "<i>" + t[i] + "</i>" : t[i];
+      i++;
+    }
+    return o;
+  }
+  return '<span class="m">' + teil(s) + '</span>';
+}
+
+/* Graph fuer die Exponential-Fragen: Achsen durch den Ursprung, Gitter,
+   Kurven als Streckenzug, gestrichelte Asymptoten, Punkte.
+     xmin, xmax, ymin, ymax, gx, gy, lx/ly (Beschriftung nur jede lx-te / ly-te Zahl)
+     xname, yname   Achsennamen (Standard x und y)
+     fn             Liste von Funktionen
+     asy            Liste von y-Werten fuer waagerechte Asymptoten
+     pkt            Liste von [x, y]
+     bis            Kurven nur bis zu diesem x zeichnen (Platz fuer den Achsennamen) */
+function eDia(o){
+  var W = 480, H = 300, L = 30, R = 24, T = 22, B = 30;
+  var sx = (W - L - R)/(o.xmax - o.xmin), sy = (H - T - B)/(o.ymax - o.ymin);
+  var lx = o.lx || o.gx, ly = o.ly || o.gy;
+  function X(x){ return +(L + (x - o.xmin)*sx).toFixed(1); }
+  function Y(y){ return +(T + (o.ymax - y)*sy).toFixed(1); }
+  function de(n){ return String(+n.toFixed(2)).replace(".", ",").replace("-", "−"); }
+  function ganz(v, d){ return Math.abs(v/d - Math.round(v/d)) < 1e-6; }
+  var s = '<div class="qbildbox"><svg class="qbild kdia" viewBox="0 0 ' + W + ' ' + H +
+    '" xmlns="http://www.w3.org/2000/svg" style="font-family:var(--sans); font-size:17px">';
+  var g = "", t = "", x, y, x0 = X(0), y0 = Y(0);
+  for(x = Math.ceil(o.xmin/o.gx)*o.gx; x <= o.xmax + 1e-9; x += o.gx){
+    g += '<path d="M' + X(x) + ' ' + T + 'V' + (H - B) + '"/>';
+    if(Math.abs(x) > 1e-9 && ganz(x, lx)) t += '<text x="' + X(x) + '" y="' + (y0 + 20) + '" text-anchor="middle">' + de(x) + '</text>';
+  }
+  for(y = Math.ceil(o.ymin/o.gy)*o.gy; y <= o.ymax + 1e-9; y += o.gy){
+    g += '<path d="M' + L + ' ' + Y(y) + 'H' + (W - R) + '"/>';
+    if(Math.abs(y) > 1e-9 && ganz(y, ly)) t += '<text x="' + (x0 - 7) + '" y="' + (Y(y) + 6) + '" text-anchor="end">' + de(y) + '</text>';
+  }
+  s += '<g style="stroke:var(--line-2); stroke-width:1; fill:none">' + g + '</g>';
+  s += '<g style="stroke:var(--fg-3); stroke-width:1.6; fill:none">' +
+       '<path d="M' + L + ' ' + y0 + 'H' + (W - 8) + '"/><path d="M' + (W - 16) + ' ' + (y0 - 5) + 'L' + (W - 8) + ' ' + y0 + 'L' + (W - 16) + ' ' + (y0 + 5) + '"/>' +
+       '<path d="M' + x0 + ' ' + (H - B + 8) + 'V' + 6 + '"/><path d="M' + (x0 - 5) + ' 14L' + x0 + ' 6L' + (x0 + 5) + ' 14"/></g>';
+  s += '<g style="fill:var(--fg-3)">' + t + '</g>';
+  /* einzelne Variable kursiv, Achsennamen mit Einheit aufrecht */
+  function an(n){ return '<tspan style="font-style:' + (n.length === 1 ? 'italic' : 'normal') + '">' + n + '</tspan>'; }
+  s += '<g style="fill:var(--fg-1); font-weight:600">' +
+       '<text x="' + (W - 12) + '" y="' + (y0 - 9) + '" text-anchor="end">' + an(o.xname || "x") + '</text>' +
+       '<text x="' + (x0 + 10) + '" y="' + 18 + '">' + an(o.yname || "y") + '</text></g>';
+  (o.asy || []).forEach(function(a){
+    s += '<path d="M' + L + ' ' + Y(a) + 'H' + (W - R) + '" style="stroke:var(--fg-2); stroke-width:2; stroke-dasharray:8 6; fill:none"/>';
+  });
+  (o.fn || []).forEach(function(fn){
+    var p = [], i, xx, yy, n = 240;
+    for(i = 0; i <= n; i++){
+      xx = o.xmin + ((o.bis || o.xmax) - o.xmin)*i/n; yy = fn(xx);
+      if(yy > o.ymax + 0.5 || yy < o.ymin - 0.5){ if(p.length > 1) break; p = []; continue; }
+      p.push(X(xx) + "," + Y(yy));
+    }
+    s += '<polyline style="fill:none; stroke:var(--fg-1); stroke-width:3.5; stroke-linejoin:round" points="' + p.join(" ") + '"/>';
+  });
+  (o.pkt || []).forEach(function(q){
+    s += '<circle cx="' + X(q[0]) + '" cy="' + Y(q[1]) + '" r="5.5" style="fill:var(--fg-1)"/>';
+  });
+  return s + '</svg></div>';
+}
+
+var Q10_GRAPH_DRITTEL = eDia({ xmin:-3, xmax:3, ymin:-1, ymax:9, gx:1, gy:1, ly:2,
+  fn:[function(x){ return Math.pow(1/3, x); }], pkt:[[-1,3],[0,1],[-2,9]] });
+var Q10_GRAPH_ASY = eDia({ xmin:-2, xmax:5, ymin:-1, ymax:7, gx:1, gy:1, ly:2,
+  fn:[function(x){ return 2*Math.pow(0.5, x) + 1; }], asy:[1], pkt:[[0,3],[1,2]] });
+var Q10_GRAPH_ZERFALL = eDia({ xmin:0, xmax:14, ymin:0, ymax:90, gx:2, gy:10, ly:20, xname:"t in h", yname:"m in mg", bis:11.5,
+  fn:[function(x){ return 80*Math.pow(0.5, x/4); }], pkt:[[0,80],[4,40],[8,20]] });
+
+var Q10_EXPONENTIAL = {
+  fach:"Mathematik",
+  stufe:"10",
+  titel:"Exponentialfunktionen",
+  unter:"Klasse 10, Festigung: natürliche Exponentialfunktion bˣ, allgemeine Exponentialfunktion a · bˣ + c, Exponentialgleichungen und Logarithmus, Halbwertszeit und Verdopplungszeit. Taschenrechner erlaubt.",
+  sekunden:60,
+  bereiche:["Natürliche Exponentialfunktion", "Allgemeine Exponentialfunktion", "Gleichungen und Logarithmus", "Halbwerts- und Verdopplungszeit"],
+  fragen:[
+    /* ---- 0 Natuerliche Exponentialfunktion f(x) = b^x ---- */
+    {
+      b:0,
+      q:"Durch welchen Punkt verläuft der Graph <b>jeder</b> Funktion " + eM("f(x) = b^{x}") + "?",
+      a:[eM("(0 | 1)"), eM("(1 | 0)"), eM("(0 | 0)"), eM("(1 | 1)")], r:0,
+      s:"Für " + eM("x = 0") + " gilt " + eM("b^{0} = 1") + ", egal wie groß " + eM("b") + " ist. Deshalb schneiden alle Graphen die y-Achse bei 1. Eine Nullstelle gibt es nicht."
+    },
+    {
+      b:0,
+      q:"Für welche Basis ist " + eM("f(x) = b^{x}") + " <b>fallend</b>?",
+      a:[eM("b = 0,4"), eM("b = 4"), eM("b = 1,4"), eM("b = 40")], r:0,
+      s:"Bei " + eM("0 < b < 1") + " wird der Funktionswert bei jedem Schritt nach rechts kleiner, weil man mit einer Zahl kleiner als 1 multipliziert. Alle Basen größer als 1 ergeben steigende Graphen."
+    },
+    {
+      b:0,
+      q:"Welche Wertemenge hat " + eM("f(x) = 2^{x}") + "?",
+      a:["alle positiven Zahlen", "alle reellen Zahlen", "alle Zahlen außer 0", "alle Zahlen ab 1"], r:0,
+      s:"Eine Potenz mit positiver Basis ist immer positiv, sie kommt der 0 beliebig nahe, erreicht sie aber nie (Asymptote). Werte unter 1 gibt es für negative " + eM("x") + "."
+    },
+    {
+      b:0,
+      q:"Der Graph von " + eM("f(x) = b^{x}") + " verläuft durch " + eM("(2 | 9)") + ". Wie groß ist " + eM("b") + "?",
+      a:[eM("b = 3"), eM("b = 4,5"), eM("b = 9"), eM("b = 81")], r:0,
+      s:eM("b^{2} = 9") + ", also " + eM("b = 3") + ". 4,5 entsteht, wenn man 9 : 2 rechnet, als wäre der Exponent ein Faktor."
+    },
+    {
+      b:0,
+      q:"Wie entsteht der Graph von " + eM("g(x) = 0,5^{x}") + " aus dem Graphen von " + eM("f(x) = 2^{x}") + "?",
+      a:["Spiegelung an der y-Achse", "Spiegelung an der x-Achse", "Stauchung mit dem Faktor 0,5", "Verschiebung um 0,5 nach unten"], r:0,
+      s:eM("0,5^{x} = 2^{−x}") + ": Jeder Funktionswert von " + eM("f") + " an der Stelle " + eM("x") + " taucht bei " + eM("g") + " an der Stelle " + eM("−x") + " auf. Eine Spiegelung an der x-Achse würde negative Werte erzeugen."
+    },
+    {
+      b:0,
+      q:"Stimmt die Aussage? „Für sehr kleine " + eM("x") + " schneidet der Graph von " + eM("f(x) = 3^{x}") + " irgendwann die x-Achse.“",
+      a:["wahr", "falsch"], r:1, fest:true,
+      s:eM("3^{x}") + " ist immer positiv. Für sehr kleine " + eM("x") + " nähert sich der Graph der x-Achse nur an: Sie ist Asymptote."
+    },
+    {
+      b:0,
+      q:"Welche Wertetabelle (für " + eM("x = 0, 1, 2, 3") + ") gehört zu exponentiellem Wachstum?",
+      a:["2 | 6 | 18 | 54", "2 | 6 | 10 | 14", "2 | 4 | 8 | 14", "2 | 5 | 10 | 17"], r:0,
+      s:"Bei exponentiellem Wachstum ist der <b>Quotient</b> benachbarter Werte gleich: hier immer mal 3. Bei 2, 6, 10, 14 ist die Differenz gleich (linear)."
+    },
+    {
+      b:0,
+      q:"Was passiert bei " + eM("f(x) = b^{x}") + " mit dem Funktionswert, wenn " + eM("x") + " um 1 größer wird?",
+      a:["Er wird mit " + eM("b") + " multipliziert.", "Er wird um " + eM("b") + " größer.", "Er wird mit " + eM("x") + " multipliziert.", "Er wird verdoppelt."], r:0,
+      s:eM("b^{x+1} = b^{x} · b") + ". Der Faktor " + eM("b") + " heißt deshalb Wachstumsfaktor. Verdoppeln stimmt nur für " + eM("b = 2") + "."
+    },
+    {
+      b:0,
+      q:"Berechne " + eM("f(−3)") + " für " + eM("f(x) = 0,5^{x}") + ".",
+      a:["8", "−0,125", "0,125", "−1,5"], r:0,
+      s:eM("0,5^{−3} = 2^{3} = 8") + ". Ein negativer Exponent macht den Wert nicht negativ, sondern bildet den Kehrwert."
+    },
+    {
+      b:0,
+      q:"Welche Funktion zeigt der Graph?" + Q10_GRAPH_DRITTEL,
+      a:[eM("f(x) = (" + f(1, 3) + ")^{x}"), eM("f(x) = 3^{x}"), eM("f(x) = −3^{x}"), eM("f(x) = 3x + 1")], r:0,
+      s:"Der Graph fällt und geht durch " + eM("(0 | 1)") + " und " + eM("(−1 | 3)") + ": Pro Schritt nach rechts wird durch 3 geteilt, also " + eM("b = " + f(1, 3)) + "."
+    },
+
+    /* ---- 1 Allgemeine Exponentialfunktion f(x) = a · b^x + c ---- */
+    {
+      b:1,
+      q:"Wo schneidet der Graph von " + eM("f(x) = 2 · 3^{x} + 1") + " die y-Achse?",
+      a:[eM("(0 | 3)"), eM("(0 | 2)"), eM("(0 | 1)"), eM("(0 | 7)")], r:0,
+      s:eM("f(0) = 2 · 1 + 1 = 3") + ". Der y-Achsenabschnitt ist " + eM("a + c") + ", nicht " + eM("a") + " allein. 7 wäre " + eM("f(1)") + "."
+    },
+    {
+      b:1,
+      q:"Welche Asymptote hat der Graph von " + eM("f(x) = 4 · 0,5^{x} − 3") + "?",
+      a:[eM("y = −3"), eM("y = 0"), eM("y = 4"), eM("y = 3")], r:0,
+      s:"Der Summand " + eM("c = −3") + " verschiebt den ganzen Graphen um 3 nach unten, also auch die Asymptote " + eM("y = 0") + " auf " + eM("y = −3") + "."
+    },
+    {
+      b:1,
+      q:"Was bewirkt der Faktor " + eM("a = −2") + " in " + eM("f(x) = −2 · 3^{x}") + " gegenüber " + eM("3^{x}") + "?",
+      a:["Streckung mit Faktor 2 und Spiegelung an der x-Achse", "Streckung mit Faktor 2 und Spiegelung an der y-Achse", "Verschiebung um 2 nach unten", "nur eine Spiegelung an der x-Achse"], r:0,
+      s:"Alle Funktionswerte werden mit −2 multipliziert: doppelt so groß und mit umgekehrtem Vorzeichen. Das ist eine Streckung und eine Spiegelung an der x-Achse."
+    },
+    {
+      b:1,
+      q:"Welche Wertemenge hat " + eM("f(x) = −2^{x} + 5") + "?",
+      a:["alle Zahlen kleiner als 5", "alle Zahlen größer als 5", "alle positiven Zahlen", "alle reellen Zahlen"], r:0,
+      s:eM("−2^{x}") + " ist immer negativ. Plus 5 ergibt also immer weniger als 5. Die Gerade " + eM("y = 5") + " ist Asymptote."
+    },
+    {
+      b:1,
+      q:"Ein Bestand beginnt bei 300 und nimmt jedes Jahr um 4 % ab. Welche Funktion passt?",
+      a:[eM("f(x) = 300 · 0,96^{x}"), eM("f(x) = 300 · 0,04^{x}"), eM("f(x) = 300 · 1,04^{x}"), eM("f(x) = 300 · 0,6^{x}")], r:0,
+      s:"Wenn 4 % abgehen, bleiben 96 % übrig: Faktor 0,96. Mit 0,04 bliebe nach einem Jahr nur 4 % übrig."
+    },
+    {
+      b:1,
+      q:"Eine Größe wächst pro Jahr um 23 %. Wie groß ist der Wachstumsfaktor?",
+      a:["1,23", "0,23", "23", "0,77"], r:0,
+      s:"Zu 100 % kommen 23 % dazu: 123 % = 1,23. 0,23 ist nur der Zuwachs, 0,77 gehört zu einer Abnahme um 23 %."
+    },
+    {
+      b:1,
+      q:"Welcher Term passt zum Graphen? Die gestrichelte Linie ist die Asymptote." + Q10_GRAPH_ASY,
+      a:[eM("2 · 0,5^{x} + 1"), eM("3 · 0,5^{x}"), eM("2 · 2^{x} + 1"), eM("0,5 · 2^{x} + 1")], r:0,
+      s:"Die Asymptote liegt bei " + eM("y = 1") + ", also " + eM("c = 1") + ". Der Abstand zur Asymptote halbiert sich pro Schritt (2, 1, 0,5, …): " + eM("a = 2, b = 0,5") + ". " + eM("3 · 0,5^{x}") + " hätte die Asymptote " + eM("y = 0") + "."
+    },
+    {
+      b:1,
+      q:"Der Graph einer Funktion " + eM("f(x) = a · b^{x}") + " geht durch " + eM("(0 | 5)") + " und " + eM("(1 | 15)") + ". Welche Funktion ist es?",
+      a:[eM("f(x) = 5 · 3^{x}"), eM("f(x) = 3 · 5^{x}"), eM("f(x) = 5 · 15^{x}"), eM("f(x) = 10x + 5")], r:0,
+      s:"Anfangswert " + eM("a = f(0) = 5") + ". Von 5 auf 15 wird mit 3 multipliziert: " + eM("b = 3") + ". " + eM("10x + 5") + " geht zwar auch durch beide Punkte, ist aber linear."
+    },
+    {
+      b:1,
+      q:"Stimmt die Aussage? „" + eM("f(x) = 3 · 2^{x} − 6") + " hat eine Nullstelle.“",
+      a:["wahr", "falsch"], r:0, fest:true,
+      s:eM("3 · 2^{x} = 6") + " ergibt " + eM("2^{x} = 2") + ", also " + eM("x = 1") + ". Durch " + eM("c = −6") + " liegt die Asymptote unter der x-Achse, deshalb gibt es eine Nullstelle."
+    },
+    {
+      b:1,
+      q:"Wie entsteht der Graph von " + eM("g(x) = 2^{x} − 4") + " aus dem von " + eM("f(x) = 2^{x}") + "?",
+      a:["Verschiebung um 4 nach unten", "Verschiebung um 4 nach rechts", "Verschiebung um 4 nach links", "Streckung mit dem Faktor 4"], r:0,
+      s:"Von jedem Funktionswert wird 4 abgezogen: Der Graph rutscht um 4 nach unten, die Asymptote liegt bei " + eM("y = −4") + "."
+    },
+
+    /* ---- 2 Exponentialgleichungen und Logarithmus ---- */
+    {
+      b:2,
+      q:"Berechne " + eM("log_{2}(32)") + ".",
+      a:["5", "16", "6", "30"], r:0,
+      s:eM("2^{5} = 32") + ", also " + eM("log_{2}(32) = 5") + ". 16 entsteht aus 32 : 2."
+    },
+    {
+      b:2,
+      q:"Berechne " + eM("log_{10}(0,001)") + ".",
+      a:["−3", "3", "−2", "0,003"], r:0,
+      s:eM("0,001 = 10^{−3}") + ". Zahlen zwischen 0 und 1 haben einen negativen Logarithmus (bei Basis größer als 1)."
+    },
+    {
+      b:2,
+      q:"Welche Frage beantwortet " + eM("log_{3}(81)") + "?",
+      a:["3 hoch wie viel ergibt 81?", "Wie oft passt 3 in 81?", "Welche Zahl hoch 3 ergibt 81?", "81 hoch wie viel ergibt 3?"], r:0,
+      s:"Der Logarithmus sucht den Exponenten: " + eM("3^{?} = 81") + ", hier 4. „Wie oft passt 3 in 81“ wäre die Division 81 : 3."
+    },
+    {
+      b:2,
+      q:"Löse " + eM("2^{x} = 64") + ".",
+      a:[eM("x = 6"), eM("x = 32"), eM("x = 8"), eM("x = 5")], r:0,
+      s:eM("2^{6} = 64") + ". 32 entsteht aus 64 : 2, 8 aus " + eM("√64") + "."
+    },
+    {
+      b:2,
+      q:"Löse " + eM("5 · 3^{x} = 405") + ".",
+      a:[eM("x = 4"), eM("x ≈ 5,45"), eM("x = 27"), eM("x = 81")], r:0,
+      s:"Erst durch 5 teilen: " + eM("3^{x} = 81") + ", also " + eM("x = 4") + ". 5,45 entsteht, wenn man 5 abzieht statt zu teilen; 81 ist der Potenzwert, nicht der Exponent."
+    },
+    {
+      b:2,
+      q:"Löse mit dem Taschenrechner: " + eM("1,5^{x} = 10") + ".",
+      a:[eM("x ≈ 5,68"), eM("x ≈ 6,67"), eM("x ≈ 0,18"), eM("x ≈ 57,67")], r:0,
+      s:eM("x = log_{1,5}(10) ≈ 5,68") + ". 0,18 ist " + eM("log_{10}(1,5)") + " (Basis und Numerus vertauscht), 6,67 ist 10 : 1,5, 57,67 ist " + eM("1,5^{10}") + "."
+    },
+    {
+      b:2,
+      q:"Wie viele Lösungen hat die Gleichung " + eM("2^{x} = −8") + "?",
+      a:["keine", "genau eine", "genau zwei", "unendlich viele"], r:0,
+      s:eM("2^{x}") + " ist immer positiv, kann also nie −8 ergeben. " + eM("x = −3") + " liefert " + eM("2^{−3} = 0,125") + ", nicht −8."
+    },
+    {
+      b:2,
+      q:"Zwischen welchen ganzen Zahlen liegt die Lösung von " + eM("3^{x} = 50") + "?",
+      a:["3 und 4", "16 und 17", "7 und 8", "4 und 5"], r:0,
+      s:eM("3^{3} = 27 < 50 < 81 = 3^{4}") + ". Genauer: " + eM("log_{3}(50) ≈ 3,56") + ". 16 und 17 kommen von 50 : 3."
+    },
+    {
+      b:2,
+      q:"Ein Blatt Papier ist 0,1 mm dick. Wie oft muss man es mindestens falten, damit der Stapel 100 m hoch ist?",
+      a:["20-mal", "19-mal", "1000-mal", "500 000-mal"], r:0,
+      s:"100 m = 100 000 mm. " + eM("0,1 · 2^{n} = 100 000") + " ergibt " + eM("2^{n} = 1 000 000") + ", " + eM("n ≈ 19,93") + ". 19-mal reicht noch nicht, also 20-mal."
+    },
+    {
+      b:2,
+      q:"Stimmt die Aussage? „" + eM("log_{5}(1) = 0") + "“",
+      a:["wahr", "falsch"], r:0, fest:true,
+      s:eM("5^{0} = 1") + ", also ist der Logarithmus von 1 für jede Basis 0."
+    },
+
+    /* ---- 3 Halbwertszeit und Verdopplungszeit ---- */
+    {
+      b:3,
+      q:"Koffein hat eine Halbwertszeit von 5 h. Um 16 Uhr sind 80 mg im Körper. Wie viel ist es um 2 Uhr nachts?",
+      a:["20 mg", "0 mg", "40 mg", "8 mg"], r:0,
+      s:"Von 16 Uhr bis 2 Uhr sind 10 h, also zwei Halbwertszeiten: 80 → 40 → 20 mg. Zweimal halbieren heißt nicht, zweimal die Hälfte abziehen (0 mg)."
+    },
+    {
+      b:3,
+      q:"Ein Bestand von 100 hat eine Verdopplungszeit von 3 Tagen. Wie groß ist er nach 12 Tagen?",
+      a:["1600", "400", "800", "3200"], r:0,
+      s:"12 Tage sind 4 Verdopplungszeiten: " + eM("100 · 2^{4} = 1600") + ". 400 entsteht, wenn man 100 · 4 rechnet."
+    },
+    {
+      b:3,
+      q:"Wie groß ist die Halbwertszeit von " + eM("f(x) = 50 · 0,8^{x}") + "?",
+      a:[eM("≈ 3,11"), "25", eM("≈ 0,32"), "0,4"], r:0,
+      s:eM("0,8^{T} = 0,5") + " ergibt " + eM("T = log_{0,8}(0,5) ≈ 3,11") + ". 25 ist der halbe Anfangswert, keine Zeit. 0,32 ist " + eM("log_{0,5}(0,8)") + " (vertauscht)."
+    },
+    {
+      b:3,
+      q:"Ein Guthaben wächst nach " + eM("f(t) = 200 · 1,05^{t}") + " (" + eM("t") + " in Jahren). Wie groß ist die Verdopplungszeit?",
+      a:["≈ 14,2 Jahre", "20 Jahre", "≈ 0,07 Jahre", "40 Jahre"], r:0,
+      s:eM("1,05^{T} = 2") + " ergibt " + eM("T = log_{1,05}(2) ≈ 14,2") + ". 20 Jahre wären es, wenn jedes Jahr nur 5 % von 200 dazukämen (linear gedacht)."
+    },
+    {
+      b:3,
+      q:"Wovon hängt die Halbwertszeit bei " + eM("f(x) = a · b^{x}") + " ab?",
+      a:["nur von " + eM("b"), "nur von " + eM("a"), "von " + eM("a") + " und " + eM("b"), "vom Startzeitpunkt"], r:0,
+      s:"Aus " + eM("a · b^{T} = 0,5 · a") + " wird " + eM("b^{T} = 0,5") + ": " + eM("a") + " fällt heraus. Die Halbwertszeit ist überall gleich, egal wann man startet."
+    },
+    {
+      b:3,
+      q:"Stimmt die Aussage? „Nach zwei Halbwertszeiten ist alles abgebaut.“",
+      a:["wahr", "falsch"], r:1, fest:true,
+      s:"Nach zwei Halbwertszeiten ist noch ein Viertel da, nach drei ein Achtel. Der Bestand wird nie 0."
+    },
+    {
+      b:3,
+      q:"Lies die Halbwertszeit am Graphen ab." + Q10_GRAPH_ZERFALL,
+      a:["4 h", "8 h", "40 h", "2 h"], r:0,
+      s:"Von 80 mg auf 40 mg dauert es 4 h, von 40 mg auf 20 mg wieder 4 h. 8 h ist die Zeit bis zu einem Viertel, 40 ist ein Wert auf der y-Achse."
+    },
+    {
+      b:3,
+      q:"Welcher Anteil ist nach 3 Halbwertszeiten noch übrig?",
+      a:["12,5 %", "25 %", "16,7 %", "0 %"], r:0,
+      s:eM("(" + f(1, 2) + ")^{3} = " + f(1, 8)) + " = 12,5 %. 25 % ist der Anteil nach zwei Halbwertszeiten, 16,7 % entsteht aus 50 % : 3."
+    },
+    {
+      b:3,
+      q:"Mit welcher Gleichung bestimmt man die Verdopplungszeit " + eM("T") + " von " + eM("f(t) = 3 · 1,2^{t}") + "?",
+      a:[eM("1,2^{T} = 2"), eM("3 · 1,2^{T} = 2"), eM("1,2^{T} = 6"), eM("1,2 · T = 2")], r:0,
+      s:"Verdoppeln heißt " + eM("3 · 1,2^{T} = 6") + ". Teilt man durch 3, bleibt " + eM("1,2^{T} = 2") + ". " + eM("1,2^{T} = 6") + " vergisst das Teilen durch 3."
+    },
+    {
+      b:3,
+      q:"1000 € werden mit 3 % pro Jahr verzinst (Zinseszins). Nach etwa wie vielen Jahren sind es 4000 €?",
+      a:["≈ 47 Jahre", "≈ 23 Jahre", "100 Jahre", "≈ 70 Jahre"], r:0,
+      s:"4000 € sind zwei Verdopplungen. Die Verdopplungszeit ist " + eM("log_{1,03}(2) ≈ 23,4") + " Jahre, also etwa 47 Jahre. 100 Jahre wären es ohne Zinseszins (30 € pro Jahr)."
+    }
+  ]
+};
+
+var Q_SAETZE = [Q7_RATIONAL, Q7_BASAL, Q2_QUANTEN, QE_KINEMATIK, Q8_TERME, Q6_BRUECHE, Q8_FLAECHE, Q10_EXPONENTIAL];
 
 /* -----------------------------------------------------------------------
    LIVE-QUIZ: QR-Code
