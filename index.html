@@ -9682,9 +9682,95 @@ var FM8_MEHRVAR = {
   ]
 };
 
+/* Flaecheninhalte, Klasse 8 (Einheit 2, DS 9). Je Aufgabe genau ein Fehler
+   aus den Fehlvorstellungen FV4 bis FV10 der Einheitenplanung.
+   fhS("a") setzt die Hoehe mit Index, z. B. h_a. */
+function fhS(i){ return '<span class="m"><i>h</i><sub>' + i + '</sub></span>'; }
+
+var F8_FLAECHE = {
+  fach:"Mathematik",
+  stufe:"8",
+  titel:"Flächeninhalte",
+  unter:"Klasse 8, Dreieck, Parallelogramm, Trapez, Drachen, Einheiten, Kongruenz, fehlende Größen",
+  aufgaben:[
+    {
+      auftrag:"Berechne den Flächeninhalt des Parallelogramms.",
+      start:"Seiten "+M("a = 9")+" cm und "+M("b = 5")+" cm, Höhe zur Seite "+M("a")+": "+fhS("a")+" = 4 cm.",
+      zeilen:["Grundseite: "+M("g = a = 9")+" cm", "Höhe: "+M("h = b = 5")+" cm", M("A = g · h = 9 · 5 = 45")+" cm²"],
+      fehler:2,
+      art:"Schräge Seite statt Höhe genommen",
+      richtig:"Höhe: "+M("h")+" = "+fhS("a")+" = 4 cm",
+      s:"Die Höhe ist der senkrechte Abstand der parallelen Seiten, die schräge Seite "+M("b")+" ist länger. Richtig: "+M("A = 9 · 4 = 36")+" cm²."
+    },
+    {
+      auftrag:"Berechne den Flächeninhalt des Dreiecks.",
+      start:"Seite "+M("c = 12")+" cm, Höhe "+fhS("c")+" = 7 cm.",
+      zeilen:["Grundseite "+M("g = 12")+" cm, Höhe "+M("h = 7")+" cm", "Formel: "+M("A = ½ · g · h"), "Einsetzen: "+M("A = 12 · 7"), M("A = 84")+" cm²"],
+      fehler:3,
+      art:"Faktor ½ beim Einsetzen vergessen",
+      richtig:"Einsetzen: "+M("A = ½ · 12 · 7"),
+      s:"Das Dreieck ist die Hälfte des Rechtecks "+M("g · h")+". Richtig: "+M("A = 42")+" cm². Die Formel in Zeile 2 stimmt, verloren geht das ½ erst beim Einsetzen."
+    },
+    {
+      auftrag:"Gib den Flächeninhalt des Beets in cm² an.",
+      start:"Ein rechteckiges Beet ist 3,5 m lang und 2 m breit.",
+      zeilen:[M("A = 3,5 · 2 = 7")+" m²", "1 m = 100 cm", "also 1 m² = 100 cm²", M("A = 7 · 100 = 700")+" cm²"],
+      fehler:3,
+      art:"Flächeneinheit mit dem Längenfaktor 100 statt 10 000 umgerechnet",
+      richtig:"also 1 m² = "+M("100 · 100")+" cm² = 10 000 cm²",
+      s:"1 m² ist ein Quadrat mit 100 cm Seitenlänge, also "+M("100 · 100 = 10 000")+" cm². Richtig: 70 000 cm². Gegenrechnung in cm: "+M("350 · 200 = 70 000")+"."
+    },
+    {
+      auftrag:"Berechne den Flächeninhalt des Dreiecks.",
+      start:"Seiten "+M("a = 10")+" cm und "+M("b = 8")+" cm, Höhe zur Seite "+M("b")+": "+fhS("b")+" = 6 cm.",
+      zeilen:["Formel: "+M("A = ½ · g · h"), M("A = ½ · a")+" · "+fhS("b"), M("A = ½ · 10 · 6 = 30")+" cm²"],
+      fehler:2,
+      art:"Höhe der falschen Grundseite zugeordnet",
+      richtig:M("A = ½ · b")+" · "+fhS("b"),
+      s:"Die Höhe "+fhS("b")+" steht senkrecht auf "+M("b")+", sie gehört zu dieser Grundseite. Richtig: "+M("A = ½ · 8 · 6 = 24")+" cm²."
+    },
+    {
+      auftrag:"Berechne den Flächeninhalt des Trapezes.",
+      start:"Parallele Seiten "+M("a = 10")+" cm und "+M("c = 4")+" cm, Höhe "+M("h = 5")+" cm.",
+      zeilen:["Formel: "+M("A = ½ · a · c · h"), M("A = ½ · 10 · 4 · 5"), M("A = 100")+" cm²"],
+      fehler:1,
+      art:"Trapezformel falsch: a · c statt a + c",
+      richtig:"Formel: "+M("A = ½ · (a + c) · h"),
+      s:"Zwei gleiche Trapeze ergeben ein Parallelogramm mit der Grundseite "+M("a + c")+". Richtig: "+M("A = ½ · 14 · 5 = 35")+" cm². Einheitencheck: "+M("a · c · h")+" sind drei Längen, das wäre ein Volumen."
+    },
+    {
+      auftrag:"Wie viel Stoff braucht man für die Fläche des Flugdrachens?",
+      start:"Der Drachen hat die Diagonalen "+M("e = 90")+" cm und "+M("f = 60")+" cm.",
+      zeilen:["Umbeschriebenes Rechteck: "+M("90 · 60 = 5 400")+" cm²", "Drachen: "+M("A = e · f = 5 400")+" cm²", M("A = 0,54")+" m²"],
+      fehler:2,
+      art:"Faktor ½ bei der Drachenformel vergessen",
+      richtig:"Drachen: "+M("A = ½ · e · f = 2 700")+" cm²",
+      s:"Der Drachen füllt nur die Hälfte des umbeschriebenen Rechtecks. Richtig: 2 700 cm² = 0,27 m². Die Umrechnung in Zeile 3 ist für sich richtig, sie schleppt den Fehler nur mit."
+    },
+    {
+      auftrag:"Begründe, ob die Angaben ein Dreieck eindeutig festlegen.",
+      start:M("α = 45°")+", "+M("β = 65°")+", "+M("γ = 70°"),
+      zeilen:["Winkelsumme: "+M("45° + 65° + 70° = 180°")+", ein solches Dreieck gibt es.", "Gegeben sind drei Stücke, nämlich drei Winkel.", "Nach dem Kongruenzsatz WWW ist das Dreieck eindeutig.", "Alle Dreiecke mit diesen Winkeln sind also deckungsgleich."],
+      fehler:3,
+      art:"WWW als Kongruenzsatz verwendet",
+      richtig:"WWW ist kein Kongruenzsatz, die Winkel legen nur die Form fest.",
+      s:"Ein vergrößertes Dreieck hat dieselben Winkel, ist aber nicht deckungsgleich. Es gibt nur SSS, SWS, WSW und SsW. Zeile 1 und 2 stimmen."
+    },
+    {
+      auftrag:"Berechne die Höhe des Trapezes.",
+      start:"Flächeninhalt 48 cm², parallele Seiten "+M("a = 9")+" cm und "+M("c = 7")+" cm.",
+      zeilen:[M("A = ½ · (a + c) · h"), M("48 = ½ · (9 + 7) · h"), M("48 = ½ · 16 · h"), M("48 = 8 · h"), {t:M("h = 48 : 16 = 3"), op:M("| : 16")}, M("h = 3")+" cm"],
+      fehler:5,
+      art:"Beim Umstellen durch die falsche Zahl geteilt",
+      richtig:M("h = 48 : 8 = 6"),
+      s:"In Zeile 4 steht "+M("8 · h")+", also muss man durch 8 teilen: "+M("h = 6")+" cm. Probe: "+M("½ · 16 · 6 = 48")+" stimmt, "+M("½ · 16 · 3 = 24")+" nicht."
+    }
+  ]
+};
+
 var F_SAETZE = [F8_TERME, F8_GLEICHUNGEN, FM7_RATIONAL,
                 FM8_DIST_LEICHT, FM8_DIST_MITTEL, FM8_DIST_SCHWER, FM10_POTENZEN,
-                FM8_MEHRVAR];
+                FM8_MEHRVAR, F8_FLAECHE];
 
 
 /* -----------------------------------------------------------------------
@@ -13975,7 +14061,326 @@ var Q6_BRUECHE = {
   ]
 };
 
-var Q_SAETZE = [Q7_RATIONAL, Q7_BASAL, Q2_QUANTEN, QE_KINEMATIK, Q8_TERME, Q6_BRUECHE];
+/* Ebene Figur fuer den Flaecheninhalt (Klasse 8). Koordinaten in Kaestchen,
+   y nach oben. o.b, o.h: Ausschnitt; o.gitter: Kaestchengitter zeigen;
+   o.fig: Ecken der Figur; o.str: gestrichelte Strecken [x1,y1,x2,y2];
+   o.rw: rechte Winkel [x,y,ux,uy,vx,vy] (Ecke und zwei Richtungen);
+   o.t: Beschriftungen [x,y,Text,Ausrichtung], der erste Buchstabe kursiv. */
+function flDia(o){
+  var S = 40, R = 24, W = o.b*S + 2*R, H = o.h*S + 2*R, i;
+  function X(x){ return +(R + x*S).toFixed(1); }
+  function Y(y){ return +(R + (o.h - y)*S).toFixed(1); }
+  var pts = o.fig.map(function(p){ return X(p[0]) + "," + Y(p[1]); }).join(" ");
+  var s = '<div class="qbildbox"><svg class="qbild kdia" viewBox="0 0 ' + W + ' ' + H +
+    '" xmlns="http://www.w3.org/2000/svg" style="font-family:var(--sans); font-size:19px">';
+  s += '<polygon points="' + pts + '" style="fill:var(--mathe-soft); stroke:none"/>';
+  if(o.gitter){
+    var g = "";
+    for(i = 0; i <= o.b; i++) g += '<path d="M' + X(i) + ' ' + Y(0) + 'V' + Y(o.h) + '"/>';
+    for(i = 0; i <= o.h; i++) g += '<path d="M' + X(0) + ' ' + Y(i) + 'H' + X(o.b) + '"/>';
+    s += '<g style="stroke:var(--line-2); stroke-width:1; fill:none">' + g + '</g>';
+  }
+  s += '<polygon points="' + pts + '" style="fill:none; stroke:var(--mathe); stroke-width:3; stroke-linejoin:round"/>';
+  (o.str || []).forEach(function(l){
+    s += '<path d="M' + X(l[0]) + ' ' + Y(l[1]) + 'L' + X(l[2]) + ' ' + Y(l[3]) +
+         '" style="stroke:var(--fg-2); stroke-width:2; stroke-dasharray:7 5; fill:none"/>';
+  });
+  (o.rw || []).forEach(function(w){
+    var d = 0.35;
+    s += '<path d="M' + X(w[0] + w[2]*d) + ' ' + Y(w[1] + w[3]*d) +
+         'L' + X(w[0] + (w[2] + w[4])*d) + ' ' + Y(w[1] + (w[3] + w[5])*d) +
+         'L' + X(w[0] + w[4]*d) + ' ' + Y(w[1] + w[5]*d) +
+         '" style="stroke:var(--fg-2); stroke-width:1.6; fill:none"/>';
+  });
+  (o.t || []).forEach(function(t){
+    var txt = t[2].replace(/^([A-Za-z])/, '<tspan style="font-style:italic">$1</tspan>');
+    s += '<text x="' + X(t[0]) + '" y="' + (Y(t[1]) + 7) + '" text-anchor="' + (t[3] || "middle") +
+         '" style="fill:var(--fg-1)">' + txt + '</text>';
+  });
+  return s + '</svg></div>';
+}
+
+/* Hoehe mit Index, z. B. hS("a") fuer h_a. */
+function hS(i){ return '<span class="m"><i>h</i><sub>' + i + '</sub></span>'; }
+
+var Q8_FLAECHE = {
+  fach:"Mathematik",
+  stufe:"8",
+  titel:"Flächeninhalt ebener Figuren",
+  unter:"Klasse 8, Reaktivierung vor der Arbeit: Haus der Vierecke, Kongruenz und Konstruktion, Dreieck, Parallelogramm, Trapez, Drachen und Raute, Vielecke und Einheiten",
+  sekunden:45,
+  bereiche:["Haus der Vierecke", "Kongruenz und Konstruktion", "Höhen und Dreiecke", "Parallelogramm", "Trapez", "Drachen und Raute", "Vielecke und Einheiten"],
+  fragen:[
+    /* ---- 0 Haus der Vierecke (CL2) ---- */
+    {
+      b:0,
+      q:"Welche Aussage ist wahr?",
+      a:["Jedes Quadrat ist ein Drachen.", "Jeder Drachen ist ein Trapez.", "Jedes Parallelogramm ist eine Raute.", "Jeder Drachen ist ein Parallelogramm."], r:0,
+      s:"Ein Quadrat hat zwei Paare gleich langer Nachbarseiten und eine Diagonale als Symmetrieachse, erfüllt also alles, was ein Drachen braucht. Umgekehrt gilt das nicht: Ein Drachen hat im Allgemeinen keine parallelen Seiten."
+    },
+    {
+      b:0,
+      q:"Ein Viereck hat vier gleich lange Seiten, aber keinen rechten Winkel. Welcher Name passt am genauesten?",
+      a:["Raute", "Quadrat", "Rechteck", "Parallelogramm"], r:0,
+      s:"Vier gleich lange Seiten: Raute. Ohne rechten Winkel ist es kein Quadrat. „Parallelogramm“ stimmt auch, ist aber ungenauer, weil jede Raute ein Parallelogramm ist."
+    },
+    {
+      b:0,
+      q:"Bei welchem Viereck stehen die Diagonalen <b>immer</b> senkrecht aufeinander?",
+      a:["Drachen", "Rechteck", "Parallelogramm", "Trapez"], r:0,
+      s:"Beim Drachen ist eine Diagonale Symmetrieachse, deshalb kreuzen sich die Diagonalen rechtwinklig. Beim Rechteck gilt das nur im Sonderfall Quadrat."
+    },
+    {
+      b:0,
+      q:"Stimmt die Aussage? „Jedes Rechteck ist ein Trapez.“",
+      a:["wahr", "falsch"], r:0, fest:true,
+      s:"Ein Trapez braucht nur ein Paar paralleler Seiten. Das Rechteck hat sogar zwei, ist also ein besonderes Trapez."
+    },
+    {
+      b:0,
+      q:"Stimmt die Aussage? „Ein Parallelogramm mit einem rechten Winkel ist immer ein Quadrat.“",
+      a:["wahr", "falsch"], r:1, fest:true,
+      s:"Ein Parallelogramm mit einem rechten Winkel hat vier rechte Winkel, ist also ein Rechteck. Die Seiten müssen dafür nicht gleich lang sein."
+    },
+    {
+      b:0,
+      q:"Welche Eigenschaft hat jedes Parallelogramm, aber nicht jedes Trapez?",
+      a:["Gegenüberliegende Seiten sind gleich lang.", "Zwei Seiten liegen parallel zueinander.", "Die beiden Diagonalen sind gleich lang.", "Alle vier Winkel sind gleich groß."], r:0,
+      s:"Zwei parallele Seiten hat jedes Trapez. Gleich lange Gegenseiten hat erst das Parallelogramm. Gleich lange Diagonalen und gleiche Winkel hat erst das Rechteck."
+    },
+
+    /* ---- 1 Kongruenz und Konstruktion (CL9, CL1) ---- */
+    {
+      b:1,
+      q:"Gegeben: "+M("a = 5")+" cm, "+M("b = 7")+" cm, "+M("c = 9")+" cm. Mit welchem Kongruenzsatz ist das Dreieck eindeutig festgelegt?",
+      a:["SSS", "SWS", "WSW", "SsW"], r:0,
+      s:"Drei Seiten sind gegeben, und die beiden kürzeren sind zusammen länger als die längste ("+M("5 + 7 > 9")+"). Also SSS."
+    },
+    {
+      b:1,
+      q:"Gegeben: "+M("c = 6")+" cm, "+M("α = 50°")+", "+M("β = 70°")+". Mit welchem Kongruenzsatz ist das Dreieck eindeutig festgelegt?",
+      a:["WSW", "SWS", "SSS", "SsW"], r:0,
+      s:"Die Seite "+M("c")+" und die beiden anliegenden Winkel "+M("α")+" und "+M("β")+": WSW."
+    },
+    {
+      b:1,
+      q:"Ole: „Alle Dreiecke mit "+M("α = 30°")+", "+M("β = 60°")+" und "+M("γ = 90°")+" sind deckungsgleich.“ Stimmt das?",
+      a:["Nein, gleiche Winkel legen nur die Form fest.", "Ja, das sagt der Kongruenzsatz WWW.", "Ja, die Winkelsumme beträgt ja 180°.", "Nein, solche Dreiecke gibt es gar nicht."], r:0,
+      s:"WWW ist kein Kongruenzsatz. Ein vergrößertes Dreieck hat dieselben Winkel, ist aber größer. Gleiche Winkel ergeben nur ähnliche Dreiecke."
+    },
+    {
+      b:1,
+      q:"Zu welchen drei Seitenlängen gibt es <b>kein</b> Dreieck?",
+      a:["2 cm, 5 cm, 8 cm", "4 cm, 5 cm, 8 cm", "5 cm, 5 cm, 8 cm", "3 cm, 6 cm, 8 cm"], r:0,
+      s:"Die beiden kürzeren Seiten müssen zusammen länger sein als die längste. "+M("2 + 5 = 7")+" ist kleiner als 8, die Seiten treffen sich nicht."
+    },
+    {
+      b:1,
+      q:"Gegeben: "+M("c = 7")+" cm, "+M("a = 4")+" cm und "+M("α = 30°")+" (der Winkel liegt der Seite "+M("a")+" gegenüber). Wie viele verschiedene Dreiecke gibt es?",
+      a:["zwei", "genau eins", "keins", "unendlich viele"], r:0, zeit:60,
+      s:"Der Winkel liegt der <b>kürzeren</b> Seite gegenüber, SsW greift also nicht. Der Kreis um "+M("B")+" mit Radius 4 cm schneidet den freien Schenkel von "+M("α")+" zweimal: zwei verschiedene Dreiecke."
+    },
+    {
+      b:1,
+      q:"Ein Viereck wird über eine Diagonale in zwei Dreiecke zerlegt. Jedes Dreieck braucht drei Stücke, die Diagonale gehört zu beiden. Wie viele Stücke sind das zusammen?",
+      a:["5", "6", "4", "3"], r:0,
+      s:M("3 + 3 − 1 = 5")+": Die Diagonale wird nur einmal gezählt. Deshalb braucht man im Allgemeinen fünf Stücke, vier Seiten allein reichen nicht."
+    },
+    {
+      b:1,
+      q:"Ein Viereck "+M("ABCD")+" soll konstruiert werden. Gegeben: "+M("AB = 5")+" cm, "+M("BC = 4")+" cm, "+M("β = 100°")+", "+M("CD = 3")+" cm, "+M("AD = 4,5")+" cm. Womit fängst du an?",
+      a:["Dreieck ABC nach SWS", "Dreieck ABD nach SSS", "Dreieck ACD nach SSS", "Dreieck BCD nach SWS"], r:0, zeit:60,
+      s:"Für "+M("ABC")+" sind zwei Seiten und der eingeschlossene Winkel "+M("β")+" bekannt (SWS). Danach liegt "+M("AC")+" fest, und "+M("ACD")+" folgt nach SSS. Bei den anderen Dreiecken fehlt am Anfang ein Stück."
+    },
+
+    /* ---- 2 Hoehen und Dreiecke (CL3, CL4) ---- */
+    {
+      b:2,
+      q:"Ein Kästchen hat die Seitenlänge 1 cm. Wie groß ist der Flächeninhalt des Dreiecks "+M("ABC")+"?"+
+        flDia({ b:8, h:5, gitter:true, fig:[[1,1],[5,1],[7,4]],
+                str:[[5,1,7,1],[7,4,7,1]], rw:[[7,1,-1,0,0,1]],
+                t:[[0.7,0.6,"A"],[5,0.55,"B"],[7,4.45,"C"],[7.25,2.5,"h","start"]] }),
+      a:["6 cm²", "12 cm²", "9 cm²", "18 cm²"], r:0, zeit:60,
+      s:"Grundseite "+M("c = AB = 4")+" cm, die Höhe liegt außerhalb und ist 3 cm lang: "+M("A = ½ · 4 · 3 = 6")+" cm². 12 cm² entsteht ohne das ½, 9 cm², wenn man die Grundseite bis zum Höhenfußpunkt misst."
+    },
+    {
+      b:2,
+      q:"Ein Dreieck hat die Grundseite "+M("g = 9")+" cm und die zugehörige Höhe "+M("h = 5")+" cm. Wie groß ist der Flächeninhalt?",
+      a:["22,5 cm²", "45 cm²", "14 cm²", "22,5 cm"], r:0,
+      s:M("A = ½ · 9 · 5 = 22,5")+" cm². 45 cm² ist das ganze Rechteck (½ vergessen), 14 cm² ist die Summe der Längen. Flächen haben die Einheit cm²."
+    },
+    {
+      b:2,
+      q:"Ein rechtwinkliges Dreieck hat die Katheten 5 cm und 8 cm, die Hypotenuse ist etwa 9,4 cm lang. Wie groß ist der Flächeninhalt?",
+      a:["20 cm²", "40 cm²", "23,5 cm²", "47 cm²"], r:0, zeit:60,
+      s:"Im rechtwinkligen Dreieck ist die eine Kathete die Höhe zur anderen: "+M("A = ½ · 5 · 8 = 20")+" cm². 23,5 cm² entsteht mit der schrägen Hypotenuse statt der Höhe."
+    },
+    {
+      b:2,
+      q:"Ein Dreieck hat den Flächeninhalt 21 cm² und die Grundseite "+M("g = 6")+" cm. Wie lang ist die zugehörige Höhe?",
+      a:["7 cm", "3,5 cm", "1,75 cm", "15 cm"], r:0, zeit:60,
+      s:M("21 = ½ · 6 · h = 3 · h")+", also "+M("h = 7")+" cm. 3,5 cm entsteht, wenn man nur durch 6 teilt und das ½ übersieht."
+    },
+    {
+      b:2,
+      q:"In einem Dreieck ist "+M("a = 6")+" cm, "+hS("a")+" = 4 cm und "+M("b = 8")+" cm. Wie lang ist "+hS("b")+"?",
+      a:["3 cm", "4 cm", "1,5 cm", "5,3 cm"], r:0, zeit:60,
+      s:"Erst "+M("A = ½ · 6 · 4 = 12")+" cm². Dann mit der Grundseite "+M("b")+": "+M("12 = ½ · 8 · h")+", also "+hS("b")+" = 3 cm. Jede Höhe gehört zu ihrer eigenen Grundseite."
+    },
+
+    /* ---- 3 Parallelogramm (CL5) ---- */
+    {
+      b:3,
+      q:"Wie groß ist der Flächeninhalt des Parallelogramms?"+
+        flDia({ b:11.5, h:4.4, fig:[[0.5,1],[7.5,1],[9.5,4],[2.5,4]],
+                str:[[2.5,4,2.5,1]], rw:[[2.5,1,1,0,0,1]],
+                t:[[4,0.45,"a = 7 cm"],[2.7,2.5,"h = 3 cm","start"],[8.85,2.3,"b ≈ 3,6 cm","start"]] }),
+      a:["21 cm²", "25,2 cm²", "10,5 cm²", "42 cm²"], r:0, zeit:60,
+      s:M("A = a · h = 7 · 3 = 21")+" cm². 25,2 cm² entsteht mit der schrägen Seite statt der Höhe, 10,5 cm² mit einem ½, das beim Parallelogramm nicht hingehört."
+    },
+    {
+      b:3,
+      q:"Zwei Parallelogramme haben dieselbe Grundseite und dieselbe Höhe. Das eine ist viel schiefer als das andere. Was gilt?",
+      a:["gleicher Flächeninhalt, anderer Umfang", "gleicher Flächeninhalt, gleicher Umfang", "das schiefere hat mehr Flächeninhalt", "das schiefere hat weniger Flächeninhalt"], r:0,
+      s:"Beim Scheren bleibt der Flächeninhalt "+M("g · h")+" gleich. Die schrägen Seiten werden aber länger, also wächst der Umfang."
+    },
+    {
+      b:3,
+      q:"Ein Parallelogramm hat den Flächeninhalt 42 cm² und die Seite "+M("a = 6")+" cm. Wie groß ist "+hS("a")+"?",
+      a:["7 cm", "3,5 cm", "14 cm", "36 cm"], r:0,
+      s:M("42 = 6 · h")+", also "+M("h = 7")+" cm. 3,5 cm und 14 cm entstehen mit einem ½, das beim Parallelogramm nicht vorkommt."
+    },
+    {
+      b:3,
+      q:"Ein Parallelogramm hat "+M("a = 10")+" cm, "+hS("a")+" = 3 cm und "+M("b = 5")+" cm. Wie groß ist "+hS("b")+"?",
+      a:["6 cm", "3 cm", "1,5 cm", "15 cm"], r:0, zeit:60,
+      s:M("A = 10 · 3 = 30")+" cm², dann "+M("30 = 5 · h")+", also "+hS("b")+" = 6 cm. Zur kürzeren Seite gehört die längere Höhe."
+    },
+    {
+      b:3,
+      q:"Warum gilt für das Parallelogramm "+M("A = g · h")+"?",
+      a:["Ein Dreieck abschneiden und ansetzen gibt ein Rechteck.", "Die schräge Seite ist genauso lang wie die Höhe.", "Es besteht aus zwei Rechtecken mit der Breite h.", "Es ist die Hälfte eines Rechtecks mit g und h."], r:0,
+      s:"Man schneidet an einer Seite ein rechtwinkliges Dreieck ab und setzt es auf der anderen Seite an. Es entsteht ein Rechteck mit den Seiten "+M("g")+" und "+M("h")+"."
+    },
+
+    /* ---- 4 Trapez (CL6) ---- */
+    {
+      b:4,
+      q:"Wie groß ist der Flächeninhalt des Trapezes?"+
+        flDia({ b:10, h:5.6, fig:[[0.5,1],[9.5,1],[7.5,5],[2.5,5]],
+                str:[[2.5,5,2.5,1]], rw:[[2.5,1,1,0,0,1]],
+                t:[[5,0.45,"a = 9 cm"],[5,5.5,"c = 5 cm"],[2.7,3,"h = 4 cm","start"]] }),
+      a:["28 cm²", "56 cm²", "90 cm²", "36 cm²"], r:0, zeit:60,
+      s:M("A = ½ · (9 + 5) · 4 = 28")+" cm². 56 cm² entsteht ohne das ½, 90 cm² mit "+M("½ · a · c · h")+", 36 cm² mit "+M("a · h")+"."
+    },
+    {
+      b:4,
+      q:"Welcher Term gibt den Flächeninhalt eines Trapezes mit den parallelen Seiten "+M("a")+" und "+M("c")+" an?",
+      a:[M("½ · (a + c) · h"), M("½ · a · c · h"), M("(a + c) · h"), M("½ · (a + b) · h")], r:0,
+      s:"Zwei gleiche Trapeze ergeben ein Parallelogramm mit der Grundseite "+M("a + c")+" und der Höhe "+M("h")+". Das Trapez ist die Hälfte davon. "+M("b")+" ist eine schräge Seite und gehört nicht in die Formel."
+    },
+    {
+      b:4,
+      q:"Ein Trapez hat den Flächeninhalt 45 cm² und die parallelen Seiten "+M("a = 11")+" cm und "+M("c = 7")+" cm. Wie groß ist die Höhe?",
+      a:["5 cm", "2,5 cm", "10 cm", "27 cm"], r:0, zeit:60,
+      s:M("45 = ½ · (11 + 7) · h = 9 · h")+", also "+M("h = 5")+" cm. 2,5 cm entsteht mit "+M("45 : 18")+", wenn das ½ verloren geht."
+    },
+    {
+      b:4,
+      q:"Ein Trapez hat den Flächeninhalt 33 cm², die Seite "+M("a = 9")+" cm und die Höhe "+M("h = 6")+" cm. Wie lang ist "+M("c")+"?",
+      a:["2 cm", "11 cm", "5,5 cm", "7 cm"], r:0, zeit:75,
+      s:M("33 = ½ · (9 + c) · 6 = 3 · (9 + c)")+", also "+M("9 + c = 11")+" und "+M("c = 2")+" cm. 11 cm ist "+M("a + c")+", da fehlt der letzte Schritt."
+    },
+    {
+      b:4,
+      q:"In der Trapezformel "+M("A = ½ · (a + c) · h")+" setzt man "+M("c = 0")+". Für welche Figur gilt dann die Formel?",
+      a:["Dreieck", "Parallelogramm", "Rechteck", "Drachen"], r:0,
+      s:"Mit "+M("c = 0")+" schrumpft die obere Seite zu einem Punkt, und es bleibt "+M("A = ½ · a · h")+": die Dreiecksformel. Mit "+M("c = a")+" erhält man das Parallelogramm."
+    },
+
+    /* ---- 5 Drachen und Raute (CL7) ---- */
+    {
+      b:5,
+      q:"Wie groß ist der Flächeninhalt des Drachens?"+
+        flDia({ b:9, h:6, fig:[[0.5,3],[2.5,5.5],[8.5,3],[2.5,0.5]],
+                str:[[0.5,3,8.5,3],[2.5,0.5,2.5,5.5]], rw:[[2.5,3,1,0,0,1]],
+                t:[[5.6,3.45,"e = 8 cm"],[2.75,1.9,"f = 5 cm","start"]] }),
+      a:["20 cm²", "40 cm²", "13 cm²", "26 cm²"], r:0, zeit:60,
+      s:M("A = ½ · e · f = ½ · 8 · 5 = 20")+" cm². 40 cm² ist das umbeschriebene Rechteck, der Drachen ist genau die Hälfte davon."
+    },
+    {
+      b:5,
+      q:"Eine Raute hat die Diagonalen "+M("e = 12")+" cm und "+M("f = 7")+" cm. Wie groß ist ihr Flächeninhalt?",
+      a:["42 cm²", "84 cm²", "19 cm²", "21 cm²"], r:0,
+      s:"Jede Raute ist ein Drachen: "+M("A = ½ · 12 · 7 = 42")+" cm². 84 cm² entsteht ohne das ½."
+    },
+    {
+      b:5,
+      q:"Warum gilt für jeden Drachen "+M("A = ½ · e · f")+"?",
+      a:["Er ist die Hälfte des Rechtecks mit den Seiten e und f.", "Er besteht immer aus vier gleich großen Dreiecken.", "Seine beiden Diagonalen sind immer gleich lang.", "Er ist ein besonderes Parallelogramm mit Höhe f."], r:0,
+      s:"Zeichnet man um den Drachen das Rechteck mit den Seiten "+M("e")+" und "+M("f")+", besteht es aus acht rechtwinkligen Dreiecken, von denen vier zum Drachen gehören."
+    },
+    {
+      b:5,
+      q:"Ein Drachen hat den Flächeninhalt 30 cm² und die Diagonale "+M("e = 12")+" cm. Wie lang ist "+M("f")+"?",
+      a:["5 cm", "2,5 cm", "18 cm", "10 cm"], r:0, zeit:60,
+      s:M("30 = ½ · 12 · f = 6 · f")+", also "+M("f = 5")+" cm. 2,5 cm entsteht, wenn man das ½ vergisst und "+M("30 : 12")+" rechnet."
+    },
+    {
+      b:5,
+      q:"Ein Quadrat hat eine 6 cm lange Diagonale. Wie groß ist sein Flächeninhalt?",
+      a:["18 cm²", "36 cm²", "12 cm²", "9 cm²"], r:0, zeit:60,
+      s:"Das Quadrat ist eine besondere Raute mit "+M("e = f = 6")+" cm: "+M("A = ½ · 6 · 6 = 18")+" cm². 36 cm² wäre ein Quadrat mit der <b>Seite</b> 6 cm."
+    },
+
+    /* ---- 6 Vielecke und Einheiten (CL8, Querschnitt) ---- */
+    {
+      b:6,
+      q:"Ein Kästchen hat die Seitenlänge 1 cm. Wie groß ist der Flächeninhalt des Fünfecks?"+
+        flDia({ b:9, h:6, gitter:true, fig:[[1,1],[6,1],[8,3],[6,5],[1,5]] }),
+      a:["24 cm²", "28 cm²", "22 cm²", "20 cm²"], r:0, zeit:60,
+      s:"Zerlegen: Rechteck "+M("5 · 4 = 20")+" cm² und Dreieck mit Grundseite 4 cm und Höhe 2 cm: "+M("½ · 4 · 2 = 4")+" cm². Zusammen 24 cm². 28 cm² entsteht ohne das ½ beim Dreieck."
+    },
+    {
+      b:6,
+      q:"Von einem Rechteck mit 8 m × 5 m wird an zwei Ecken je ein rechtwinkliges Dreieck mit den Katheten 2 m und 3 m abgeschnitten. Wie groß ist die Restfläche?",
+      a:["34 m²", "28 m²", "37 m²", "46 m²"], r:0, zeit:60,
+      s:"Ergänzen und abziehen: "+M("40 − 2 · (½ · 2 · 3) = 40 − 6 = 34")+" m². 28 m² entsteht ohne das ½, 37 m², wenn nur ein Dreieck abgezogen wird."
+    },
+    {
+      b:6,
+      q:"Wandle um: 3 m² = ? cm²",
+      a:["30 000 cm²", "300 cm²", "3 000 cm²", "300 000 cm²"], r:0,
+      s:"1 m² ist ein Quadrat mit 100 cm Seitenlänge, also "+M("100 · 100 = 10 000")+" cm². Damit 3 m² = 30 000 cm². 300 cm² entsteht mit dem Faktor 100 der Längen."
+    },
+    {
+      b:6,
+      q:"Wandle um: 450 mm² = ? cm²",
+      a:["4,5 cm²", "45 cm²", "0,45 cm²", "4 500 cm²"], r:0,
+      s:"1 cm² = "+M("10 · 10 = 100")+" mm², also durch 100 teilen: 4,5 cm². 45 cm² entsteht mit dem Faktor 10 der Längen."
+    },
+    {
+      b:6,
+      q:"Auf einem Plan im Maßstab 1 : 100 ist ein Beet 3 cm lang und 2 cm breit. Wie groß ist es in Wirklichkeit?",
+      a:["6 m²", "600 m²", "0,06 m²", "60 m²"], r:0, zeit:60,
+      s:"Erst die Längen umrechnen: 3 m und 2 m. Dann "+M("A = 3 · 2 = 6")+" m². Rechnet man 6 cm² mal 100, vergisst man, dass sich die Fläche mit "+M("100 · 100")+" vergrößert."
+    },
+    {
+      b:6,
+      q:"Ein Rechteck ist 6 cm lang und 2 cm breit, ein Quadrat hat 4 cm Seitenlänge. Beide haben den Umfang 16 cm. Was gilt für die Flächeninhalte?",
+      a:["Das Quadrat ist größer.", "Beide sind gleich groß.", "Das Rechteck ist größer.", "Das lässt sich nicht sagen."], r:0,
+      s:"Rechteck "+M("6 · 2 = 12")+" cm², Quadrat "+M("4 · 4 = 16")+" cm². Gleicher Umfang heißt nicht gleicher Flächeninhalt."
+    },
+    {
+      b:6,
+      q:"Aus einem Rechteck mit den Seiten "+M("a")+" und "+M("b")+" wird an einer Ecke ein Quadrat mit der Seite "+M("x")+" herausgeschnitten. Welcher Term gibt den Flächeninhalt der L-Form an?",
+      a:[M("a · b − x²"), M("a · b − 2x"), M("(a − x) · (b − x)"), M("a · b − x")], r:0, zeit:60,
+      s:"Ergänzen: ganzes Rechteck "+M("a · b")+" minus Quadrat "+M("x · x = x²")+". "+M("2x")+" und "+M("x")+" sind Längen, keine Flächen."
+    }
+  ]
+};
+
+var Q_SAETZE = [Q7_RATIONAL, Q7_BASAL, Q2_QUANTEN, QE_KINEMATIK, Q8_TERME, Q6_BRUECHE, Q8_FLAECHE];
 
 /* -----------------------------------------------------------------------
    LIVE-QUIZ: QR-Code
