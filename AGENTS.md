@@ -222,13 +222,24 @@ Erklärung. Bewegungsdiagramme (t-s, t-v) zeichnet `kDia()` direkt über
 das Tablet der Offline-Runde. Zahlengeraden für Ungleichungen zeichnet
 `zgDia(grenze, voll, rechts)` direkt über `Q8_TERME` (−5 bis 5, voller oder
 leerer Punkt, Strahl nach rechts oder links), ebenfalls als `qbild kdia`.
+Für die Analytische Geometrie (Q1) stehen direkt über `Q1_EBENEN` die Helfer
+`agM()` (wie `eM()`, setzt x1–x3 und S1–S3 tief, Formel bricht nicht um),
+`agV(a, b, c)` (Spaltenvektor, CSS `.agv`), `agP("n")` (Vektorpfeil, `.agp`) und
+`agNF(n, p)` (Normalenform); alle nutzen nur `span` mit Klasse und gehen
+deshalb auch durch `qSauber()` auf das Tablet. `agDia({eb:[a, b, c, d]})`
+zeichnet das Schrägbild (x₁ nach vorn, Verkürzung ½√2) mit dem Stück der
+Ebene im Kasten [0, box]³, `agBild()` setzt es unter die Frage (`.agdia`),
+`agAuswahl([o1, …, o4])` zeigt vier Bilder A–D (`.agraster`, am Beamer
+nebeneinander, am Tablet 2 × 2) für Antworten „Bild A“ … „Bild D“ mit `fest`.
 
 Optional teilt `bereiche` (Liste von Namen) einen Satz in Bereiche, jede Frage
 trägt dann `b` (Index). Am Beamer stehen die Bereiche als Häkchen unter der
 Satzwahl, gezogen wird nur aus den angehakten (`qIndizes(satz, maske)`, Maske
 als Bitfeld, 0 = alle). Mindestens ein Häkchen bleibt immer gesetzt; die Wahl
 merkt sich der Beamer je Satz in `quiz_bereiche_v1`. Höchstens 7 Bereiche, mehr
-passen nicht in den Offline-Code.
+passen nicht in den Offline-Code. Ohne gespeicherte Wahl ist nur der erste
+Bereich angehakt; `alleBereiche:true` am Satz hakt dann alle an (etwa beim
+Trainingssatz einer Einheit).
 
 **Basale Kompetenzen aus dem Mathe-Trainer.** `Q7_BASAL` ist kein
 handgeschriebener Satz, sondern ein Export aus dem Trainingsprogramm
