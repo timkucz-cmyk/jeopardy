@@ -15150,7 +15150,279 @@ var Q1_EBENEN = {
   ]
 };
 
-var Q_SAETZE = [Q7_RATIONAL, Q7_BASAL, Q2_QUANTEN, QE_KINEMATIK, Q8_TERME, Q6_BRUECHE, Q8_FLAECHE, Q10_EXPONENTIAL, Q1_EBENEN];
+/* Klasse 10 Physik: Energieformen (Training zum Text AB_2_Energie_1_Energieformen_neu).
+   Qualitativ, ohne Formeln fuer E_pot, E_kin, E_S (die folgen erst in den Entdeckungsstunden).
+   Grosse Zahlen mit schmalem geschuetztem Leerzeichen (U+202F), damit sie nicht umbrechen. */
+var Q10_ENERGIEFORMEN = {
+  fach:"Physik",
+  stufe:"10",
+  titel:"Energieformen",
+  unter:"Klasse 10, Training zum Text „Energieformen“: Energieformen erkennen, wovon sie abhängen, Umwandlungen, Speichern und Übertragen, Einheiten (J, kJ, kWh), typische Fehlvorstellungen. Ohne Formeln und ohne Taschenrechner.",
+  sekunden:40,
+  bereiche:["Formen erkennen", "Wovon hängt sie ab?", "Umwandlungen", "Speichern und Übertragen", "Einheiten", "Fehlvorstellungen"],
+  alleBereiche:true,
+  fragen:[
+    /* ---- 0 Energieformen erkennen ---- */
+    {
+      b:0,
+      q:"Ein Achterbahnwagen steht kurz oben auf dem ersten Hügel. Welche Energieform hat er vor allem?",
+      a:["potenzielle Energie", "kinetische Energie", "Spannenergie", "thermische Energie"], r:0,
+      s:"Er befindet sich hoch über dem Nullniveau: potenzielle Energie. Kinetische Energie hat er kaum, weil er (fast) ruht. Beim Herunterfahren wird die potenzielle in kinetische Energie umgewandelt."
+    },
+    {
+      b:0,
+      q:"In welcher Form speichert ein Smartphone-Akku die Energie?",
+      a:["als chemische Energie", "als elektrische Energie", "als Strahlungsenergie", "als thermische Energie"], r:0,
+      s:"Elektrische Energie lässt sich kaum direkt speichern. Der Akku wandelt sie beim Laden in chemische Energie um und beim Entladen zurück in elektrische."
+    },
+    {
+      b:0,
+      q:"Du bist auf dem Trampolin ganz unten angekommen, das Tuch ist maximal gedehnt. Wo steckt die Energie jetzt vor allem?",
+      a:["Spannenergie des Tuchs", "kinetische Energie von dir", "potenzielle Energie von dir", "chemische Energie des Tuchs"], r:0,
+      s:"Im tiefsten Punkt bist du kurz in Ruhe (keine kinetische Energie) und so tief wie nie (wenig potenzielle Energie). Das elastisch verformte Tuch speichert die Energie als Spannenergie."
+    },
+    {
+      b:0,
+      q:"Wie gelangt die Energie der Sonne zur Erde?",
+      a:["als Strahlungsenergie", "durch Wärmeleitung", "als elektrische Energie", "als chemische Energie"], r:0,
+      s:"Licht transportiert Energie sogar durch den leeren Weltraum. Wärmeleitung braucht einen Stoff, der Weltraum zwischen Sonne und Erde ist aber fast leer."
+    },
+    {
+      b:0,
+      q:"Welche Energieform nutzt eine Windkraftanlage direkt?",
+      a:["kinetische Energie der Luft", "potenzielle Energie der Luft", "thermische Energie der Luft", "chemische Energie der Luft"], r:0,
+      s:"Strömende Luft ist bewegte Masse und besitzt kinetische Energie. Sie dreht die Rotorblätter, der Generator macht daraus elektrische Energie."
+    },
+    {
+      b:0,
+      q:"Ein Glas kaltes Wasser steht still auf dem Tisch. Welche Energieform hat das Wasser auf jeden Fall?",
+      a:["thermische Energie", "kinetische Energie", "Spannenergie", "elektrische Energie"], r:0,
+      s:"Die Teilchen jedes Körpers bewegen sich ständig ungeordnet, auch in kaltem Wasser. Das ist thermische Energie. Kinetische Energie hätte das Wasser nur, wenn sich das Glas als Ganzes bewegte."
+    },
+    {
+      b:0,
+      q:"Pfeil und Bogen, kurz vor dem Loslassen: Welche Energieform ist gespeichert?",
+      a:["Spannenergie im Bogen", "kinetische Energie im Pfeil", "potenzielle Energie im Pfeil", "thermische Energie in der Sehne"], r:0,
+      s:"Der Bogen ist elastisch verformt und speichert Spannenergie. Der Pfeil ruht noch, hat also keine kinetische Energie."
+    },
+
+    /* ---- 1 Wovon haengt sie ab? ---- */
+    {
+      b:1,
+      q:"Ein Motorrad und ein LKW fahren gleich schnell. Wer hat mehr kinetische Energie?",
+      a:["der LKW", "das Motorrad", "beide gleich viel", "kommt auf die Straße an"], r:0,
+      s:"Bei gleicher Geschwindigkeit gilt: je größer die Masse, desto größer die kinetische Energie. Der LKW ist viel schwerer."
+    },
+    {
+      b:1,
+      q:"Wovon hängt die potenzielle Energie eines Körpers <b>nicht</b> ab?",
+      a:["von seiner Geschwindigkeit", "von seiner Masse", "von seiner Höhe über dem Nullniveau", "davon, wie stark er angezogen wird"], r:0,
+      s:"Potenzielle Energie hängt von Masse, Höhe über dem Nullniveau und Anziehung ab. Die Geschwindigkeit gehört zur kinetischen Energie."
+    },
+    {
+      b:1,
+      q:"Derselbe Stein liegt einmal auf der Erde, einmal auf dem Mond, jeweils 2 m hoch. Wo hat er mehr potenzielle Energie?",
+      a:["auf der Erde", "auf dem Mond", "überall gleich viel", "auf dem Mond hat er keine"], r:0,
+      s:"Die Erde zieht den Stein stärker an als der Mond. Bei gleicher Masse und Höhe hat er auf der Erde deshalb mehr potenzielle Energie. Auf dem Mond hat er weniger, aber nicht keine."
+    },
+    {
+      b:1,
+      q:"Eine harte und eine weiche Feder werden gleich weit gedehnt. Welche speichert mehr Spannenergie?",
+      a:["die harte Feder", "die weiche Feder", "beide gleich viel", "die längere Feder"], r:0,
+      s:"Spannenergie ist umso größer, je stärker der Körper verformt wird und je härter er ist. Für die harte Feder brauchst du mehr Kraft, also mehr Arbeit."
+    },
+    {
+      b:1,
+      q:"Ein Föhn läuft doppelt so lange, Spannung und Stromstärke bleiben gleich. Wie viel elektrische Energie wird umgewandelt?",
+      a:["doppelt so viel", "gleich viel", "halb so viel", "viermal so viel"], r:0,
+      s:"Die umgewandelte elektrische Energie ist umso größer, je länger der Strom fließt. Doppelte Zeit bei sonst gleichen Bedingungen: doppelte Energie."
+    },
+    {
+      b:1,
+      q:"Eine Tasse Tee (80 °C) oder ein Vollbad (40 °C): Was besitzt mehr thermische Energie?",
+      a:["das Badewasser", "der Tee", "beide gleich viel", "lässt sich nicht sagen"], r:0,
+      s:"Thermische Energie hängt von Temperatur <b>und</b> Masse ab. Das Badewasser ist kühler, hat aber rund tausendmal so viel Masse. Temperatur allein sagt nicht, wie viel Energie in einem Körper steckt."
+    },
+    {
+      b:1,
+      q:"1 kg Benzin oder 1 kg Holz: Was enthält mehr chemische Energie?",
+      a:["das Benzin", "das Holz", "gleich viel, gleiche Masse", "keins von beiden"], r:0,
+      s:"Chemische Energie hängt auch von der Art des Stoffes ab: 1 kg Benzin enthält etwa dreimal so viel wie 1 kg Holz. Deshalb tankt ein Auto Benzin und kein Holz."
+    },
+    {
+      b:1,
+      q:"Wann nimmt ein T-Shirt in der Sonne mehr Strahlungsenergie auf?",
+      a:["wenn es länger bestrahlt wird", "wenn die Sonne schwächer scheint", "wenn es kürzer bestrahlt wird", "wenn es im Schatten liegt"], r:0,
+      s:"Ein Körper nimmt umso mehr Strahlungsenergie auf, je intensiver die Strahlung, je größer die Fläche und je länger er bestrahlt wird. Dunkle Stoffe nehmen dabei mehr auf als helle."
+    },
+
+    /* ---- 2 Umwandlungen ---- */
+    {
+      b:2,
+      q:"Welche Umwandlung findet in einer Solarzelle statt?",
+      a:["Strahlung → elektrisch", "elektrisch → Strahlung", "thermisch → elektrisch", "chemisch → elektrisch"], r:0,
+      s:"Eine Solarzelle wandelt Licht, also Strahlungsenergie, in elektrische Energie um. Umgekehrt läuft es in einer Lampe."
+    },
+    {
+      b:2,
+      q:"Beim Bremsen werden die Bremsen eines Fahrrads warm. Welche Umwandlung ist das?",
+      a:["kinetisch → thermisch", "thermisch → kinetisch", "kinetisch → potenziell", "chemisch → thermisch"], r:0,
+      s:"Das fahrende Fahrrad hat kinetische Energie. Beim Bremsen wird sie in thermische Energie von Bremse und Felge umgewandelt."
+    },
+    {
+      b:2,
+      q:"Ein Apfel fällt vom Baum. Was passiert mit der Energie während des Falls?",
+      a:["potenziell → kinetisch", "kinetisch → potenziell", "potenziell → Spannenergie", "Sie wird verbraucht."], r:0,
+      s:"Der Apfel verliert Höhe und wird schneller: Potenzielle Energie wird in kinetische Energie umgewandelt. Energie wird nicht verbraucht, sondern umgewandelt."
+    },
+    {
+      b:2,
+      q:"Pumpspeicherkraftwerk: Das Wasser aus dem oberen Becken wird abgelassen. Welche Energiekette passt?",
+      a:["potenziell → kinetisch → elektrisch", "elektrisch → kinetisch → potenziell", "chemisch → thermisch → elektrisch", "Kern → thermisch → elektrisch"], r:0,
+      s:"Das Wasser fällt (potenziell → kinetisch) und treibt Turbine und Generator an (→ elektrisch). Die umgekehrte Kette gehört zum Hochpumpen."
+    },
+    {
+      b:2,
+      q:"Kernkraftwerk: In welcher Reihenfolge wird die Energie umgewandelt?",
+      a:["Kern → thermisch → kinetisch → elektrisch", "Kern → elektrisch → thermisch → kinetisch", "Kern → Strahlung → elektrisch", "thermisch → Kern → elektrisch"], r:0, zeit:60,
+      s:"Die frei werdende Kernenergie erhitzt Wasser zu Dampf (thermisch). Der Dampf treibt eine Turbine (kinetisch), der Generator liefert elektrische Energie."
+    },
+    {
+      b:2,
+      q:"Eine Lampe leuchtet und wird dabei warm. Welche Umwandlung passt?",
+      a:["elektrisch → Strahlung und thermisch", "elektrisch → nur Strahlung", "Strahlung → elektrisch", "chemisch → Strahlung"], r:0,
+      s:"Eine Energieform kann in mehrere andere umgewandelt werden: Die Lampe gibt Licht und Wärme ab. Das Licht ist der Nutzen, die Wärme meist ein Verlust."
+    },
+    {
+      b:2,
+      q:"Du reibst bei Kälte die Hände aneinander. Was passiert mit der Energie?",
+      a:["kinetisch → thermisch", "thermisch → kinetisch", "chemisch → elektrisch", "Spannenergie → thermisch"], r:0,
+      s:"Die Bewegung der Hände (kinetische Energie) wird durch Reibung in thermische Energie umgewandelt, die Hände werden warm."
+    },
+
+    /* ---- 3 Speichern und Uebertragen ---- */
+    {
+      b:3,
+      q:"Warum speichert ein Akku die Energie nicht als elektrische Energie?",
+      a:["Sie lässt sich kaum direkt speichern.", "Sie lässt sich nicht transportieren.", "Sie wäre für das Handy zu stark.", "Sie entsteht nur im Kraftwerk."], r:0,
+      s:"Elektrische Energie lässt sich gut über weite Strecken transportieren, aber nur schwer direkt speichern. Deshalb wird sie im Akku als chemische Energie gespeichert."
+    },
+    {
+      b:3,
+      q:"Was bedeutet „Wärme“ " + M("(Q)") + " in der Physik?",
+      a:["übertragene Energie (warm → kalt)", "Energie, die ein heißer Körper hat", "ein anderes Wort für Temperatur", "Bewegungsenergie eines Körpers"], r:0,
+      s:"Wärme ist <b>übertragene</b> Energie, sie fließt vom wärmeren zum kälteren Körper. Was ein Körper besitzt, ist thermische Energie. Die Temperatur sagt, wie schnell sich seine Teilchen bewegen."
+    },
+    {
+      b:3,
+      q:"Warum verbrüht Wasserdampf von 100 °C die Haut stärker als kochendes Wasser von 100 °C?",
+      a:["Dampf hat mehr thermische Energie.", "Dampf ist heißer als 100 °C.", "Dampf leitet keine Wärme.", "Wasser hat keine thermische Energie."], r:0,
+      s:"Die thermische Energie hängt auch vom Aggregatzustand ab: Gleich viel Dampf besitzt bei gleicher Temperatur mehr thermische Energie als flüssiges Wasser."
+    },
+    {
+      b:3,
+      q:"Welche Aussage über chemische Energie stimmt?",
+      a:["Sie wird bei chemischen Reaktionen frei.", "Sie steckt in der Bewegung der Teilchen.", "Sie wird bei der Kernspaltung frei.", "Sie wird mit dem Strom übertragen."], r:0,
+      s:"Chemische Energie steckt in den Bindungen zwischen Atomen und wird bei Reaktionen wie der Verbrennung frei. Teilchenbewegung ist thermische Energie, Kernspaltung setzt Kernenergie frei."
+    },
+    {
+      b:3,
+      q:"Was passiert bei der Kernfusion?",
+      a:["Leichte Kerne verschmelzen.", "Ein schwerer Kern spaltet sich.", "Atome bilden Moleküle.", "Elektronen fließen im Leiter."], r:0,
+      s:"Bei der Fusion verschmelzen leichte Kerne zu einem schwereren, so entsteht in der Sonne aus Wasserstoff Helium. Spaltung ist der umgekehrte Weg, Moleküle bilden ist Chemie."
+    },
+    {
+      b:3,
+      q:"Was bedeutet das Wort „potenziell“ in „potenzielle Energie“?",
+      a:["möglich", "hoch", "schwer", "kräftig"], r:0,
+      s:"„Potenziell“ heißt „möglich“: Der angehobene Körper hat die Möglichkeit, beim Herunterfallen etwas zu bewirken."
+    },
+    {
+      b:3,
+      q:"Deine Achillessehne wird bei jedem Laufschritt gedehnt. Welche Energie speichert sie kurz?",
+      a:["Spannenergie", "chemische Energie", "potenzielle Energie", "Strahlungsenergie"], r:0,
+      s:"Die Sehne wirkt wie eine Feder: Sie wird elastisch gedehnt, speichert Spannenergie und gibt sie beim Abdrücken wieder ab. Dadurch kostet Laufen weniger Energie."
+    },
+
+    /* ---- 4 Einheiten und Groessenordnungen ---- */
+    {
+      b:4,
+      q:"In welcher Einheit misst man alle Energieformen?",
+      a:["Joule (J)", "Watt (W)", "Newton (N)", "Grad Celsius (°C)"], r:0,
+      s:"Alle Energieformen haben dieselbe Einheit Joule. Watt ist die Einheit der Leistung (Energie pro Zeit), Newton die der Kraft."
+    },
+    {
+      b:4,
+      q:"Wie viele Joule sind 1 kWh?",
+      a:[M("3 600 000") + " J", M("1000") + " J", M("3600") + " J", M("60 000") + " J"], r:0,
+      s:"1 kW = 1000 W und 1 h = 3600 s, also " + M("1") + " kWh " + M("= 1000 · 3600") + " J " + M("= 3 600 000") + " J. Wer nur das „Kilo“ oder nur die Stunde umrechnet, kommt auf 1000 J bzw. 3600 J."
+    },
+    {
+      b:4,
+      q:"Ein Schokoriegel enthält rund 1000 kJ. Wie viele Joule sind das?",
+      a:[M("1 000 000") + " J", M("1000") + " J", M("100 000") + " J", M("1") + " J"], r:0,
+      s:"Kilo bedeutet tausend: " + M("1000") + " kJ " + M("= 1000 · 1000") + " J " + M("= 1 000 000") + " J, also eine Million Joule."
+    },
+    {
+      b:4,
+      q:"Der Stromzähler ist um 2 kWh weitergelaufen. Wie viel Energie ist das?",
+      a:[M("7200") + " kJ", M("2000") + " kJ", M("720") + " kJ", M("7,2") + " kJ"], r:0, zeit:60,
+      s:M("1") + " kWh " + M("= 3600") + " kJ, also " + M("2") + " kWh " + M("= 7200") + " kJ (das sind 7,2 Millionen Joule)."
+    },
+    {
+      b:4,
+      q:"Welche Größe ist <b>keine</b> Energie?",
+      a:["Leistung, gemessen in Watt", "Wärme, gemessen in Joule", "Arbeit, gemessen in Joule", "Stromverbrauch in kWh"], r:0,
+      s:"Leistung sagt, wie schnell Energie umgewandelt oder übertragen wird (Energie pro Zeit). Wärme und Arbeit sind übertragene Energie, kWh ist eine Energieeinheit."
+    },
+    {
+      b:4,
+      q:"Die Spaltung aller Kerne in 1 g Uran-235 setzt etwa so viel Energie frei wie die Verbrennung von …",
+      a:["knapp 3 t Steinkohle", "knapp 3 kg Steinkohle", "knapp 3 g Steinkohle", "knapp 30 g Steinkohle"], r:0,
+      s:"Kernenergie ist extrem konzentriert: 1 g Uran-235 entspricht knapp 3 Tonnen Steinkohle, also rund dem Dreimillionenfachen der Masse."
+    },
+
+    /* ---- 5 Fehlvorstellungen und Transfer ---- */
+    {
+      b:5,
+      q:"Ein Ball liegt ruhig auf dem Boden (Nullniveau). Welche Aussage stimmt?",
+      a:["Er hat keine kinetische Energie.", "Er hat überhaupt keine Energie.", "Er hat kinetische Energie, da er rollen kann.", "Er hat potenzielle Energie, da er schwer ist."], r:0,
+      s:"Ein ruhender Körper hat keine kinetische Energie, und am Nullniveau keine potenzielle. Energie hat er trotzdem, zum Beispiel thermische Energie seiner Teilchen."
+    },
+    {
+      b:5,
+      q:"Du verformst Knete. Was wird aus der Arbeit, die du dabei verrichtest?",
+      a:["thermische Energie der Knete", "Spannenergie der Knete", "Sie geht verloren.", "potenzielle Energie der Knete"], r:0,
+      s:"Knete ist nicht elastisch, sie springt nicht zurück und speichert keine Spannenergie. Die Arbeit wird in thermische Energie umgewandelt. Verloren geht sie nicht."
+    },
+    {
+      b:5,
+      q:"„Die Batterie ist leer, die Energie ist verbraucht.“ Was stimmt physikalisch?",
+      a:["Die Energie wurde umgewandelt.", "Die Energie wurde vernichtet.", "Die Energie steckt noch in der Batterie.", "Die Energie floss zum Kraftwerk zurück."], r:0,
+      s:"Energie kann nicht vernichtet werden. Sie wurde in andere Formen umgewandelt (Licht, Wärme, Bewegung) und ist danach meist nicht mehr gut nutzbar. „Verbraucht“ ist Alltagssprache."
+    },
+    {
+      b:5,
+      q:"Eine Kokosnuss fällt einmal aus dem 1. Stock, einmal vom Dach. Welche Aussage stimmt?",
+      a:["Vom Dach hatte sie mehr potenzielle Energie.", "Beide Male gleich viel, die Masse ist gleich.", "Aus dem 1. Stock schlägt sie härter auf.", "Nur die Masse zählt, nicht die Höhe."], r:0,
+      s:"Potenzielle Energie ist umso größer, je größer die Höhe über dem Nullniveau ist. Vom Dach hat die Kokosnuss mehr Energie und schlägt deshalb mit mehr Wucht auf."
+    },
+    {
+      b:5,
+      q:"Ein Auto fährt mit gleichbleibender Geschwindigkeit einen Berg hinauf. Welche Energie des Autos nimmt zu?",
+      a:["die potenzielle Energie", "die kinetische Energie", "die chemische Energie im Tank", "die Spannenergie"], r:0,
+      s:"Die Höhe wächst, also die potenzielle Energie. Die kinetische bleibt gleich, weil die Geschwindigkeit gleich bleibt. Die chemische Energie im Tank nimmt ab, sie wird umgewandelt."
+    },
+    {
+      b:5,
+      q:"Welche Aussage über Energieformen stimmt?",
+      a:["Energieformen sind ineinander umwandelbar.", "Jede Energieform hat eine eigene Einheit.", "Thermische Energie hat nur ein heißer Körper.", "Ein Körper hat immer nur eine Energieform."], r:0,
+      s:"Alle Energieformen werden in Joule gemessen und lassen sich ineinander umwandeln. Auch kalte Körper haben thermische Energie, und ein Körper kann mehrere Formen zugleich besitzen."
+    }
+  ]
+};
+
+var Q_SAETZE = [Q7_RATIONAL, Q7_BASAL, Q2_QUANTEN, QE_KINEMATIK, Q8_TERME, Q6_BRUECHE, Q8_FLAECHE, Q10_EXPONENTIAL, Q1_EBENEN, Q10_ENERGIEFORMEN];
 
 /* -----------------------------------------------------------------------
    LIVE-QUIZ: QR-Code
